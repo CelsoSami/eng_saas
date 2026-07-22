@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparativo - TerraeScope</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><a href="dashboard.html" class="sidebar-logo"><div class="icon"><i class="fas fa-building"></i></div> TerraeScope</a></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <a href="dashboard.html" class="nav-item"><span class="icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+                    <a href="busca.html" class="nav-item"><span class="icon"><i class="fas fa-search"></i></span> Buscar Terrenos <span class="badge" id="quota-badge">10</span></a>
+                    <a href="mapa.html" class="nav-item"><span class="icon"><i class="fas fa-map-marked-alt"></i></span> Mapa Interativo</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Analises</div>
+                    <a href="analise.html" class="nav-item"><span class="icon"><i class="fas fa-chart-bar"></i></span> Analise de Terreno</a>
+                    <a href="comparativo.html" class="nav-item active"><span class="icon"><i class="fas fa-balance-scale"></i></span> Comparativo</a>
+                    <a href="bi.html" class="nav-item"><span class="icon"><i class="fas fa-chart-line"></i></span> BI & Relatorios <span class="badge tag-beige">PRO</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Gestao</div>
+                    <a href="projetos.html" class="nav-item"><span class="icon"><i class="fas fa-folder-open"></i></span> Meus Projetos</a>
+                    <a href="favoritos.html" class="nav-item"><span class="icon"><i class="fas fa-heart"></i></span> Favoritos</a>
+                    <a href="historico.html" class="nav-item"><span class="icon"><i class="fas fa-history"></i></span> Historico</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Conta</div>
+                    <a href="assinatura.html" class="nav-item"><span class="icon"><i class="fas fa-crown"></i></span> Assinatura</a>
+                    <a href="config.html" class="nav-item"><span class="icon"><i class="fas fa-cog"></i></span> Configuracoes</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar" id="user-avatar">US</div>
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-user-name" id="user-name">Usuario</div>
+                        <div class="sidebar-user-plan" id="user-plan">Plano Gratuito</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="header-btn" onclick="toggleSidebar()" style="display:none;" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 class="header-title">Comparativo</h1>
+                        <div class="header-breadcrumb"><a href="dashboard.html">Inicio</a> <i class="fas fa-chevron-right" style="font-size:10px;"></i> Comparativo</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Selecao de terrenos -->
+                <div class="card" style="margin-bottom:24px;">
+                    <div class="card-header"><div class="card-title"><i class="fas fa-balance-scale" style="margin-right:8px; color:var(--neon-blue);"></i> Selecione os terrenos para comparar</div></div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;" id="selectores-terreno">
+                        <div>
+                            <label class="form-label">Terreno 1</label>
+                            <select class="form-select" id="sel-terreno-1" onchange="atualizarComparativo()"><option value="">Selecione...</option></select>
+                        </div>
+                        <div>
+                            <label class="form-label">Terreno 2</label>
+                            <select class="form-select" id="sel-terreno-2" onchange="atualizarComparativo()"><option value="">Selecione...</option></select>
+                        </div>
+                        <div>
+                            <label class="form-label">Terreno 3 (opcional)</label>
+                            <select class="form-select" id="sel-terreno-3" onchange="atualizarComparativo()"><option value="">Selecione...</option></select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela comparativa -->
+                <div id="comparativo-container">
+                    <div class="empty-state" style="padding:60px 20px;">
+                        <div class="empty-state-icon"><i class="fas fa-balance-scale"></i></div>
+                        <h3>Selecione terrenos para comparar</h3>
+                        <p>Escolha pelo menos 2 terrenos nos campos acima para ver a comparacao lado a lado</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
+
+    <script src="../js/db.js"></script>
+    <script src="../js/license.js"></script>
+    <script>
+        let todosTerrenos = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await db.init();
+            const sessao = await license.verificarSessao();
+            if (!sessao) { window.location.href = '../index.html'; return; }
+            updateUserUI();
+            await carregarTerrenos();
+            checkResponsive();
+        });
+
+        function updateUserUI() {
+            const user = license.usuarioAtual;
+            const plano = license.getPlanoInfo();
+            if (user) {
+                document.getElementById('user-name').textContent = user.nome || 'Usuario';
+                document.getElementById('user-avatar').textContent = (user.nome || 'US').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                document.getElementById('user-plan').textContent = 'Plano ' + plano.nome;
+                document.getElementById('quota-badge').textContent = plano.limiteBuscas === -1 ? '∞' : plano.limiteBuscas;
+            }
+        }
+
+        async function carregarTerrenos() {
+            todosTerrenos = await db.getAll('terrenos');
+            const selects = ['sel-terreno-1', 'sel-terreno-2', 'sel-terreno-3'];
+            selects.forEach(id => {
+                const sel = document.getElementById(id);
+                sel.innerHTML = '<option value="">Selecione...</option>' + todosTerrenos.map(t => '<option value="' + t.id + '">' + (t.logradouro || 'Terreno ' + t.id) + ' - ' + (t.cidade || '') + '</option>').join('');
+            });
+        }
+
+        function atualizarComparativo() {
+            const id1 = parseInt(document.getElementById('sel-terreno-1').value);
+            const id2 = parseInt(document.getElementById('sel-terreno-2').value);
+            const id3 = parseInt(document.getElementById('sel-terreno-3').value);
+
+            const selecionados = [id1, id2, id3].filter(id => id).map(id => todosTerrenos.find(t => t.id === id)).filter(Boolean);
+            if (selecionados.length < 2) {
+                document.getElementById('comparativo-container').innerHTML = '<div class="empty-state" style="padding:60px 20px;"><div class="empty-state-icon"><i class="fas fa-balance-scale"></i></div><h3>Selecione pelo menos 2 terrenos</h3><p>Escolha 2 ou 3 terrenos nos campos acima para comparar</p></div>';
+                return;
+            }
+
+            const rows = [
+                { label: 'Logradouro', key: 'logradouro' },
+                { label: 'Cidade', key: 'cidade' },
+                { label: 'UF', key: 'uf' },
+                { label: 'CEP', key: 'cep' },
+                { label: 'Area (m2)', key: 'area', suffix: ' m2' },
+                { label: 'Matricula', key: 'matricula' },
+                { label: 'Valor de Mercado', key: 'valorMercado', prefix: 'R$ ', format: 'currency' },
+                { label: 'Zona', key: 'zona' }
+            ];
+
+            let html = '<div class="card"><div class="table-container"><table class="table"><thead><tr><th>Caracteristica</th>';
+            selecionados.forEach(t => { html += '<th style="text-align:center;">' + (t.logradouro || 'Terreno ' + t.id) + '</th>'; });
+            html += '</tr></thead><tbody>';
+
+            rows.forEach(row => {
+                html += '<tr><td style="font-weight:600;">' + row.label + '</td>';
+                selecionados.forEach(t => {
+                    let val = t[row.key];
+                    if (row.format === 'currency' && val) val = 'R$ ' + val.toLocaleString('pt-BR');
+                    else if (row.suffix && val) val = val + row.suffix;
+                    else if (row.prefix && val) val = row.prefix + val;
+                    html += '<td style="text-align:center;">' + (val || '—') + '</td>';
+                });
+                html += '</tr>';
+            });
+
+            // Valor por m2
+            html += '<tr><td style="font-weight:600; color:var(--neon-green);">Valor/m2</td>';
+            selecionados.forEach(t => {
+                const vpm2 = (t.valorMercado && t.area) ? (t.valorMercado / t.area) : null;
+                html += '<td style="text-align:center; color:var(--neon-green); font-weight:600;">' + (vpm2 ? 'R$ ' + Math.round(vpm2).toLocaleString('pt-BR') : '—') + '</td>';
+            });
+            html += '</tr>';
+
+            html += '</tbody></table></div></div>';
+            document.getElementById('comparativo-container').innerHTML = html;
+        }
+
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alert-container');
+            const icons = { info: 'info-circle', success: 'check-circle', danger: 'exclamation-circle', warning: 'exclamation-triangle' };
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-' + type;
+            alert.innerHTML = '<i class="fas fa-' + icons[type] + '"></i> ' + message;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function checkResponsive() {
+            const toggle = document.getElementById('menu-toggle');
+            if (window.innerWidth <= 768) { toggle.style.display = 'grid'; } else { toggle.style.display = 'none'; }
+        }
+        window.addEventListener('resize', checkResponsive);
+    </script>
+</body>
+</html>
