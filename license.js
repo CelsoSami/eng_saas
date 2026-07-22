@@ -319,6 +319,7 @@ class LicenseManager {
         this.planoAtual = null;
         this.usoMes = null;
         localStorage.removeItem('sessao');
+        window.location.href = 'index.html';
     }
 
     // Verificar sessão ativa
