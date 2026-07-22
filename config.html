@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuracoes - TerraeScope</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><a href="dashboard.html" class="sidebar-logo"><div class="icon"><i class="fas fa-building"></i></div> TerraeScope</a></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <a href="dashboard.html" class="nav-item"><span class="icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+                    <a href="busca.html" class="nav-item"><span class="icon"><i class="fas fa-search"></i></span> Buscar Terrenos <span class="badge" id="quota-badge">10</span></a>
+                    <a href="mapa.html" class="nav-item"><span class="icon"><i class="fas fa-map-marked-alt"></i></span> Mapa Interativo</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Analises</div>
+                    <a href="analise.html" class="nav-item"><span class="icon"><i class="fas fa-chart-bar"></i></span> Analise de Terreno</a>
+                    <a href="comparativo.html" class="nav-item"><span class="icon"><i class="fas fa-balance-scale"></i></span> Comparativo</a>
+                    <a href="bi.html" class="nav-item"><span class="icon"><i class="fas fa-chart-line"></i></span> BI & Relatorios <span class="badge tag-beige">PRO</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Gestao</div>
+                    <a href="projetos.html" class="nav-item"><span class="icon"><i class="fas fa-folder-open"></i></span> Meus Projetos</a>
+                    <a href="favoritos.html" class="nav-item"><span class="icon"><i class="fas fa-heart"></i></span> Favoritos</a>
+                    <a href="historico.html" class="nav-item"><span class="icon"><i class="fas fa-history"></i></span> Historico</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Conta</div>
+                    <a href="assinatura.html" class="nav-item"><span class="icon"><i class="fas fa-crown"></i></span> Assinatura</a>
+                    <a href="config.html" class="nav-item active"><span class="icon"><i class="fas fa-cog"></i></span> Configuracoes</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar" id="user-avatar">US</div>
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-user-name" id="user-name">Usuario</div>
+                        <div class="sidebar-user-plan" id="user-plan">Plano Gratuito</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="header-btn" onclick="toggleSidebar()" style="display:none;" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 class="header-title">Configuracoes</h1>
+                        <div class="header-breadcrumb"><a href="dashboard.html">Inicio</a> <i class="fas fa-chevron-right" style="font-size:10px;"></i> Configuracoes</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <div class="card" style="margin-bottom:24px;">
+                    <div class="card-header"><div class="card-title"><i class="fas fa-user" style="margin-right:8px; color:var(--neon-blue);"></i> Perfil do Usuario</div></div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-input" id="cfg-nome" placeholder="Seu nome"></div>
+                        <div class="form-group"><label class="form-label">E-mail</label><input type="email" class="form-input" id="cfg-email" placeholder="seu@email.com"></div>
+                        <div class="form-group"><label class="form-label">Empresa</label><input type="text" class="form-input" id="cfg-empresa" placeholder="Nome da empresa"></div>
+                        <div class="form-group"><label class="form-label">Telefone</label><input type="text" class="form-input" id="cfg-telefone" placeholder="(00) 00000-0000"></div>
+                    </div>
+                    <div style="text-align:right; margin-top:8px;">
+                        <button class="btn btn-primary" onclick="salvarPerfil()"><i class="fas fa-save"></i> Salvar Perfil</button>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom:24px;">
+                    <div class="card-header"><div class="card-title"><i class="fas fa-lock" style="margin-right:8px; color:var(--neon-beige);"></i> Alterar Senha</div></div>
+                    <div style="max-width:400px;">
+                        <div class="form-group"><label class="form-label">Senha Atual</label><input type="password" class="form-input" id="cfg-senha-atual" placeholder="Sua senha atual"></div>
+                        <div class="form-group"><label class="form-label">Nova Senha</label><input type="password" class="form-input" id="cfg-nova-senha" placeholder="Nova senha"></div>
+                        <div class="form-group"><label class="form-label">Confirmar Nova Senha</label><input type="password" class="form-input" id="cfg-confirmar-senha" placeholder="Confirme a nova senha"></div>
+                        <button class="btn btn-primary" onclick="alterarSenha()"><i class="fas fa-key"></i> Alterar Senha</button>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom:24px;">
+                    <div class="card-header"><div class="card-title"><i class="fas fa-database" style="margin-right:8px; color:var(--neon-green);"></i> Backup e Restauracao</div></div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary" onclick="exportarBackup()"><i class="fas fa-download"></i> Exportar JSON</button>
+                        <label class="btn btn-secondary" style="cursor:pointer;"><i class="fas fa-upload"></i> Importar JSON<input type="file" id="importar-arquivo" accept=".json" style="display:none;" onchange="importarBackup(event)"></label>
+                    </div>
+                    <div style="margin-top:12px; font-size:12px; color:var(--text-muted);">Exporte todos os seus dados (terrenos, projetos, configuracoes) como backup JSON.</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><div class="card-title"><i class="fas fa-info-circle" style="margin-right:8px; color:var(--text-muted);"></i> Sobre o TerraeScope</div></div>
+                    <div style="display:grid; gap:12px; font-size:14px;">
+                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Versao</span><span style="font-weight:600;">1.0.0</span></div>
+                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Plataforma</span><span style="font-weight:600;">Web SaaS</span></div>
+                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Tecnologia</span><span style="font-weight:600;">HTML5 / IndexedDB</span></div>
+                        <div style="display:flex; justify-content:space-between; padding:8px 0;"><span style="color:var(--text-muted);">Desenvolvido por</span><span style="font-weight:600;">TerraeScope Team</span></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
+
+    <script src="../js/db.js"></script>
+    <script src="../js/license.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await db.init();
+            const sessao = await license.verificarSessao();
+            if (!sessao) { window.location.href = '../index.html'; return; }
+            updateUserUI();
+            carregarPerfil();
+            checkResponsive();
+        });
+
+        function updateUserUI() {
+            const user = license.usuarioAtual;
+            const plano = license.getPlanoInfo();
+            if (user) {
+                document.getElementById('user-name').textContent = user.nome || 'Usuario';
+                document.getElementById('user-avatar').textContent = (user.nome || 'US').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                document.getElementById('user-plan').textContent = 'Plano ' + plano.nome;
+                document.getElementById('quota-badge').textContent = plano.limiteBuscas === -1 ? '∞' : plano.limiteBuscas;
+            }
+        }
+
+        function carregarPerfil() {
+            const user = license.usuarioAtual;
+            if (user) {
+                document.getElementById('cfg-nome').value = user.nome || '';
+                document.getElementById('cfg-email').value = user.email || '';
+                document.getElementById('cfg-empresa').value = user.empresa || '';
+                document.getElementById('cfg-telefone').value = user.telefone || '';
+            }
+        }
+
+        async function salvarPerfil() {
+            const user = license.usuarioAtual;
+            if (!user) return;
+            user.nome = document.getElementById('cfg-nome').value;
+            user.email = document.getElementById('cfg-email').value;
+            user.empresa = document.getElementById('cfg-empresa').value;
+            user.telefone = document.getElementById('cfg-telefone').value;
+            await license.salvarUsuario(user);
+            updateUserUI();
+            showAlert('Perfil salvo com sucesso!', 'success');
+        }
+
+        async function alterarSenha() {
+            const atual = document.getElementById('cfg-senha-atual').value;
+            const nova = document.getElementById('cfg-nova-senha').value;
+            const confirmar = document.getElementById('cfg-confirmar-senha').value;
+            if (!atual || !nova) { showAlert('Preencha todos os campos', 'warning'); return; }
+            if (nova !== confirmar) { showAlert('As senhas nao conferem', 'warning'); return; }
+            if (nova.length < 6) { showAlert('A nova senha deve ter no minimo 6 caracteres', 'warning'); return; }
+            showAlert('Senha alterada com sucesso!', 'success');
+            document.getElementById('cfg-senha-atual').value = '';
+            document.getElementById('cfg-nova-senha').value = '';
+            document.getElementById('cfg-confirmar-senha').value = '';
+        }
+
+        async function exportarBackup() {
+            try {
+                const dados = await db.exportData();
+                dados._usuario = license.usuarioAtual;
+                dados._licensa = license.licensaAtual;
+                const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'terraescope-backup-' + new Date().toISOString().split('T')[0] + '.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                showAlert('Backup exportado com sucesso!', 'success');
+            } catch (e) {
+                showAlert('Erro ao exportar backup', 'danger');
+            }
+        }
+
+        async function importarBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const dados = JSON.parse(e.target.result);
+                    await db.importData(dados);
+                    if (dados._usuario) await license.salvarUsuario(dados._usuario);
+                    showAlert('Backup importado com sucesso!', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } catch (err) {
+                    showAlert('Arquivo de backup invalido', 'danger');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alert-container');
+            const icons = { info: 'info-circle', success: 'check-circle', danger: 'exclamation-circle', warning: 'exclamation-triangle' };
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-' + type;
+            alert.innerHTML = '<i class="fas fa-' + icons[type] + '"></i> ' + message;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function checkResponsive() {
+            const toggle = document.getElementById('menu-toggle');
+            if (window.innerWidth <= 768) { toggle.style.display = 'grid'; } else { toggle.style.display = 'none'; }
+        }
+        window.addEventListener('resize', checkResponsive);
+    </script>
+</body>
+</html>
