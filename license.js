@@ -366,6 +366,23 @@ class LicenseManager {
     getUso() {
         return this.usoMes;
     }
+
+    // Ativar com chave de licença (alias para ativarPlano)
+    async ativarChave(chave) {
+        const result = await this.ativarPlano(chave);
+        return result.sucesso;
+    }
+
+    // Salvar dados do usuário
+    async salvarUsuario(usuario) {
+        await db.update('usuarios', usuario);
+        this.usuarioAtual = usuario;
+    }
+
+    // Getter para licença atual
+    get licensaAtual() {
+        return this.usuarioAtual ? this.usuarioAtual.licenca : null;
+    }
 }
 
 // Instância global

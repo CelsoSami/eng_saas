@@ -4,7 +4,7 @@
  */
 
 const DB_NAME = 'TerrenosSaaS';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 class LocalDatabase {
     constructor() {
@@ -71,6 +71,14 @@ class LocalDatabase {
                     const uso = db.createObjectStore('uso', { keyPath: 'id', autoIncrement: true });
                     uso.createIndex('usuarioId', 'usuarioId', { unique: false });
                     uso.createIndex('periodo', 'periodo', { unique: false });
+                }
+
+                // Store: Histórico
+                if (!db.objectStoreNames.contains('historico')) {
+                    const historico = db.createObjectStore('historico', { keyPath: 'id', autoIncrement: true });
+                    historico.createIndex('terrenoId', 'terrenoId', { unique: false });
+                    historico.createIndex('tipo', 'tipo', { unique: false });
+                    historico.createIndex('criadoEm', 'criadoEm', { unique: false });
                 }
 
                 // Store: Configurações

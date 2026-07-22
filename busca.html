@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - TerraeScope</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>Buscar Terrenos - TerraeScope</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="app-layout">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="dashboard.html" class="sidebar-logo">
@@ -17,226 +16,161 @@
                     TerraeScope
                 </a>
             </div>
-
             <nav class="sidebar-nav">
                 <div class="nav-section">
                     <div class="nav-section-title">Principal</div>
-                    <a href="dashboard.html" class="nav-item active">
-                        <span class="icon"><i class="fas fa-th-large"></i></span>
-                        Dashboard
+                    <a href="dashboard.html" class="nav-item">
+                        <span class="icon"><i class="fas fa-th-large"></i></span> Dashboard
                     </a>
-                    <a href="busca.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-search"></i></span>
-                        Buscar Terrenos
+                    <a href="busca.html" class="nav-item active">
+                        <span class="icon"><i class="fas fa-search"></i></span> Buscar Terrenos
                         <span class="badge" id="quota-badge">10</span>
                     </a>
                     <a href="mapa.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-map-marked-alt"></i></span>
-                        Mapa Interativo
+                        <span class="icon"><i class="fas fa-map-marked-alt"></i></span> Mapa Interativo
                     </a>
                 </div>
-
                 <div class="nav-section">
                     <div class="nav-section-title">Análises</div>
                     <a href="analise.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-chart-bar"></i></span>
-                        Análise de Terreno
+                        <span class="icon"><i class="fas fa-chart-bar"></i></span> Análise de Terreno
                     </a>
                     <a href="comparativo.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-balance-scale"></i></span>
-                        Comparativo
+                        <span class="icon"><i class="fas fa-balance-scale"></i></span> Comparativo
                     </a>
                     <a href="bi.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-chart-line"></i></span>
-                        BI & Relatórios
+                        <span class="icon"><i class="fas fa-chart-line"></i></span> BI & Relatórios
                         <span class="badge tag-beige">PRO</span>
                     </a>
                 </div>
-
                 <div class="nav-section">
                     <div class="nav-section-title">Gestão</div>
                     <a href="projetos.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-folder-open"></i></span>
-                        Meus Projetos
+                        <span class="icon"><i class="fas fa-folder-open"></i></span> Meus Projetos
                     </a>
                     <a href="favoritos.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-heart"></i></span>
-                        Favoritos
+                        <span class="icon"><i class="fas fa-heart"></i></span> Favoritos
                     </a>
                     <a href="historico.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-history"></i></span>
-                        Histórico
+                        <span class="icon"><i class="fas fa-history"></i></span> Histórico
                     </a>
                 </div>
-
                 <div class="nav-section">
                     <div class="nav-section-title">Conta</div>
                     <a href="assinatura.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-crown"></i></span>
-                        Assinatura
+                        <span class="icon"><i class="fas fa-crown"></i></span> Assinatura
                     </a>
                     <a href="config.html" class="nav-item">
-                        <span class="icon"><i class="fas fa-cog"></i></span>
-                        Configurações
+                        <span class="icon"><i class="fas fa-cog"></i></span> Configurações
                     </a>
                 </div>
             </nav>
-
             <div class="sidebar-footer">
-                <div class="sidebar-user" onclick="toggleUserMenu()">
+                <div class="sidebar-user">
                     <div class="sidebar-user-avatar" id="user-avatar">US</div>
                     <div class="sidebar-user-info">
                         <div class="sidebar-user-name" id="user-name">Usuário</div>
                         <div class="sidebar-user-plan" id="user-plan">Plano Gratuito</div>
                     </div>
-                    <i class="fas fa-chevron-down" style="color:var(--text-muted); font-size:12px;"></i>
                 </div>
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Header -->
             <header class="top-header">
                 <div class="header-left">
                     <button class="header-btn" onclick="toggleSidebar()" style="display:none;" id="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
                     <div>
-                        <h1 class="header-title">Dashboard</h1>
+                        <h1 class="header-title">Buscar Terrenos</h1>
                         <div class="header-breadcrumb">
                             <a href="dashboard.html">Início</a>
+                            <i class="fas fa-chevron-right" style="font-size:10px;"></i> Buscar Terrenos
                         </div>
                     </div>
                 </div>
                 <div class="header-right">
-                    <div class="header-search">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" placeholder="Buscar terrenos, projetos...">
-                    </div>
-                    <button class="header-btn">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-dot"></span>
-                    </button>
-                    <button class="header-btn" onclick="exportarDados()">
-                        <i class="fas fa-download"></i>
+                    <button class="btn btn-primary btn-sm" onclick="abrirModalNovo()">
+                        <i class="fas fa-plus"></i> Novo Terreno
                     </button>
                 </div>
             </header>
 
-            <!-- Page Content -->
             <div class="page-content">
-                <!-- Quota Bar -->
-                <div class="quota-bar" id="quota-bar">
-                    <div style="width:40px; height:40px; border-radius:10px; background:var(--neon-blue-dim); display:grid; place-items:center; color:var(--neon-blue);">
-                        <i class="fas fa-gauge-high"></i>
-                    </div>
-                    <div class="quota-info">
-                        <div class="quota-label">Uso mensal: <strong id="quota-text">0 de 10 buscas realizadas</strong></div>
-                        <div class="progress-bar" style="max-width:300px;">
-                            <div class="progress-fill blue" id="quota-progress" style="width:0%"></div>
-                        </div>
-                    </div>
-                    <a href="assinatura.html" class="btn btn-sm btn-secondary">Fazer upgrade</a>
-                </div>
-
-                <!-- Stats Grid -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-card-icon blue"><i class="fas fa-search-location"></i></div>
-                        <div class="stat-card-value" id="stat-buscas">0</div>
-                        <div class="stat-card-label">Buscas realizadas</div>
-                        <div class="stat-card-change positive"><i class="fas fa-arrow-up"></i> +12% este mês</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-icon green"><i class="fas fa-map-pin"></i></div>
-                        <div class="stat-card-value" id="stat-terrenos">0</div>
-                        <div class="stat-card-label">Terrenos salvos</div>
-                        <div class="stat-card-change positive"><i class="fas fa-arrow-up"></i> +5 este mês</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-icon beige"><i class="fas fa-project-diagram"></i></div>
-                        <div class="stat-card-value" id="stat-projetos">0</div>
-                        <div class="stat-card-label">Projetos ativos</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-icon yellow"><i class="fas fa-chart-pie"></i></div>
-                        <div class="stat-card-value" id="stat-analises">0</div>
-                        <div class="stat-card-label">Análises feitas</div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="grid-2" style="margin-bottom:32px;">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">Ações Rápidas</div>
-                                <div class="card-subtitle">Acesse as funcionalidades principais</div>
+                <div class="search-section">
+                    <div class="search-box">
+                        <div class="search-row">
+                            <div class="search-field" style="flex:2;">
+                                <label>Buscar</label>
+                                <input type="text" id="busca-geral" placeholder="Logradouro, cidade, matrícula, CEP...">
                             </div>
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                            <a href="busca.html" class="btn btn-secondary" style="justify-content:flex-start;">
-                                <i class="fas fa-search"></i> Buscar Terreno
-                            </a>
-                            <a href="mapa.html" class="btn btn-secondary" style="justify-content:flex-start;">
-                                <i class="fas fa-map"></i> Ver no Mapa
-                            </a>
-                            <a href="analise.html" class="btn btn-secondary" style="justify-content:flex-start;">
-                                <i class="fas fa-chart-bar"></i> Nova Análise
-                            </a>
-                            <a href="projetos.html" class="btn btn-secondary" style="justify-content:flex-start;">
-                                <i class="fas fa-plus"></i> Criar Projeto
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">Plano Atual</div>
-                                <div class="card-subtitle">Detalhes da sua assinatura</div>
+                            <div class="search-field">
+                                <label>UF</label>
+                                <select id="filtro-uf">
+                                    <option value="">Todas</option>
+                                    <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+                                    <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                                    <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+                                    <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+                                    <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+                                    <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+                                    <option>SP</option><option>SE</option><option>TO</option>
+                                </select>
                             </div>
-                            <a href="assinatura.html" class="btn btn-sm btn-ghost">Ver planos</a>
-                        </div>
-                        <div style="text-align:center; padding:20px 0;">
-                            <div style="font-size:24px; font-weight:700; color:var(--neon-blue); margin-bottom:4px;" id="plan-name">Gratuito</div>
-                            <div style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">R$ 0/mês</div>
-                            <div style="display:flex; justify-content:center; gap:24px; font-size:13px; color:var(--text-secondary);">
-                                <div><span style="color:var(--neon-blue); font-weight:600;" id="plan-buscas">10</span> buscas</div>
-                                <div><span style="color:var(--neon-blue); font-weight:600;" id="plan-projetos">3</span> projetos</div>
-                                <div><span style="color:var(--neon-blue); font-weight:600;" id="plan-analises">5</span> análises</div>
+                            <div class="search-field">
+                                <label>Zona</label>
+                                <select id="filtro-zona">
+                                    <option value="">Todas</option>
+                                    <option>Residencial</option>
+                                    <option>Comercial</option>
+                                    <option>Industrial</option>
+                                    <option>Mista</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Activity & Terrenos -->
-                <div class="grid-2">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Atividade Recente</div>
-                            <a href="historico.html" class="btn btn-sm btn-ghost">Ver tudo</a>
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Terrenos <span id="count-results" class="tag tag-blue" style="margin-left:8px;">0</span></div>
                         </div>
-                        <div id="recent-activity">
-                            <div class="empty-state" style="padding:30px;">
-                                <div class="empty-state-icon" style="width:50px; height:50px; font-size:20px;"><i class="fas fa-clock"></i></div>
-                                <p style="margin:0; font-size:13px;">Nenhuma atividade recente</p>
-                            </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn btn-ghost btn-sm" onclick="toggleView('grid')" id="btn-grid"><i class="fas fa-th"></i></button>
+                            <button class="btn btn-ghost btn-sm" onclick="toggleView('table')" id="btn-table"><i class="fas fa-list"></i></button>
                         </div>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Terrenos em Destaque</div>
-                            <a href="busca.html" class="btn btn-sm btn-ghost">Ver todos</a>
+                    <div id="view-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px;"></div>
+
+                    <div id="view-table" style="display:none;">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Logradouro</th>
+                                        <th>Cidade</th>
+                                        <th>UF</th>
+                                        <th>Área</th>
+                                        <th>CEP</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-terrenos"></tbody>
+                            </table>
                         </div>
-                        <div id="featured-terrenos">
-                            <div class="empty-state" style="padding:30px;">
-                                <div class="empty-state-icon" style="width:50px; height:50px; font-size:20px;"><i class="fas fa-map-marker-alt"></i></div>
-                                <p style="margin:0; font-size:13px;">Nenhum terreno salvo ainda</p>
-                                <a href="busca.html" class="btn btn-sm btn-primary" style="margin-top:12px;">Buscar terrenos</a>
-                            </div>
+                    </div>
+
+                    <div id="empty-state" style="display:none;">
+                        <div class="empty-state">
+                            <div class="empty-state-icon"><i class="fas fa-map-marked-alt"></i></div>
+                            <h3>Nenhum terreno encontrado</h3>
+                            <p>Comece cadastrando um novo terreno ou ajuste seus filtros de busca.</p>
+                            <button class="btn btn-primary" onclick="abrirModalNovo()">
+                                <i class="fas fa-plus"></i> Cadastrar Terreno
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -244,25 +178,105 @@
         </main>
     </div>
 
+    <!-- Modal Novo/Editar Terreno -->
+    <div class="modal-overlay" id="modal-terreno">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-terreno-title">Novo Terreno</h3>
+                <button class="modal-close" onclick="fecharModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="terreno-id">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label class="form-label">Logradouro *</label>
+                        <input type="text" class="form-input" id="terreno-logradouro" placeholder="Rua, Avenida, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cidade *</label>
+                        <input type="text" class="form-input" id="terreno-cidade" placeholder="Nome da cidade">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">UF *</label>
+                        <select class="form-select" id="terreno-uf">
+                            <option value="">Selecione</option>
+                            <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+                            <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                            <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+                            <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+                            <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+                            <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+                            <option>SP</option><option>SE</option><option>TO</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CEP</label>
+                        <input type="text" class="form-input" id="terreno-cep" placeholder="00000-000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Matrícula</label>
+                        <input type="text" class="form-input" id="terreno-matricula" placeholder="Nº da matrícula">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Área (m²)</label>
+                        <input type="number" class="form-input" id="terreno-area" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Zona</label>
+                        <select class="form-select" id="terreno-zona">
+                            <option value="">Selecione</option>
+                            <option>Residencial</option>
+                            <option>Comercial</option>
+                            <option>Industrial</option>
+                            <option>Mista</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Face</label>
+                        <select class="form-select" id="terreno-face">
+                            <option value="">Selecione</option>
+                            <option>Norte</option>
+                            <option>Sul</option>
+                            <option>Leste</option>
+                            <option>Oeste</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor de Mercado (R$)</label>
+                        <input type="number" class="form-input" id="terreno-valor" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">IPTU Anual (R$)</label>
+                        <input type="number" class="form-input" id="terreno-iptu" placeholder="0">
+                    </div>
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label class="form-label">Observações</label>
+                        <textarea class="form-textarea" id="terreno-obs" rows="3" placeholder="Notas adicionais..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="salvarTerreno()"><i class="fas fa-save"></i> Salvar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
 
-    <script src="../js/db.js"></script>
-    <script src="../js/license.js"></script>
+    <script src="db.js"></script>
+    <script src="license.js"></script>
     <script>
+        let todosTerrenos = [];
+        let currentView = 'grid';
+
         document.addEventListener('DOMContentLoaded', async () => {
             await db.init();
             const sessao = await license.verificarSessao();
-            if (!sessao) {
-                window.location.href = '../index.html';
-                return;
-            }
-
+            if (!sessao) { window.location.href = 'index.html'; return; }
             updateUserUI();
-            updateQuota();
-            loadStats();
-            loadRecentActivity();
-            loadFeaturedTerrenos();
             checkResponsive();
+            await carregarTerrenos();
         });
 
         function updateUserUI() {
@@ -272,116 +286,183 @@
                 document.getElementById('user-name').textContent = user.nome || 'Usuário';
                 document.getElementById('user-avatar').textContent = (user.nome || 'US').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                 document.getElementById('user-plan').textContent = 'Plano ' + plano.nome;
-                document.getElementById('plan-name').textContent = plano.nome;
-                document.getElementById('plan-buscas').textContent = plano.limiteBuscas === -1 ? '∞' : plano.limiteBuscas;
-                document.getElementById('plan-projetos').textContent = plano.limiteProjetos === -1 ? '∞' : plano.limiteProjetos;
-                document.getElementById('plan-analises').textContent = plano.limiteAnalises === -1 ? '∞' : plano.limiteAnalises;
+                document.getElementById('quota-badge').textContent = plano.limiteBuscas === -1 ? '∞' : plano.limiteBuscas;
             }
         }
 
-        function updateQuota() {
-            const uso = license.getUso();
-            const plano = license.getPlanoInfo();
-            if (uso && plano) {
-                const limite = plano.limiteBuscas;
-                const usado = uso.buscas;
-                document.getElementById('quota-text').textContent = `${usado} de ${limite === -1 ? '∞' : limite} buscas realizadas`;
-                if (limite > 0) {
-                    const pct = Math.min((usado / limite) * 100, 100);
-                    document.getElementById('quota-progress').style.width = pct + '%';
-                    if (pct > 80) {
-                        document.getElementById('quota-progress').classList.remove('blue');
-                        document.getElementById('quota-progress').classList.add('red');
-                    }
+        async function carregarTerrenos() {
+            todosTerrenos = await db.getAll('terrenos');
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            const busca = (document.getElementById('busca-geral').value || '').toLowerCase();
+            const uf = document.getElementById('filtro-uf').value;
+            const zona = document.getElementById('filtro-zona').value;
+
+            let filtrados = todosTerrenos.filter(t => {
+                if (uf && t.uf !== uf) return false;
+                if (zona && t.zona !== zona) return false;
+                if (busca) {
+                    const texto = [t.logradouro, t.cidade, t.matricula, t.cep, t.uf].join(' ').toLowerCase();
+                    if (!texto.includes(busca)) return false;
                 }
-                document.getElementById('stat-buscas').textContent = usado;
+                return true;
+            });
+
+            document.getElementById('count-results').textContent = filtrados.length;
+
+            if (filtrados.length === 0) {
+                document.getElementById('view-grid').style.display = 'none';
+                document.getElementById('view-table').style.display = 'none';
+                document.getElementById('empty-state').style.display = 'block';
+                return;
             }
+
+            document.getElementById('empty-state').style.display = 'none';
+            renderGrid(filtrados);
+            renderTable(filtrados);
         }
 
-        async function loadStats() {
-            try {
-                const terrenos = await db.count('terrenos');
-                const projetos = await db.count('projetos');
-                const analises = await db.count('analises');
-                document.getElementById('stat-terrenos').textContent = terrenos;
-                document.getElementById('stat-projetos').textContent = projetos;
-                document.getElementById('stat-analises').textContent = analises;
-            } catch (e) { }
-        }
-
-        async function loadRecentActivity() {
-            try {
-                const analises = await db.getAll('analises');
-                const container = document.getElementById('recent-activity');
-                if (analises.length === 0) return;
-
-                const recentes = analises.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm)).slice(0, 5);
-                container.innerHTML = recentes.map(a => `
-                    <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border);">
-                        <div style="width:36px; height:36px; border-radius:8px; background:var(--neon-blue-dim); display:grid; place-items:center; color:var(--neon-blue); font-size:14px;">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div style="flex:1;">
-                            <div style="font-size:14px; font-weight:500; color:var(--text-primary);">${a.tipo || 'Análise'}</div>
-                            <div style="font-size:12px; color:var(--text-muted);">${new Date(a.criadoEm).toLocaleDateString('pt-BR')}</div>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (e) { }
-        }
-
-        async function loadFeaturedTerrenos() {
-            try {
-                const terrenos = await db.getAll('terrenos');
-                const container = document.getElementById('featured-terrenos');
-                if (terrenos.length === 0) return;
-
-                const destaque = terrenos.slice(0, 3);
-                container.innerHTML = destaque.map(t => `
-                    <a href="analise.html?terreno=${t.id}" style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); text-decoration:none; color:inherit;">
-                        <div style="width:36px; height:36px; border-radius:8px; background:var(--neon-green-dim); display:grid; place-items:center; color:var(--neon-green); font-size:14px;">
+        function renderGrid(terrenos) {
+            const container = document.getElementById('view-grid');
+            container.innerHTML = terrenos.map(t => `
+                <div class="card" style="cursor:pointer;" onclick="window.location.href='analise.html?terreno=${t.id}'">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                        <div style="width:44px; height:44px; border-radius:10px; background:var(--neon-green-dim); display:grid; place-items:center; color:var(--neon-green); font-size:18px;">
                             <i class="fas fa-map-pin"></i>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-size:14px; font-weight:500; color:var(--text-primary);">${t.logradouro || 'Terreno'}</div>
+                        <div style="flex:1; min-width:0;">
+                            <div style="font-weight:600; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.logradouro || 'Sem logradouro'}</div>
                             <div style="font-size:12px; color:var(--text-muted);">${t.cidade || ''} - ${t.uf || ''}</div>
                         </div>
-                        <i class="fas fa-chevron-right" style="color:var(--text-muted); font-size:12px;"></i>
-                    </a>
-                `).join('');
-            } catch (e) { }
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:13px;">
+                        <div><span style="color:var(--text-muted);">Área:</span> <strong>${t.area ? t.area + ' m²' : '—'}</strong></div>
+                        <div><span style="color:var(--text-muted);">Zona:</span> <strong>${t.zona || '—'}</strong></div>
+                        <div><span style="color:var(--text-muted);">CEP:</span> <strong>${t.cep || '—'}</strong></div>
+                        <div><span style="color:var(--text-muted);">Valor:</span> <strong style="color:var(--neon-green);">${t.valorMercado ? 'R$ ' + t.valorMercado.toLocaleString('pt-BR') : '—'}</strong></div>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid var(--border);">
+                        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="event.stopPropagation(); editarTerreno(${t.id})"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="btn btn-ghost btn-sm" style="color:var(--neon-red);" onclick="event.stopPropagation(); excluirTerreno(${t.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+            container.style.display = currentView === 'grid' ? 'grid' : 'none';
         }
 
-        async function exportarDados() {
-            try {
-                const dados = await db.exportData();
-                const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `terraescope-backup-${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showAlert('Dados exportados com sucesso!', 'success');
-            } catch (e) {
-                showAlert('Erro ao exportar dados', 'danger');
+        function renderTable(terrenos) {
+            const tbody = document.getElementById('tbody-terrenos');
+            tbody.innerHTML = terrenos.map(t => `
+                <tr>
+                    <td class="highlight">${t.logradouro || '—'}</td>
+                    <td>${t.cidade || '—'}</td>
+                    <td>${t.uf || '—'}</td>
+                    <td>${t.area ? t.area + ' m²' : '—'}</td>
+                    <td>${t.cep || '—'}</td>
+                    <td>
+                        <div style="display:flex; gap:6px;">
+                            <a href="analise.html?terreno=${t.id}" class="btn btn-ghost btn-sm"><i class="fas fa-eye"></i></a>
+                            <button class="btn btn-ghost btn-sm" onclick="editarTerreno(${t.id})"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-ghost btn-sm" style="color:var(--neon-red);" onclick="excluirTerreno(${t.id})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function toggleView(view) {
+            currentView = view;
+            document.getElementById('view-grid').style.display = view === 'grid' ? 'grid' : 'none';
+            document.getElementById('view-table').style.display = view === 'table' ? 'block' : 'none';
+            document.getElementById('btn-grid').style.borderColor = view === 'grid' ? 'var(--neon-blue)' : 'var(--border)';
+            document.getElementById('btn-table').style.borderColor = view === 'table' ? 'var(--neon-blue)' : 'var(--border)';
+        }
+
+        function abrirModalNovo() {
+            document.getElementById('modal-terreno-title').textContent = 'Novo Terreno';
+            document.getElementById('terreno-id').value = '';
+            ['logradouro','cidade','uf','cep','matricula','area','zona','face','valor','iptu','obs'].forEach(f => {
+                const el = document.getElementById('terreno-' + f);
+                if (el) el.value = '';
+            });
+            document.getElementById('modal-terreno').classList.add('active');
+        }
+
+        async function editarTerreno(id) {
+            const t = await db.get('terrenos', id);
+            if (!t) return;
+            document.getElementById('modal-terreno-title').textContent = 'Editar Terreno';
+            document.getElementById('terreno-id').value = t.id;
+            document.getElementById('terreno-logradouro').value = t.logradouro || '';
+            document.getElementById('terreno-cidade').value = t.cidade || '';
+            document.getElementById('terreno-uf').value = t.uf || '';
+            document.getElementById('terreno-cep').value = t.cep || '';
+            document.getElementById('terreno-matricula').value = t.matricula || '';
+            document.getElementById('terreno-area').value = t.area || '';
+            document.getElementById('terreno-zona').value = t.zona || '';
+            document.getElementById('terreno-face').value = t.face || '';
+            document.getElementById('terreno-valor').value = t.valorMercado || '';
+            document.getElementById('terreno-iptu').value = t.iptu || '';
+            document.getElementById('terreno-obs').value = t.observacoes || '';
+            document.getElementById('modal-terreno').classList.add('active');
+        }
+
+        async function salvarTerreno() {
+            const logradouro = document.getElementById('terreno-logradouro').value.trim();
+            const cidade = document.getElementById('terreno-cidade').value.trim();
+            const uf = document.getElementById('terreno-uf').value;
+            if (!logradouro || !cidade || !uf) { showAlert('Preencha logradouro, cidade e UF', 'warning'); return; }
+
+            const dados = {
+                logradouro, cidade, uf,
+                cep: document.getElementById('terreno-cep').value.trim(),
+                matricula: document.getElementById('terreno-matricula').value.trim(),
+                area: parseFloat(document.getElementById('terreno-area').value) || null,
+                zona: document.getElementById('terreno-zona').value,
+                face: document.getElementById('terreno-face').value,
+                valorMercado: parseFloat(document.getElementById('terreno-valor').value) || null,
+                iptu: parseFloat(document.getElementById('terreno-iptu').value) || null,
+                observacoes: document.getElementById('terreno-obs').value.trim()
+            };
+
+            const id = document.getElementById('terreno-id').value;
+            if (id) {
+                dados.id = parseInt(id);
+                await db.update('terrenos', dados);
+                showAlert('Terreno atualizado com sucesso!', 'success');
+            } else {
+                await db.add('terrenos', dados);
+                await license.registrarUso('busca');
+                showAlert('Terreno cadastrado com sucesso!', 'success');
             }
+
+            fecharModal();
+            await carregarTerrenos();
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+        async function excluirTerreno(id) {
+            if (!confirm('Tem certeza que deseja excluir este terreno?')) return;
+            await db.delete('terrenos', id);
+            showAlert('Terreno excluído', 'success');
+            await carregarTerrenos();
         }
 
+        function fecharModal() {
+            document.getElementById('modal-terreno').classList.remove('active');
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         function checkResponsive() {
             const toggle = document.getElementById('menu-toggle');
-            if (window.innerWidth <= 768) {
-                toggle.style.display = 'grid';
-            } else {
-                toggle.style.display = 'none';
-            }
+            if (window.innerWidth <= 768) { toggle.style.display = 'grid'; } else { toggle.style.display = 'none'; }
         }
-
         window.addEventListener('resize', checkResponsive);
+
+        document.getElementById('busca-geral').addEventListener('input', aplicarFiltros);
+        document.getElementById('filtro-uf').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtro-zona').addEventListener('change', aplicarFiltros);
 
         function showAlert(message, type = 'info') {
             const container = document.getElementById('alert-container');
