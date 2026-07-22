@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerraeScope - Plataforma de Análise Imobiliária</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-left">
+            <div class="login-form-container">
+                <div class="login-logo">
+                    <div class="icon"><i class="fas fa-building"></i></div>
+                    TerraeScope
+                </div>
+
+                <div id="login-form-container">
+                    <h1 class="login-title">Bem-vindo de volta</h1>
+                    <p class="login-subtitle">Acesse sua plataforma de análise imobiliária</p>
+
+                    <form class="login-form" id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="loginEmail" placeholder="seu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Senha</label>
+                            <input type="password" class="form-input" id="loginSenha" placeholder="••••••••" required>
+                        </div>
+                        <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
+                            <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); cursor:pointer;">
+                                <input type="checkbox" style="accent-color:var(--neon-blue);"> Lembrar-me
+                            </label>
+                            <a href="#" style="font-size:13px; color:var(--neon-blue); text-decoration:none;">Esqueci a senha</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </button>
+                    </form>
+
+                    <p class="login-link" style="margin-top:24px;">
+                        Não tem conta? <a href="#" onclick="showCadastrar()">Cadastre-se grátis</a>
+                    </p>
+                </div>
+
+                <div id="cadastrar-form-container" style="display:none;">
+                    <h1 class="login-title">Criar conta</h1>
+                    <p class="login-subtitle">Comece a analisar terrenos hoje</p>
+
+                    <form class="login-form" id="cadastroForm">
+                        <div class="form-group">
+                            <label class="form-label">Nome completo</label>
+                            <input type="text" class="form-input" id="cadNome" placeholder="João da Silva" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="cadEmail" placeholder="seu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Empresa</label>
+                            <input type="text" class="form-input" id="cadEmpresa" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telefone</label>
+                            <input type="tel" class="form-input" id="cadTelefone" placeholder="(11) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Senha</label>
+                            <input type="password" class="form-input" id="cadSenha" placeholder="Mínimo 8 caracteres" required minlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirmar senha</label>
+                            <input type="password" class="form-input" id="cadSenhaConf" placeholder="Repita a senha" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-user-plus"></i> Criar conta
+                        </button>
+                    </form>
+
+                    <p class="login-link" style="margin-top:24px;">
+                        Já tem conta? <a href="#" onclick="showLogin()">Fazer login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div style="max-width:480px;">
+                <div style="margin-bottom:40px;">
+                    <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--neon-blue); letter-spacing:2px; text-transform:uppercase; padding:6px 12px; border:1px solid var(--neon-blue-dim); border-radius:4px; background:var(--neon-blue-dim);">PLATAFORMA IMOBILIÁRIA</span>
+                </div>
+                <h2 style="font-size:36px; font-weight:700; line-height:1.2; margin-bottom:20px;">
+                    Todas as informações de terrenos em <span style="color:var(--neon-blue);">uma só plataforma</span>
+                </h2>
+                <p style="font-size:16px; color:var(--text-secondary); line-height:1.7; margin-bottom:40px;">
+                    Dados públicos, análises completas e indicadores para incorporadoras, engenheiros, arquitetos e investidores do mercado imobiliário.
+                </p>
+                <div style="display:flex; gap:32px;">
+                    <div>
+                        <div style="font-size:28px; font-weight:700; color:var(--neon-blue); font-family:'JetBrains Mono',monospace;">500+</div>
+                        <div style="font-size:13px; color:var(--text-muted);">Cidades mapeadas</div>
+                    </div>
+                    <div>
+                        <div style="font-size:28px; font-weight:700; color:var(--neon-beige); font-family:'JetBrains Mono',monospace;">10k+</div>
+                        <div style="font-size:13px; color:var(--text-muted);">Terrenos analisados</div>
+                    </div>
+                    <div>
+                        <div style="font-size:28px; font-weight:700; color:var(--neon-green); font-family:'JetBrains Mono',monospace;">98%</div>
+                        <div style="font-size:13px; color:var(--text-muted);">Precisão dos dados</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
+
+    <script src="js/db.js"></script>
+    <script src="js/license.js"></script>
+    <script>
+        // Verificar se já está logado
+        document.addEventListener('DOMContentLoaded', async () => {
+            await db.init();
+            const sessao = await license.verificarSessao();
+            if (sessao) {
+                window.location.href = 'pages/dashboard.html';
+            }
+        });
+
+        function showCadastrar() {
+            document.getElementById('login-form-container').style.display = 'none';
+            document.getElementById('cadastrar-form-container').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('cadastrar-form-container').style.display = 'none';
+            document.getElementById('login-form-container').style.display = 'block';
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const senha = document.getElementById('loginSenha').value;
+
+            const resultado = await license.login(email, senha);
+            if (resultado.sucesso) {
+                window.location.href = 'pages/dashboard.html';
+            } else {
+                showAlert(resultado.erro, 'danger');
+            }
+        });
+
+        // Cadastro
+        document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const senha = document.getElementById('cadSenha').value;
+            const confirma = document.getElementById('cadSenhaConf').value;
+
+            if (senha !== confirma) {
+                showAlert('As senhas não coincidem', 'danger');
+                return;
+            }
+
+            const resultado = await license.cadastrar({
+                nome: document.getElementById('cadNome').value,
+                email: document.getElementById('cadEmail').value,
+                empresa: document.getElementById('cadEmpresa').value,
+                telefone: document.getElementById('cadTelefone').value,
+                senha: senha
+            });
+
+            if (resultado.sucesso) {
+                showAlert('Conta criada com sucesso! Faça login.', 'success');
+                showLogin();
+            } else {
+                showAlert(resultado.erro, 'danger');
+            }
+        });
+
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alert-container');
+            const icons = { info: 'info-circle', success: 'check-circle', danger: 'exclamation-circle', warning: 'exclamation-triangle' };
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `<i class="fas fa-${icons[type]}"></i> ${message}`;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+    </script>
+</body>
+</html>
