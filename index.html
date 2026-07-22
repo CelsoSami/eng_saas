@@ -4,139 +4,386 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TerraeScope - Plataforma de Análise Imobiliária</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="login-page">
-        <div class="login-left">
-            <div class="login-form-container">
-                <div class="login-logo">
-                    <div class="icon"><i class="fas fa-building"></i></div>
-                    TerraeScope
+    <!-- Header -->
+    <header class="ls-header">
+        <div class="ls-container">
+            <a href="#" class="ls-logo">
+                <div class="ls-logo-icon"><i class="fas fa-building"></i></div>
+                <span>TerraeScope</span>
+            </a>
+            <nav class="ls-nav" id="lsNav">
+                <a href="#funcionalidades">Funcionalidades</a>
+                <a href="#como-funciona">Como Funciona</a>
+                <a href="#precos">Preços</a>
+                <a href="#faq">Dúvidas</a>
+            </nav>
+            <div class="ls-header-actions">
+                <button class="ls-btn ls-btn-ghost" onclick="openLogin()">Entrar</button>
+                <button class="ls-btn ls-btn-gold" onclick="openCadastro()">Começar Grátis</button>
+            </div>
+            <button class="ls-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="ls-hero">
+        <div class="ls-hero-glow"></div>
+        <div class="ls-container ls-hero-inner">
+            <span class="ls-eyebrow"><i class="fas fa-map-marked-alt"></i> PLATAFORMA IMOBILIÁRIA</span>
+            <h1>Todas as informações de terrenos em <span class="ls-accent">uma só plataforma</span></h1>
+            <p class="ls-lead">Dados públicos, análises completas e indicadores para incorporadoras, engenheiros, arquitetos e investidores do mercado imobiliário.</p>
+            <div class="ls-hero-cta">
+                <button class="ls-btn ls-btn-gold ls-btn-lg" onclick="openCadastro()">
+                    <i class="fas fa-rocket"></i> Começar Agora
+                </button>
+                <button class="ls-btn ls-btn-outline ls-btn-lg" onclick="openLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Acessar Plataforma
+                </button>
+            </div>
+            <div class="ls-stats">
+                <div class="ls-stat">
+                    <span class="ls-stat-num ls-accent">500+</span>
+                    <span class="ls-stat-label">Cidades mapeadas</span>
                 </div>
-
-                <div id="login-form-container">
-                    <h1 class="login-title">Bem-vindo de volta</h1>
-                    <p class="login-subtitle">Acesse sua plataforma de análise imobiliária</p>
-
-                    <form class="login-form" id="loginForm">
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-input" id="loginEmail" placeholder="seu@email.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Senha</label>
-                            <input type="password" class="form-input" id="loginSenha" placeholder="••••••••" required>
-                        </div>
-                        <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
-                            <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); cursor:pointer;">
-                                <input type="checkbox" style="accent-color:var(--neon-blue);"> Lembrar-me
-                            </label>
-                            <a href="#" style="font-size:13px; color:var(--neon-blue); text-decoration:none;">Esqueci a senha</a>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-sign-in-alt"></i> Entrar
-                        </button>
-                    </form>
-
-                    <p class="login-link" style="margin-top:24px;">
-                        Não tem conta? <a href="#" onclick="showCadastrar()">Cadastre-se grátis</a>
-                    </p>
+                <div class="ls-stat">
+                    <span class="ls-stat-num ls-accent-beige">10k+</span>
+                    <span class="ls-stat-label">Terrenos analisados</span>
                 </div>
-
-                <div id="cadastrar-form-container" style="display:none;">
-                    <h1 class="login-title">Criar conta</h1>
-                    <p class="login-subtitle">Comece a analisar terrenos hoje</p>
-
-                    <form class="login-form" id="cadastroForm">
-                        <div class="form-group">
-                            <label class="form-label">Nome completo</label>
-                            <input type="text" class="form-input" id="cadNome" placeholder="João da Silva" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-input" id="cadEmail" placeholder="seu@email.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Empresa</label>
-                            <input type="text" class="form-input" id="cadEmpresa" placeholder="Nome da empresa">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Telefone</label>
-                            <input type="tel" class="form-input" id="cadTelefone" placeholder="(11) 99999-9999">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Senha</label>
-                            <input type="password" class="form-input" id="cadSenha" placeholder="Mínimo 8 caracteres" required minlength="8">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Confirmar senha</label>
-                            <input type="password" class="form-input" id="cadSenhaConf" placeholder="Repita a senha" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-user-plus"></i> Criar conta
-                        </button>
-                    </form>
-
-                    <p class="login-link" style="margin-top:24px;">
-                        Já tem conta? <a href="#" onclick="showLogin()">Fazer login</a>
-                    </p>
+                <div class="ls-stat">
+                    <span class="ls-stat-num ls-accent-green">98%</span>
+                    <span class="ls-stat-label">Precisão dos dados</span>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="login-right">
-            <div style="max-width:480px;">
-                <div style="margin-bottom:40px;">
-                    <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--neon-blue); letter-spacing:2px; text-transform:uppercase; padding:6px 12px; border:1px solid var(--neon-blue-dim); border-radius:4px; background:var(--neon-blue-dim);">PLATAFORMA IMOBILIÁRIA</span>
+    <!-- Funcionalidades -->
+    <section class="ls-section" id="funcionalidades">
+        <div class="ls-container">
+            <div class="ls-section-head">
+                <span class="ls-eyebrow"><i class="fas fa-cog"></i> FUNCIONALIDADES</span>
+                <h2>Tudo que você precisa para <span class="ls-accent">analisar terrenos</span></h2>
+                <p>Ferramentas completas para profissionais do mercado imobiliário tomarem decisões baseadas em dados.</p>
+            </div>
+            <div class="ls-features-grid">
+                <div class="ls-feature-card">
+                    <div class="ls-feature-icon"><i class="fas fa-search"></i></div>
+                    <h3>Busca Inteligente</h3>
+                    <p>Encontre terrenos por cidade, bairro, zona, metragem,-zoneamento e muito mais filtros avançados.</p>
                 </div>
-                <h2 style="font-size:36px; font-weight:700; line-height:1.2; margin-bottom:20px;">
-                    Todas as informações de terrenos em <span style="color:var(--neon-blue);">uma só plataforma</span>
-                </h2>
-                <p style="font-size:16px; color:var(--text-secondary); line-height:1.7; margin-bottom:40px;">
-                    Dados públicos, análises completas e indicadores para incorporadoras, engenheiros, arquitetos e investidores do mercado imobiliário.
+                <div class="ls-feature-card">
+                    <div class="ls-feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Análise Completa</h3>
+                    <p>Veja valores de mercado, IPTU, risco de alagamento, infraestrutura próxima e potencial de construção.</p>
+                </div>
+                <div class="ls-feature-card">
+                    <div class="ls-feature-icon"><i class="fas fa-map"></i></div>
+                    <h3>Mapa Interativo</h3>
+                    <p>Visualize terrenos no mapa com sobreposição de dados públicos, zoneamento e limites de propriedade.</p>
+                </div>
+                <div class="ls-feature-card">
+                    <div class="ls-feature-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>Relatórios BI</h3>
+                    <p>Dashboard com indicadores de mercado, tendências de preço e comparativos por região.</p>
+                </div>
+                <div class="ls-feature-card">
+                    <div class="ls-feature-icon"><i class="fas fa-heart"></i></div>
+                    <h3>Favoritos e Alertas</p>
+                    <p>Salve os melhores terrenos e receba alertas quando surgirem oportunidades na sua área de interesse.</p>
+                </div>
+                <div class="ls-feature-card">
+                    <div class="ls-feature-icon"><i class="fas fa-folder-open"></i></div>
+                    <h3>Gestão de Projetos</h3>
+                    <p>Organize seus terrenos por projetos, adicione notas e acompanhe o ciclo de avaliação.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Como Funciona -->
+    <section class="ls-section ls-section-dark" id="como-funciona">
+        <div class="ls-container">
+            <div class="ls-section-head">
+                <span class="ls-eyebrow"><i class="fas fa-route"></i> COMO FUNCIONA</span>
+                <h2>Simples, rápido e <span class="ls-accent">poderoso</span></h2>
+                <p>Comece a analisar terrenos em 3 passos simples.</p>
+            </div>
+            <div class="ls-steps">
+                <div class="ls-step">
+                    <div class="ls-step-num">01</div>
+                    <h3>Crie sua conta</h3>
+                    <p>Cadastro rápido e gratuito. Comece com o plano básico sem necessidade de cartão de crédito.</p>
+                </div>
+                <div class="ls-step-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="ls-step">
+                    <div class="ls-step-num">02</div>
+                    <h3>Busque terrenos</h3>
+                    <p>Use nossos filtros avançados para encontrar terrenos que atendam seus critérios específicos.</p>
+                </div>
+                <div class="ls-step-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="ls-step">
+                    <div class="ls-step-num">03</div>
+                    <h3>Análise e decisão</h3>
+                    <p>Acesse dados completos, gere relatórios e tome decisões baseadas em informações reais.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Preços -->
+    <section class="ls-section" id="precos">
+        <div class="ls-container">
+            <div class="ls-section-head">
+                <span class="ls-eyebrow"><i class="fas fa-tags"></i> PREÇOS</span>
+                <h2>Planos para cada <span class="ls-accent">necessidade</span></h2>
+                <p>Comece grátis e evolua conforme sua necessidade.</p>
+            </div>
+            <div class="ls-pricing-grid">
+                <div class="ls-price-card">
+                    <div class="ls-price-name">Gratuito</div>
+                    <div class="ls-price-value">R$ 0<span>/mês</span></div>
+                    <ul class="ls-price-features">
+                        <li><i class="fas fa-check"></i> 5 buscas/mês</li>
+                        <li><i class="fas fa-check"></i> 2 análises/mês</li>
+                        <li><i class="fas fa-check"></i> 3 favoritos</li>
+                        <li class="ls-disabled"><i class="fas fa-times"></i> Mapa interativo</li>
+                        <li class="ls-disabled"><i class="fas fa-times"></i> Relatórios BI</li>
+                    </ul>
+                    <button class="ls-btn ls-btn-outline ls-btn-full" onclick="openCadastro()">Criar Conta</button>
+                </div>
+                <div class="ls-price-card ls-featured">
+                    <div class="ls-price-badge">Mais Popular</div>
+                    <div class="ls-price-name">Profissional</div>
+                    <div class="ls-price-value">R$ 97<span>/mês</span></div>
+                    <ul class="ls-price-features">
+                        <li><i class="fas fa-check"></i> 100 buscas/mês</li>
+                        <li><i class="fas fa-check"></i> 50 análises/mês</li>
+                        <li><i class="fas fa-check"></i> 50 favoritos</li>
+                        <li><i class="fas fa-check"></i> Mapa interativo</li>
+                        <li><i class="fas fa-check"></i> Relatórios BI</li>
+                    </ul>
+                    <button class="ls-btn ls-btn-gold ls-btn-full" onclick="openCadastro()">Começar Agora</button>
+                </div>
+                <div class="ls-price-card">
+                    <div class="ls-price-name">Empresa</div>
+                    <div class="ls-price-value">R$ 297<span>/mês</span></div>
+                    <ul class="ls-price-features">
+                        <li><i class="fas fa-check"></i> Buscas ilimitadas</li>
+                        <li><i class="fas fa-check"></i> Análises ilimitadas</li>
+                        <li><i class="fas fa-check"></i> Favoritos ilimitados</li>
+                        <li><i class="fas fa-check"></i> Mapa interativo</li>
+                        <li><i class="fas fa-check"></i> Relatórios BI</li>
+                    </ul>
+                    <button class="ls-btn ls-btn-outline ls-btn-full" onclick="openCadastro()">Falar com Vendas</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="ls-section ls-section-dark" id="faq">
+        <div class="ls-container">
+            <div class="ls-section-head">
+                <span class="ls-eyebrow"><i class="fas fa-question-circle"></i> DÚVIDAS</span>
+                <h2>Perguntas <span class="ls-accent">frequentes</span></h2>
+            </div>
+            <div class="ls-faq-list">
+                <details class="ls-faq-item">
+                    <summary>O que é o TerraeScope?</summary>
+                    <p>O TerraeScope é uma plataforma SaaS de análise imobiliária que aggregate dados públicos de terrenos e imóveis, fornecendo análises completas para incorporadoras, engenheiros, arquitetos e investidores.</p>
+                </details>
+                <details class="ls-faq-item">
+                    <summary>Preciso de cartão de crédito para começar?</summary>
+                    <p>Não! O plano gratuito permite começar sem necessidade de cartão. Você só precisará de um cartão ao migrar para planos pagos.</p>
+                </details>
+                <details class="ls-faq-item">
+                    <summary>De onde vêm os dados?</summary>
+                    <p>Utilizamos dados públicos de prefeituras, registos de imóveis, IBGE e outras fontes oficiais, complementados com dados de mercado em tempo real.</p>
+                </details>
+                <details class="ls-faq-item">
+                    <summary>Posso cancelar a qualquer momento?</summary>
+                    <p>Sim! Não há fidelidade. Você pode cancelar ou downgrade do seu plano a qualquer momento diretamente nas configurações da conta.</p>
+                </details>
+                <details class="ls-faq-item">
+                    <summary>Quais cidades são cobertas?</summary>
+                    <p>Atualmente cobrimos mais de 500 cidades brasileiras, com expansão contínua. As principais capitais e regiões metropolitanas já estão disponíveis.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="ls-cta-section">
+        <div class="ls-cta-glow"></div>
+        <div class="ls-container ls-cta-inner">
+            <h2>Comece a analisar terrenos <span class="ls-accent">hoje mesmo</span></h2>
+            <p>Junte-se a milhares de profissionais que já tomam decisões mais inteligentes com o TerraeScope.</p>
+            <button class="ls-btn ls-btn-gold ls-btn-lg" onclick="openCadastro()">
+                <i class="fas fa-rocket"></i> Criar Conta Grátis
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="ls-footer">
+        <div class="ls-container">
+            <div class="ls-footer-grid">
+                <div class="ls-footer-brand">
+                    <a href="#" class="ls-logo">
+                        <div class="ls-logo-icon"><i class="fas fa-building"></i></div>
+                        <span>TerraeScope</span>
+                    </a>
+                    <p>Plataforma de análise imobiliária para profissionais do mercado de terras e construção.</p>
+                </div>
+                <div class="ls-footer-col">
+                    <h4>Produto</h4>
+                    <a href="#funcionalidades">Funcionalidades</a>
+                    <a href="#precos">Preços</a>
+                    <a href="#como-funciona">Como Funciona</a>
+                </div>
+                <div class="ls-footer-col">
+                    <h4>Suporte</h4>
+                    <a href="#faq">Dúvidas Frequentes</a>
+                    <a href="mailto:contato@terraescope.com">contato@terraescope.com</a>
+                </div>
+            </div>
+            <div class="ls-footer-bottom">
+                <span>&copy; 2026 TerraeScope. Todos os direitos reservados.</span>
+                <div>
+                    <a href="#">Termos de Uso</a>
+                    <a href="#">Política de Privacidade</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="ls-modal-overlay" id="loginModal">
+        <div class="ls-modal">
+            <button class="ls-modal-close" onclick="closeModals()"><i class="fas fa-times"></i></button>
+            <div class="ls-modal-header">
+                <div class="ls-logo" style="justify-content:center;">
+                    <div class="ls-logo-icon"><i class="fas fa-building"></i></div>
+                    <span>TerraeScope</span>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <div id="modal-login">
+                <h2 class="ls-modal-title">Bem-vindo de volta</h2>
+                <p class="ls-modal-sub">Acesse sua plataforma de análise imobiliária</p>
+                <form id="loginForm">
+                    <div class="ls-form-group">
+                        <label class="ls-form-label">Email</label>
+                        <input type="email" class="ls-form-input" id="loginEmail" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="ls-form-group">
+                        <label class="ls-form-label">Senha</label>
+                        <input type="password" class="ls-form-input" id="loginSenha" placeholder="••••••••" required>
+                    </div>
+                    <div class="ls-form-row">
+                        <label class="ls-checkbox">
+                            <input type="checkbox"> Lembrar-me
+                        </label>
+                        <a href="#" class="ls-link">Esqueci a senha</a>
+                    </div>
+                    <button type="submit" class="ls-btn ls-btn-gold ls-btn-full">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
+                </form>
+                <p class="ls-modal-footer-text">
+                    Não tem conta? <a href="#" onclick="switchToCadastro()">Cadastre-se grátis</a>
                 </p>
-                <div style="display:flex; gap:32px;">
-                    <div>
-                        <div style="font-size:28px; font-weight:700; color:var(--neon-blue); font-family:'JetBrains Mono',monospace;">500+</div>
-                        <div style="font-size:13px; color:var(--text-muted);">Cidades mapeadas</div>
+            </div>
+
+            <!-- Cadastro Form -->
+            <div id="modal-cadastro" style="display:none;">
+                <h2 class="ls-modal-title">Criar conta</h2>
+                <p class="ls-modal-sub">Comece a analisar terrenos hoje</p>
+                <form id="cadastroForm">
+                    <div class="ls-form-group">
+                        <label class="ls-form-label">Nome completo</label>
+                        <input type="text" class="ls-form-input" id="cadNome" placeholder="João da Silva" required>
                     </div>
-                    <div>
-                        <div style="font-size:28px; font-weight:700; color:var(--neon-beige); font-family:'JetBrains Mono',monospace;">10k+</div>
-                        <div style="font-size:13px; color:var(--text-muted);">Terrenos analisados</div>
+                    <div class="ls-form-group">
+                        <label class="ls-form-label">Email</label>
+                        <input type="email" class="ls-form-input" id="cadEmail" placeholder="seu@email.com" required>
                     </div>
-                    <div>
-                        <div style="font-size:28px; font-weight:700; color:var(--neon-green); font-family:'JetBrains Mono',monospace;">98%</div>
-                        <div style="font-size:13px; color:var(--text-muted);">Precisão dos dados</div>
+                    <div class="ls-form-group">
+                        <label class="ls-form-label">Empresa</label>
+                        <input type="text" class="ls-form-input" id="cadEmpresa" placeholder="Nome da empresa">
                     </div>
-                </div>
+                    <div class="ls-form-group">
+                        <label class="ls-form-label">Telefone</label>
+                        <input type="tel" class="ls-form-input" id="cadTelefone" placeholder="(11) 99999-9999">
+                    </div>
+                    <div class="ls-form-group">
+                        <label class="ls-form-label">Senha</label>
+                        <input type="password" class="ls-form-input" id="cadSenha" placeholder="Mínimo 8 caracteres" required minlength="8">
+                    </div>
+                    <div class="ls-form-group">
+                        <label class="ls-form-label">Confirmar senha</label>
+                        <input type="password" class="ls-form-input" id="cadSenhaConf" placeholder="Repita a senha" required>
+                    </div>
+                    <button type="submit" class="ls-btn ls-btn-gold ls-btn-full">
+                        <i class="fas fa-user-plus"></i> Criar conta
+                    </button>
+                </form>
+                <p class="ls-modal-footer-text">
+                    Já tem conta? <a href="#" onclick="switchToLogin()">Fazer login</a>
+                </p>
             </div>
         </div>
     </div>
 
     <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
 
-    <script src="js/db.js"></script>
-    <script src="js/license.js"></script>
+    <script src="db.js"></script>
+    <script src="license.js"></script>
     <script>
         // Verificar se já está logado
         document.addEventListener('DOMContentLoaded', async () => {
             await db.init();
             const sessao = await license.verificarSessao();
             if (sessao) {
-                window.location.href = 'pages/dashboard.html';
+                window.location.href = 'dashboard.html';
             }
         });
 
-        function showCadastrar() {
-            document.getElementById('login-form-container').style.display = 'none';
-            document.getElementById('cadastrar-form-container').style.display = 'block';
+        function toggleMobileMenu() {
+            document.getElementById('lsNav').classList.toggle('ls-nav-open');
         }
 
-        function showLogin() {
-            document.getElementById('cadastrar-form-container').style.display = 'none';
-            document.getElementById('login-form-container').style.display = 'block';
+        function openLogin() {
+            document.getElementById('modal-login').style.display = 'block';
+            document.getElementById('modal-cadastro').style.display = 'none';
+            document.getElementById('loginModal').classList.add('ls-modal-active');
+        }
+
+        function openCadastro() {
+            document.getElementById('modal-login').style.display = 'none';
+            document.getElementById('modal-cadastro').style.display = 'block';
+            document.getElementById('loginModal').classList.add('ls-modal-active');
+        }
+
+        function closeModals() {
+            document.getElementById('loginModal').classList.remove('ls-modal-active');
+        }
+
+        function switchToCadastro() {
+            document.getElementById('modal-login').style.display = 'none';
+            document.getElementById('modal-cadastro').style.display = 'block';
+        }
+
+        function switchToLogin() {
+            document.getElementById('modal-cadastro').style.display = 'none';
+            document.getElementById('modal-login').style.display = 'block';
         }
 
         // Login
@@ -147,7 +394,7 @@
 
             const resultado = await license.login(email, senha);
             if (resultado.sucesso) {
-                window.location.href = 'pages/dashboard.html';
+                window.location.href = 'dashboard.html';
             } else {
                 showAlert(resultado.erro, 'danger');
             }
@@ -174,7 +421,7 @@
 
             if (resultado.sucesso) {
                 showAlert('Conta criada com sucesso! Faça login.', 'success');
-                showLogin();
+                switchToLogin();
             } else {
                 showAlert(resultado.erro, 'danger');
             }
