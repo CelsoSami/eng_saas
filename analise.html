@@ -267,7 +267,7 @@
             document.getElementById('a-area').textContent = terrenoAtual.area ? terrenoAtual.area + ' m²' : '—';
             document.getElementById('a-matricula').textContent = terrenoAtual.matricula || '—';
             document.getElementById('a-cep').textContent = terrenoAtual.cep || '—';
-            document.getElementById('a-valor').textContent = terrenoAtual.valorMercado ? 'R$ ' + terrenoAtual.valorMercado.toLocaleString('pt-BR') : '—';
+            document.getElementById('a-valor').textContent = (terrenoAtual.valor_mercado || terrenoAtual.valorMercado) ? 'R$ ' + (terrenoAtual.valor_mercado || terrenoAtual.valorMercado).toLocaleString('pt-BR') : '—';
             document.getElementById('a-zona').textContent = terrenoAtual.zona || '—';
             document.getElementById('a-iptu').textContent = terrenoAtual.iptu || 'Consultar prefeitura';
             document.getElementById('a-zona-uso').textContent = terrenoAtual.zona || '—';
