@@ -103,12 +103,12 @@
                 return;
             }
 
-            const sorted = registros.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
+            const sorted = registros.sort((a, b) => new Date(b.criado_em) - new Date(a.criado_em));
 
             // Group by date
             const groups = {};
             sorted.forEach(r => {
-                const date = new Date(r.criadoEm).toLocaleDateString('pt-BR');
+                const date = new Date(r.criado_em).toLocaleDateString('pt-BR');
                 if (!groups[date]) groups[date] = [];
                 groups[date].push(r);
             });
