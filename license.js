@@ -1,6 +1,7 @@
 /**
  * Sistema de Licenciamento e Controle de Assinatura
- * Gerencia validação, quotas e funcionalidades por plano
+ * Gerencia validacao, quotas e funcionalidades por plano
+ * Agora usando Supabase Auth + banco na nuvem
  */
 
 const PLANOS = {
@@ -18,7 +19,7 @@ const PLANOS = {
     },
     BASICO: {
         id: 'basico',
-        nome: 'Básico',
+        nome: 'Basico',
         preco: 97,
         limiteBuscas: 100,
         limiteProjetos: 20,
@@ -32,7 +33,7 @@ const PLANOS = {
         id: 'profissional',
         nome: 'Profissional',
         preco: 247,
-        limiteBuscas: -1, // ilimitado
+        limiteBuscas: -1,
         limiteProjetos: -1,
         limiteAnalises: -1,
         funcionalidades: ['busca_basica', 'busca_avancada', 'visualizacao_mapa', 'analise_terreno', 'analise_complexa', 'export_pdf', 'export_dados', 'bi_embed', 'comparativo', 'historico'],
@@ -61,8 +62,7 @@ class LicenseManager {
         this.usoMes = null;
     }
 
-    // Gerar chave de licença
-    gerarChave(plano) {
+    async gerarChave(plano) {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         const prefixo = plano.toUpperCase().substring(0, 3);
         let chave = prefixo + '-';
@@ -73,140 +73,110 @@ class LicenseManager {
         return chave;
     }
 
-    // Validar chave de licença
     async validarChave(chave) {
         try {
             const licencas = await db.getByIndex('licencas', 'chave', chave);
-            if (licencas.length === 0) return { valido: false, erro: 'Chave não encontrada' };
+            if (licencas.length === 0) return { valido: false, erro: 'Chave nao encontrada' };
 
             const licenca = licencas[0];
             const hoje = new Date();
             const validade = new Date(licenca.validade);
 
-            if (validade < hoje) {
-                return { valido: false, erro: 'Licença expirada' };
-            }
-
-            if (licenca.status === 'suspensa') {
-                return { valido: false, erro: 'Licença suspensa - Pagamento pendente' };
-            }
+            if (validade < hoje) return { valido: false, erro: 'Licenca expirada' };
+            if (licenca.status === 'suspensa') return { valido: false, erro: 'Licenca suspensa - Pagamento pendente' };
 
             const plano = Object.values(PLANOS).find(p => p.id === licenca.plano);
-            if (!plano) {
-                return { valido: false, erro: 'Plano inválido' };
-            }
+            if (!plano) return { valido: false, erro: 'Plano invalido' };
 
-            return {
-                valido: true,
-                licenca: licenca,
-                plano: plano
-            };
+            return { valido: true, licenca, plano };
         } catch (error) {
-            return { valido: false, erro: 'Erro ao validar licença' };
+            return { valido: false, erro: 'Erro ao validar licenca' };
         }
     }
 
-    // Login do usuário
     async login(email, senha) {
         try {
-            const usuarios = await db.getByIndex('usuarios', 'email', email);
-            if (usuarios.length === 0) {
-                return { sucesso: false, erro: 'Usuário não encontrado' };
-            }
+            const { data, error } = await db.client.auth.signInWithPassword({ email, password: senha });
+            if (error) return { sucesso: false, erro: this._traduzirErro(error.message) };
 
-            const usuario = usuarios[0];
-            // Em produção, usar hash bcrypt
-            if (usuario.senha !== this.hashSenha(senha)) {
-                return { sucesso: false, erro: 'Senha incorreta' };
-            }
+            db.setUsuarioId(data.user.id);
 
-            this.usuarioAtual = usuario;
+            const { data: perfil } = await db.client
+                .from('usuarios')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
 
-            // Validar licença
-            if (usuario.licenca) {
-                const resultado = await this.validarChave(usuario.licenca);
-                if (resultado.valido) {
-                    this.planoAtual = resultado.plano;
-                }
+            if (!perfil) return { sucesso: false, erro: 'Perfil nao encontrado' };
+
+            this.usuarioAtual = { id: perfil.id, ...perfil };
+
+            if (perfil.licenca) {
+                const resultado = await this.validarChave(perfil.licenca);
+                if (resultado.valido) this.planoAtual = resultado.plano;
+                else this.planoAtual = PLANOS.GRATUITO;
             } else {
                 this.planoAtual = PLANOS.GRATUITO;
             }
 
-            // Carregar uso do mês
             await this.carregarUso();
-
-            // Salvar sessão
-            localStorage.setItem('sessao', JSON.stringify({
-                usuarioId: usuario.id,
-                timestamp: Date.now()
-            }));
-
-            return {
-                sucesso: true,
-                usuario: usuario,
-                plano: this.planoAtual
-            };
+            return { sucesso: true, usuario: this.usuarioAtual, plano: this.planoAtual };
         } catch (error) {
             return { sucesso: false, erro: 'Erro ao fazer login' };
         }
     }
 
-    // Cadastro
     async cadastrar(dados) {
         try {
-            // Verificar se email já existe
-            const existente = await db.getByIndex('usuarios', 'email', dados.email);
-            if (existente.length > 0) {
-                return { sucesso: false, erro: 'Email já cadastrado' };
-            }
-
-            const usuario = {
-                ...dados,
-                senha: this.hashSenha(dados.senha),
-                plano: 'gratuito',
-                status: 'ativo',
-                dataCadastro: new Date().toISOString()
-            };
-
-            const id = await db.add('usuarios', usuario);
-
-            // Criar uso inicial
-            const periodo = this.getPeriodoAtual();
-            await db.add('uso', {
-                usuarioId: id,
-                periodo: periodo,
-                buscas: 0,
-                projetos: 0,
-                analises: 0
+            const { data, error } = await db.client.auth.signUp({
+                email: dados.email,
+                password: dados.senha,
+                options: {
+                    data: { nome: dados.nome }
+                }
             });
 
-            return { sucesso: true, usuarioId: id };
+            if (error) return { sucesso: false, erro: this._traduzirErro(error.message) };
+
+            if (data.user) {
+                await db.client.from('usuarios').upsert({
+                    id: data.user.id,
+                    nome: dados.nome,
+                    empresa: dados.empresa || '',
+                    telefone: dados.telefone || '',
+                    plano: 'gratuito',
+                    status: 'ativo',
+                    data_cadastro: new Date().toISOString()
+                });
+
+                const periodo = this.getPeriodoAtual();
+                await db.client.from('uso').insert({
+                    usuario_id: data.user.id,
+                    periodo,
+                    buscas: 0,
+                    projetos: 0,
+                    analises: 0
+                });
+            }
+
+            return { sucesso: true, usuarioId: data.user?.id };
         } catch (error) {
             return { sucesso: false, erro: 'Erro ao cadastrar' };
         }
     }
 
-    // Verificar se pode usar funcionalidade
     async podeUsar(funcionalidade) {
         if (!this.planoAtual) return false;
-
-        // Verificar funcionalidade no plano
         const temFuncionalidade = this.planoAtual.funcionalidades.includes(funcionalidade);
         if (!temFuncionalidade) return false;
-
-        // Verificar quota
         const quota = this.verificarQuota(funcionalidade);
         return quota.disponivel;
     }
 
-    // Verificar quota de uso
     verificarQuota(funcionalidade) {
-        if (!this.usoMes) {
-            return { usado: 0, limite: 0, disponivel: false };
-        }
+        if (!this.usoMes) return { usado: 0, limite: 0, disponivel: false };
 
         let limite, usado;
-
         switch (funcionalidade) {
             case 'busca_basica':
             case 'busca_avancada':
@@ -226,129 +196,100 @@ class LicenseManager {
                 return { usado: 0, limite: -1, disponivel: true };
         }
 
-        // -1 significa ilimitado
-        if (limite === -1) {
-            return { usado: usado, limite: 'Ilimitado', disponivel: true };
-        }
-
-        return {
-            usado: usado,
-            limite: limite,
-            disponivel: usado < limite
-        };
+        if (limite === -1) return { usado, limite: 'Ilimitado', disponivel: true };
+        return { usado, limite, disponivel: usado < limite };
     }
 
-    // Registrar uso
     async registrarUso(tipo) {
         if (!this.usoMes || !this.usuarioAtual) return;
 
-        const mapa = {
-            'busca': 'buscas',
-            'projeto': 'projetos',
-            'analise': 'analises'
-        };
-
+        const mapa = { 'busca': 'buscas', 'projeto': 'projetos', 'analise': 'analises' };
         const campo = mapa[tipo];
-        if (campo) {
-            this.usoMes[campo]++;
-            await db.update('uso', this.usoMes);
-        }
+        if (!campo) return;
+
+        this.usoMes[campo]++;
+        const { id, ...rest } = this.usoMes;
+        await db.client
+            .from('uso')
+            .update({ [campo]: this.usoMes[campo] })
+            .eq('id', id);
     }
 
-    // Carregar uso do mês
     async carregarUso() {
         if (!this.usuarioAtual) return;
 
         const periodo = this.getPeriodoAtual();
-        const usos = await db.getByIndex('uso', 'usuarioId', this.usuarioAtual.id);
-        const usoMes = usos.find(u => u.periodo === periodo);
+        const { data } = await db.client
+            .from('uso')
+            .select('*')
+            .eq('usuario_id', this.usuarioAtual.id)
+            .eq('periodo', periodo)
+            .maybeSingle();
 
-        if (usoMes) {
-            this.usoMes = usoMes;
+        if (data) {
+            this.usoMes = data;
         } else {
-            // Criar registro do mês atual
             const novoUso = {
-                usuarioId: this.usuarioAtual.id,
-                periodo: periodo,
+                usuario_id: this.usuarioAtual.id,
+                periodo,
                 buscas: 0,
                 projetos: 0,
                 analises: 0
             };
-            const id = await db.add('uso', novoUso);
-            this.usoMes = { id, ...novoUso };
+            const { data: inserted } = await db.client.from('uso').insert(novoUso).select().single();
+            this.usoMes = inserted;
         }
     }
 
-    // Obter período atual (YYYY-MM)
     getPeriodoAtual() {
         const hoje = new Date();
         return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
     }
 
-    // Hash simples da senha (em produção usar bcrypt no backend)
-    hashSenha(senha) {
-        let hash = 0;
-        for (let i = 0; i < senha.length; i++) {
-            const char = senha.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;
-        }
-        return 'h_' + Math.abs(hash).toString(36);
-    }
-
-    // Ativar plano
     async ativarPlano(chave) {
         const resultado = await this.validarChave(chave);
-        if (!resultado.valido) {
-            return { sucesso: false, erro: resultado.erro };
-        }
+        if (!resultado.valido) return { sucesso: false, erro: resultado.erro };
 
-        // Atualizar usuário
         this.usuarioAtual.licenca = chave;
         this.usuarioAtual.plano = resultado.plano.id;
-        await db.update('usuarios', this.usuarioAtual);
+
+        await db.client
+            .from('usuarios')
+            .update({ licenca: chave, plano: resultado.plano.id })
+            .eq('id', this.usuarioAtual.id);
 
         this.planoAtual = resultado.plano;
-
         return { sucesso: true, plano: resultado.plano };
     }
 
-    // Logout
-    logout() {
+    async logout() {
         this.usuarioAtual = null;
         this.planoAtual = null;
         this.usoMes = null;
-        localStorage.removeItem('sessao');
-        window.location.href = 'index.html';
+        db.setUsuarioId(null);
+        await db.client.auth.signOut();
     }
 
-    // Verificar sessão ativa
     async verificarSessao() {
-        const sessao = localStorage.getItem('sessao');
-        if (!sessao) return false;
+        const { data: { session } } = await db.client.auth.getSession();
+        if (!session) return false;
 
-        const { usuarioId, timestamp } = JSON.parse(sessao);
-        const tempoDecorrido = Date.now() - timestamp;
+        db.setUsuarioId(session.user.id);
 
-        // Sessão expira em 24 horas
-        if (tempoDecorrido > 24 * 60 * 60 * 1000) {
-            localStorage.removeItem('sessao');
-            return false;
-        }
+        const { data: perfil } = await db.client
+            .from('usuarios')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
 
-        // Recarregar dados do usuário
-        const usuario = await db.get('usuarios', usuarioId);
-        if (!usuario) return false;
+        if (!perfil) return false;
 
-        this.usuarioAtual = usuario;
+        this.usuarioAtual = { id: perfil.id, ...perfil };
 
-        if (usuario.licenca) {
-            const resultado = await this.validarChave(usuario.licenca);
-            if (resultado.valido) {
-                this.planoAtual = resultado.plano;
-            } else {
-                this.planoAtual = PLANOS.GRATUITO;
-            }
+        if (perfil.licenca) {
+            const resultado = await this.validarChave(perfil.licenca);
+            if (resultado.valido) this.planoAtual = resultado.plano;
+            else this.planoAtual = PLANOS.GRATUITO;
         } else {
             this.planoAtual = PLANOS.GRATUITO;
         }
@@ -357,34 +298,39 @@ class LicenseManager {
         return true;
     }
 
-    // Obter info do plano
     getPlanoInfo() {
         if (!this.planoAtual) return PLANOS.GRATUITO;
         return this.planoAtual;
     }
 
-    // Obter uso atual
     getUso() {
         return this.usoMes;
     }
 
-    // Ativar com chave de licença (alias para ativarPlano)
     async ativarChave(chave) {
         const result = await this.ativarPlano(chave);
         return result.sucesso;
     }
 
-    // Salvar dados do usuário
     async salvarUsuario(usuario) {
-        await db.update('usuarios', usuario);
+        const { id, ...rest } = usuario;
+        await db.client
+            .from('usuarios')
+            .update(rest)
+            .eq('id', id);
         this.usuarioAtual = usuario;
     }
 
-    // Getter para licença atual
     get licensaAtual() {
         return this.usuarioAtual ? this.usuarioAtual.licenca : null;
     }
+
+    _traduzirErro(msg) {
+        if (msg.includes('Invalid login')) return 'Email ou senha incorretos';
+        if (msg.includes('already registered')) return 'Email ja cadastrado';
+        if (msg.includes('Password')) return 'Senha deve ter no minimo 6 caracteres';
+        return msg;
+    }
 }
 
-// Instância global
 const license = new LicenseManager();
