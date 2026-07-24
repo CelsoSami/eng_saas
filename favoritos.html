@@ -118,7 +118,7 @@
                 '<div><span style="color:var(--text-muted);">Zona:</span> <span class="tag tag-blue" style="padding:2px 8px;">' + (t.zona || '—') + '</span></div>' +
                 '<div><span style="color:var(--text-muted);">Matricula:</span> <strong>' + (t.matricula || '—') + '</strong></div>' +
                 '</div>' +
-                (t.valorMercado ? '<div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border); font-size:14px; color:var(--neon-green); font-weight:600;">R$ ' + t.valorMercado.toLocaleString('pt-BR') + '</div>' : '') +
+                (t.valor_mercado ? '<div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border); font-size:14px; color:var(--neon-green); font-weight:600;">R$ ' + Number(t.valor_mercado).toLocaleString('pt-BR') + '</div>' : '') +
                 '</div>').join('') + '</div>';
         }
 
