@@ -89,6 +89,7 @@
                         <div class="sidebar-user-name" id="user-name">Usuário</div>
                         <div class="sidebar-user-plan" id="user-plan">Plano Gratuito</div>
                     </div>
+                    <button class="btn btn-ghost btn-sm" style="margin-left:auto; color:var(--text-muted);" onclick="fazerLogout()" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
                     <i class="fas fa-chevron-down" style="color:var(--text-muted); font-size:12px;"></i>
                 </div>
             </div>
@@ -393,6 +394,8 @@
             container.appendChild(alert);
             setTimeout(() => alert.remove(), 5000);
         }
+
+        async function fazerLogout() { await license.logout(); window.location.href = '../index.html'; }
     </script>
 </body>
 </html>
