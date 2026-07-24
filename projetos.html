@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meus Projetos - TerraeScope</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -34,7 +34,6 @@
                     <div class="nav-section-title">Conta</div>
                     <a href="assinatura.html" class="nav-item"><span class="icon"><i class="fas fa-crown"></i></span> Assinatura</a>
                     <a href="config.html" class="nav-item"><span class="icon"><i class="fas fa-cog"></i></span> Configurações</a>
-                    <a href="#" class="nav-item" onclick="event.preventDefault(); license.logout();"><span class="icon"><i class="fas fa-sign-out-alt"></i></span> Sair</a>
                 </div>
             </nav>
             <div class="sidebar-footer">
@@ -119,15 +118,15 @@
     <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="db.js"></script>
-    <script src="license.js"></script>
+    <script src="../js/db.js"></script>
+    <script src="../js/license.js"></script>
     <script>
         let projetoAtual = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await db.init();
             const sessao = await license.verificarSessao();
-            if (!sessao) { window.location.href = 'index.html'; return; }
+            if (!sessao) { window.location.href = '../index.html'; return; }
             updateUserUI();
             loadProjetos();
             checkResponsive();
@@ -162,7 +161,7 @@
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
                         <span class="tag" style="background:${statusColors[st]}22; color:${statusColors[st]}; padding:3px 10px; border-radius:12px;">${statusLabels[st]}</span>
-                        <span style="color:var(--text-muted);">${(p.terrenoIds || []).length} terreno(s)</span>
+                        <span style="color:var(--text-muted);">${(p.terreno_ids || []).length} terreno(s)</span>
                     </div>
                 </div>`;
             }).join('')}</div>`;
@@ -178,7 +177,7 @@
             document.getElementById('det-status').value = projetoAtual.status || 'em andamento';
 
             const terrenosContainer = document.getElementById('det-terrenos');
-            const terrenoIds = projetoAtual.terrenoIds || [];
+            const terrenoIds = projetoAtual.terreno_ids || [];
             if (terrenoIds.length === 0) { terrenosContainer.innerHTML = '<div class="empty-state" style="padding:30px;"><p style="margin:0; font-size:13px;">Nenhum terreno neste projeto</p></div>'; return; }
 
             let html = '';
@@ -227,7 +226,7 @@
             if (!nome) { showAlert('Digite o nome do projeto', 'warning'); return; }
             const podeUsar = await license.podeUsar('criar_projeto');
             if (!podeUsar) { showAlert('Limite de projetos atingido. Faça upgrade.', 'warning'); return; }
-            await db.add('projetos', { nome, descricao: document.getElementById('novoDescricao').value, status: 'em andamento', terrenoIds: [], criadoEm: new Date().toISOString() });
+            await db.add('projetos', { nome, descricao: document.getElementById('novoDescricao').value, status: 'em andamento', terreno_ids: [], criado_em: new Date().toISOString() });
             await license.registrarUso('projeto');
             fecharModal('modal-novo');
             showAlert('Projeto criado com sucesso!', 'success');
