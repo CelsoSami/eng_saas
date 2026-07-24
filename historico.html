@@ -127,8 +127,8 @@
                     const tipo = r.tipo || 'busca';
                     const icon = icons[tipo] || 'circle';
                     const color = colors[tipo] || 'var(--text-muted)';
-                    const time = new Date(r.criadoEm).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                    const link = r.terrenoId ? 'analise.html?terreno=' + r.terrenoId : '#';
+                    const time = new Date(r.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    const link = r.terreno_id ? 'analise.html?terreno=' + r.terreno_id : '#';
 
                     html += '<div style="position:relative; display:flex; align-items:center; gap:12px; padding:12px 16px; margin-bottom:8px; background:var(--bg-tertiary); border-radius:10px; cursor:pointer;" onclick="window.location.href=\'' + link + '\'">';
                     html += '<div style="width:32px; height:32px; border-radius:8px; background:' + color + '22; display:grid; place-items:center; color:' + color + '; font-size:14px;"><i class="fas fa-' + icon + '"></i></div>';
