@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historico - TerraeScope</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -34,7 +34,6 @@
                     <div class="nav-section-title">Conta</div>
                     <a href="assinatura.html" class="nav-item"><span class="icon"><i class="fas fa-crown"></i></span> Assinatura</a>
                     <a href="config.html" class="nav-item"><span class="icon"><i class="fas fa-cog"></i></span> Configuracoes</a>
-                    <a href="#" class="nav-item" onclick="event.preventDefault(); license.logout();"><span class="icon"><i class="fas fa-sign-out-alt"></i></span> Sair</a>
                 </div>
             </nav>
             <div class="sidebar-footer">
@@ -71,13 +70,13 @@
     <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="db.js"></script>
-    <script src="license.js"></script>
+    <script src="../js/db.js"></script>
+    <script src="../js/license.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             await db.init();
             const sessao = await license.verificarSessao();
-            if (!sessao) { window.location.href = 'index.html'; return; }
+            if (!sessao) { window.location.href = '../index.html'; return; }
             updateUserUI();
             loadHistorico();
             checkResponsive();
