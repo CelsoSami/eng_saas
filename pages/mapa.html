@@ -352,12 +352,26 @@
             const q = document.getElementById('mapa-busca').value.trim();
             if (!q) return;
             try {
-                const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&q=' + encodeURIComponent(q));
+                const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=br&q=' + encodeURIComponent(q));
                 const results = await resp.json();
                 if (results.length > 0) {
-                    const lat = parseFloat(results[0].lat);
-                    const lng = parseFloat(results[0].lon);
-                    const nome = results[0].display_name || q;
+                    const ufSiglas = { 'acre':'AC','alagoas':'AL','amapa':'AP','amazonas':'AM','bahia':'BA','ceara':'CE','distrito federal':'DF','espirito santo':'ES','goias':'GO','maranhao':'MA','mato grosso':'MT','mato grosso do sul':'MS','minas gerais':'MG','para':'PA','paraiba':'PB','parana':'PR','pernambuco':'PE','piaui':'PI','rio de janeiro':'RJ','rio grande do norte':'RN','rio grande do sul':'RS','rondonia':'RO','roraima':'RR','santa catarina':'SC','sao paulo':'SP','sergipe':'SE','tocantins':'TO' };
+                    const qLower = q.toLowerCase();
+                    let ufAlvo = null;
+                    for (const [nome, sigla] of Object.entries(ufSiglas)) {
+                        if (qLower.includes(sigla.toLowerCase()) || qLower.includes(nome)) { ufAlvo = sigla; break; }
+                    }
+                    let melhor = results[0];
+                    if (ufAlvo) {
+                        const candidato = results.find(r => {
+                            const addr = (r.address || {});
+                            return addr.state === ufAlvo || addr.state_code === ufAlvo || (r.display_name || '').toLowerCase().includes(ufAlvo.toLowerCase());
+                        });
+                        if (candidato) melhor = candidato;
+                    }
+                    const lat = parseFloat(melhor.lat);
+                    const lng = parseFloat(melhor.lon);
+                    const nome = melhor.display_name || q;
 
                     if (searchMarker) mapa.removeLayer(searchMarker);
 
