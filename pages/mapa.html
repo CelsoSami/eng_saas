@@ -350,9 +350,7 @@
             const q = document.getElementById('mapa-busca').value.trim();
             if (!q) return;
             try {
-                const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&q=' + encodeURIComponent(q), {
-                    headers: { 'User-Agent': 'TerraeScope/1.0' }
-                });
+                const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&q=' + encodeURIComponent(q));
                 const results = await resp.json();
                 if (results.length > 0) {
                     const lat = parseFloat(results[0].lat);
@@ -420,9 +418,7 @@
 
                 try {
                     const endereco = [t.logradouro, t.cidade, t.uf, 'Brasil'].filter(Boolean).join(', ');
-                    const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(endereco), {
-                        headers: { 'User-Agent': 'TerraeScope/1.0' }
-                    });
+                    const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(endereco));
                     const resultados = await resp.json();
 
                     if (resultados.length > 0) {
