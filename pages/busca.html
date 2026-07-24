@@ -421,9 +421,7 @@
             if (logradouro && cidade && uf) {
                 try {
                     const endereco = logradouro + ', ' + cidade + ', ' + uf + ', Brasil';
-                    const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(endereco), {
-                        headers: { 'User-Agent': 'TerraeScope/1.0' }
-                    });
+                    const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(endereco));
                     const resultados = await resp.json();
                     if (resultados.length > 0) {
                         const { data: terrenos } = await db.client.from('terrenos').select('id').order('id', { ascending: false }).limit(1);
