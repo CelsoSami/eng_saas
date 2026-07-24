@@ -118,7 +118,10 @@
                     <div class="card">
                         <div class="card-header"><div class="card-title" style="font-size:14px;"><i class="fas fa-search" style="margin-right:6px;"></i> Buscar no Mapa</div></div>
                         <div class="form-group" style="margin-bottom:12px;">
-                            <input type="text" class="form-input" id="mapa-busca" placeholder="Endereco ou cidade..." style="font-size:13px;">
+                            <div style="display:flex; gap:6px;">
+                                <input type="text" class="form-input" id="mapa-busca" placeholder="Endereco ou cidade..." style="font-size:13px; flex:1;" onkeydown="if(event.key==='Enter')buscarMapa()">
+                                <button class="btn btn-ghost btn-sm" onclick="buscarMapa()" title="Buscar"><i class="fas fa-search"></i></button>
+                            </div>
                         </div>
                         <div style="display:grid; gap:8px;">
                             <div class="form-group" style="margin:0;">
@@ -341,6 +344,26 @@
         function filtrarMapa() {
             renderMapa();
             renderLista();
+        }
+
+        async function buscarMapa() {
+            const q = document.getElementById('mapa-busca').value.trim();
+            if (!q) return;
+            try {
+                const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&q=' + encodeURIComponent(q), {
+                    headers: { 'User-Agent': 'TerraeScope/1.0' }
+                });
+                const results = await resp.json();
+                if (results.length > 0) {
+                    const lat = parseFloat(results[0].lat);
+                    const lng = parseFloat(results[0].lon);
+                    mapa.setView([lat, lng], 15, { animate: true });
+                } else {
+                    showAlert('Local nao encontrado. Tente ser mais especifico.', 'warning');
+                }
+            } catch (e) {
+                showAlert('Erro ao buscar localizacao.', 'danger');
+            }
         }
 
         function limparFiltros() {
