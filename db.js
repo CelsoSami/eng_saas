@@ -1,180 +1,140 @@
 /**
- * Gerenciamento do Banco de Dados Local (IndexedDB)
- * Sistema de persistência para o SaaS Terrenos
+ * Gerenciamento do Banco de Dados via Supabase
+ * Substitui IndexedDB por persistencia na nuvem
  */
 
-const DB_NAME = 'TerrenosSaaS';
-const DB_VERSION = 2;
+const SUPABASE_URL = 'https://ibkvykjjorfbiyokbiys.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_IhsDlJn0TryD3svYd5UGIg_zVMlCxmf';
 
 class LocalDatabase {
     constructor() {
-        this.db = null;
+        this.client = null;
         this.isReady = false;
+        this.usuarioId = null;
     }
 
     async init() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => {
-                this.db = request.result;
-                this.isReady = true;
-                resolve(this.db);
-            };
-
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-
-                // Store: Usuários
-                if (!db.objectStoreNames.contains('usuarios')) {
-                    const usuarios = db.createObjectStore('usuarios', { keyPath: 'id', autoIncrement: true });
-                    usuarios.createIndex('email', 'email', { unique: true });
-                    usuarios.createIndex('licenca', 'licenca', { unique: false });
-                }
-
-                // Store: Terrenos
-                if (!db.objectStoreNames.contains('terrenos')) {
-                    const terrenos = db.createObjectStore('terrenos', { keyPath: 'id', autoIncrement: true });
-                    terrenos.createIndex('logradouro', 'logradouro', { unique: false });
-                    terrenos.createIndex('cidade', 'cidade', { unique: false });
-                    terrenos.createIndex('uf', 'uf', { unique: false });
-                    terrenos.createIndex('cep', 'cep', { unique: false });
-                    terrenos.createIndex('matricula', 'matricula', { unique: true });
-                }
-
-                // Store: Projetos
-                if (!db.objectStoreNames.contains('projetos')) {
-                    const projetos = db.createObjectStore('projetos', { keyPath: 'id', autoIncrement: true });
-                    projetos.createIndex('terrenoId', 'terrenoId', { unique: false });
-                    projetos.createIndex('nome', 'nome', { unique: false });
-                    projetos.createIndex('status', 'status', { unique: false });
-                }
-
-                // Store: Análises
-                if (!db.objectStoreNames.contains('analises')) {
-                    const analises = db.createObjectStore('analises', { keyPath: 'id', autoIncrement: true });
-                    analises.createIndex('terrenoId', 'terrenoId', { unique: false });
-                    analises.createIndex('tipo', 'tipo', { unique: false });
-                    analises.createIndex('dataAnalise', 'dataAnalise', { unique: false });
-                }
-
-                // Store: Licenças
-                if (!db.objectStoreNames.contains('licencas')) {
-                    const licencas = db.createObjectStore('licencas', { keyPath: 'id', autoIncrement: true });
-                    licencas.createIndex('chave', 'chave', { unique: true });
-                    licencas.createIndex('usuarioId', 'usuarioId', { unique: false });
-                }
-
-                // Store: Uso (controle de quota)
-                if (!db.objectStoreNames.contains('uso')) {
-                    const uso = db.createObjectStore('uso', { keyPath: 'id', autoIncrement: true });
-                    uso.createIndex('usuarioId', 'usuarioId', { unique: false });
-                    uso.createIndex('periodo', 'periodo', { unique: false });
-                }
-
-                // Store: Histórico
-                if (!db.objectStoreNames.contains('historico')) {
-                    const historico = db.createObjectStore('historico', { keyPath: 'id', autoIncrement: true });
-                    historico.createIndex('terrenoId', 'terrenoId', { unique: false });
-                    historico.createIndex('tipo', 'tipo', { unique: false });
-                    historico.createIndex('criadoEm', 'criadoEm', { unique: false });
-                }
-
-                // Store: Configurações
-                if (!db.objectStoreNames.contains('configuracoes')) {
-                    db.createObjectStore('configuracoes', { keyPath: 'chave' });
-                }
-            };
-        });
+        this.client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { data: { session } } = await this.client.auth.getSession();
+        if (session) {
+            this.usuarioId = session.user.id;
+        }
+        this.isReady = true;
     }
 
-    // CRUD Genérico
+    setUsuarioId(id) {
+        this.usuarioId = id;
+    }
+
     async add(storeName, data) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readwrite');
-            const store = tx.objectStore(storeName);
-            const request = store.add({ ...data, criadoEm: new Date().toISOString(), atualizadoEm: new Date().toISOString() });
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
+        const now = new Date().toISOString();
+        const record = { ...data, criado_em: now, atualizado_em: now };
+
+        if (storeName !== 'licencas' && storeName !== 'configuracoes' && this.usuarioId) {
+            record.usuario_id = this.usuarioId;
+        }
+
+        const { data: result, error } = await this.client
+            .from(storeName)
+            .insert(record)
+            .select();
+
+        if (error) throw error;
+        return result[0].id;
     }
 
     async get(storeName, id) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const request = store.get(id);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
+        const col = this._getPrimaryKey(storeName);
+        const { data, error } = await this.client
+            .from(storeName)
+            .select('*')
+            .eq(col, id)
+            .single();
+
+        if (error && error.code !== 'PGRST116') throw error;
+        return data;
     }
 
     async getAll(storeName) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const request = store.getAll();
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
+        let query = this.client.from(storeName).select('*');
+
+        if (storeName !== 'licencas' && storeName !== 'configuracoes' && this.usuarioId) {
+            query = query.eq('usuario_id', this.usuarioId);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
     }
 
     async update(storeName, data) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readwrite');
-            const store = tx.objectStore(storeName);
-            const request = store.put({ ...data, atualizadoEm: new Date().toISOString() });
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
+        const now = new Date().toISOString();
+        const col = this._getPrimaryKey(storeName);
+        const id = data.id || data[col];
+        const record = { ...data, atualizado_em: now };
+        delete record.id;
+
+        const { error } = await this.client
+            .from(storeName)
+            .update(record)
+            .eq(col, id);
+
+        if (error) throw error;
+        return id;
     }
 
     async delete(storeName, id) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readwrite');
-            const store = tx.objectStore(storeName);
-            const request = store.delete(id);
-            request.onsuccess = () => resolve(true);
-            request.onerror = () => reject(request.error);
-        });
+        const col = this._getPrimaryKey(storeName);
+        const { error } = await this.client
+            .from(storeName)
+            .delete()
+            .eq(col, id);
+
+        if (error) throw error;
+        return true;
     }
 
     async getByIndex(storeName, indexName, value) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const index = store.index(indexName);
-            const request = index.getAll(value);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
+        let query = this.client.from(storeName).select('*');
+
+        const mapped = this._mapIndex(storeName, indexName);
+        query = query.eq(mapped, value);
+
+        if (storeName !== 'licencas' && storeName !== 'configuracoes' && indexName !== 'usuario_id' && this.usuarioId) {
+            query = query.eq('usuario_id', this.usuarioId);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
     }
 
     async count(storeName) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const request = store.count();
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
+        let query = this.client.from(storeName).select('*', { count: 'exact', head: true });
+
+        if (storeName !== 'licencas' && storeName !== 'configuracoes' && this.usuarioId) {
+            query = query.eq('usuario_id', this.usuarioId);
+        }
+
+        const { count, error } = await query;
+        if (error) throw error;
+        return count || 0;
     }
 
     async search(storeName, searchTerm, fields) {
         const allItems = await this.getAll(storeName);
         const term = searchTerm.toLowerCase();
         return allItems.filter(item =>
-            fields.some(field =>
-                item[field] && item[field].toString().toLowerCase().includes(term)
-            )
+            fields.some(field => {
+                const val = this._mapField(storeName, field);
+                return item[val] && item[val].toString().toLowerCase().includes(term);
+            })
         );
     }
 
-    // Backup/Export
     async exportData() {
+        const storeNames = ['terrenos', 'projetos', 'analises', 'historico', 'uso', 'licencas'];
         const data = {};
-        const storeNames = Array.from(this.db.objectStoreNames);
         for (const storeName of storeNames) {
             data[storeName] = await this.getAll(storeName);
         }
@@ -183,12 +143,63 @@ class LocalDatabase {
 
     async importData(data) {
         for (const [storeName, items] of Object.entries(data)) {
+            if (storeName.startsWith('_')) continue;
             for (const item of items) {
-                await this.update(storeName, item);
+                const { id, ...rest } = item;
+                await this.update(storeName, { id, ...rest });
             }
         }
     }
+
+    _getPrimaryKey(storeName) {
+        const map = {
+            terrenos: 'id',
+            projetos: 'id',
+            analises: 'id',
+            historico: 'id',
+            licencas: 'id',
+            uso: 'id',
+            configuracoes: 'chave',
+            usuarios: 'id'
+        };
+        return map[storeName] || 'id';
+    }
+
+    _mapIndex(storeName, indexName) {
+        const map = {
+            email: 'email',
+            licenca: 'licenca',
+            logradouro: 'logradouro',
+            cidade: 'cidade',
+            uf: 'uf',
+            cep: 'cep',
+            matricula: 'matricula',
+            terrenoId: 'terreno_id',
+            terreno_id: 'terreno_id',
+            nome: 'nome',
+            status: 'status',
+            tipo: 'tipo',
+            dataAnalise: 'data_analise',
+            chave: 'chave',
+            usuarioId: 'usuario_id',
+            usuario_id: 'usuario_id',
+            periodo: 'periodo'
+        };
+        return map[indexName] || indexName;
+    }
+
+    _mapField(storeName, field) {
+        const map = {
+            logradouro: 'logradouro',
+            cidade: 'cidade',
+            uf: 'uf',
+            cep: 'cep',
+            matricula: 'matricula',
+            zona: 'zona',
+            terrenoId: 'terreno_id'
+        };
+        return map[field] || field;
+    }
 }
 
-// Instância global
 const db = new LocalDatabase();
