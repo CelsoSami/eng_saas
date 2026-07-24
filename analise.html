@@ -278,7 +278,7 @@
             const favBtn = document.getElementById('btn-fav');
             if (terrenoAtual.favorito) { favBtn.innerHTML = '<i class="fas fa-heart" style="color:var(--neon-red);"></i> Favoritado'; } else { favBtn.innerHTML = '<i class="fas fa-heart"></i> Favoritar'; }
 
-            await db.add('historico', { tipo: 'analise', terrenoId: id, logradouro: terrenoAtual.logradouro, criadoEm: new Date().toISOString() });
+            await db.add('historico', { tipo: 'analise', terreno_id: id, logradouro: terrenoAtual.logradouro });
             await license.registrarUso('analise');
         }
 
