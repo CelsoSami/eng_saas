@@ -169,7 +169,7 @@
             // Valor por m2
             html += '<tr><td style="font-weight:600; color:var(--neon-green);">Valor/m2</td>';
             selecionados.forEach(t => {
-                const vpm2 = (t.valorMercado && t.area) ? (t.valorMercado / t.area) : null;
+                const vpm2 = (t.valor_mercado && t.area) ? (t.valor_mercado / t.area) : null;
                 html += '<td style="text-align:center; color:var(--neon-green); font-weight:600;">' + (vpm2 ? 'R$ ' + Math.round(vpm2).toLocaleString('pt-BR') : '—') + '</td>';
             });
             html += '</tr>';
