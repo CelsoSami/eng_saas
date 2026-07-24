@@ -42,10 +42,12 @@
         .geocoding-status { font-size:11px; color:var(--text-muted); padding:4px 10px; display:flex; align-items:center; gap:6px; }
         .geocoding-status i { animation:spin 1s linear infinite; }
         @keyframes spin { 100% { transform:rotate(360deg); } }
+        .mapa-layout { display:flex; gap:20px; height:calc(100vh - 120px); }
+        .mapa-sidebar { width:300px; flex-shrink:0; display:flex; flex-direction:column; gap:16px; overflow-y:auto; }
         @media (max-width:768px) {
-            .mapa-layout { flex-direction:column; }
+            .mapa-layout { flex-direction:column; height:auto; }
             .mapa-sidebar { width:100% !important; max-height:200px; }
-            #leaflet-map { height:calc(100vh - 260px) !important; }
+            #leaflet-map { min-height:400px; }
         }
     </style>
 </head>
@@ -108,9 +110,9 @@
                 </div>
             </header>
 
-            <div class="page-content mapa-layout" style="display:flex; gap:20px; height:calc(100vh - 120px);">
+            <div class="page-content mapa-layout">
                 <!-- Sidebar do mapa -->
-                <div class="mapa-sidebar" style="width:300px; flex-shrink:0; display:flex; flex-direction:column; gap:16px; overflow-y:auto;">
+                <div class="mapa-sidebar">
                     <!-- Busca no mapa -->
                     <div class="card">
                         <div class="card-header"><div class="card-title" style="font-size:14px;"><i class="fas fa-search" style="margin-right:6px;"></i> Buscar no Mapa</div></div>
