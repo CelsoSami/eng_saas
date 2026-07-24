@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 * {
     margin: 0;
@@ -44,18 +44,18 @@ body {
     min-height: 100vh;
 }
 
-/* â”€â”€â”€ Scrollbar â”€â”€â”€ */
+/* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
 
-/* â”€â”€â”€ Layout Principal â”€â”€â”€ */
+/* ─── Layout Principal ─── */
 .app-layout {
     display: flex;
     min-height: 100vh;
 }
 
-/* â”€â”€â”€ Sidebar â”€â”€â”€ */
+/* ─── Sidebar ─── */
 .sidebar {
     width: var(--sidebar-width);
     height: 100vh;
@@ -219,7 +219,7 @@ body {
     font-family: 'JetBrains Mono', monospace;
 }
 
-/* â”€â”€â”€ Main Content â”€â”€â”€ */
+/* ─── Main Content ─── */
 .main-content {
     flex: 1;
     margin-left: var(--sidebar-width);
@@ -228,7 +228,7 @@ body {
     flex-direction: column;
 }
 
-/* â”€â”€â”€ Top Header â”€â”€â”€ */
+/* ─── Top Header ─── */
 .top-header {
     height: var(--header-height);
     background: rgba(6, 6, 14, 0.8);
@@ -345,13 +345,13 @@ body {
     border: 2px solid var(--bg-primary);
 }
 
-/* â”€â”€â”€ Page Content â”€â”€â”€ */
+/* ─── Page Content ─── */
 .page-content {
     flex: 1;
     padding: 32px;
 }
 
-/* â”€â”€â”€ Cards â”€â”€â”€ */
+/* ─── Cards ─── */
 .card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -383,7 +383,7 @@ body {
     margin-top: 4px;
 }
 
-/* â”€â”€â”€ Stats Grid â”€â”€â”€ */
+/* ─── Stats Grid ─── */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -466,7 +466,7 @@ body {
     color: var(--neon-red);
 }
 
-/* â”€â”€â”€ Search Section â”€â”€â”€ */
+/* ─── Search Section ─── */
 .search-section {
     margin-bottom: 32px;
 }
@@ -540,7 +540,7 @@ body {
     color: var(--text-primary);
 }
 
-/* â”€â”€â”€ Buttons â”€â”€â”€ */
+/* ─── Buttons ─── */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -599,7 +599,7 @@ body {
     font-size: 15px;
 }
 
-/* â”€â”€â”€ Tables â”€â”€â”€ */
+/* ─── Tables ─── */
 .table-container {
     overflow-x: auto;
 }
@@ -636,7 +636,7 @@ body {
     font-weight: 500;
 }
 
-/* â”€â”€â”€ Tags/Badges â”€â”€â”€ */
+/* ─── Tags/Badges ─── */
 .tag {
     display: inline-flex;
     align-items: center;
@@ -672,7 +672,7 @@ body {
     color: var(--neon-beige);
 }
 
-/* â”€â”€â”€ Grid Layouts â”€â”€â”€ */
+/* ─── Grid Layouts ─── */
 .grid-2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -691,7 +691,7 @@ body {
     gap: 20px;
 }
 
-/* â”€â”€â”€ Map Container â”€â”€â”€ */
+/* ─── Map Container ─── */
 .map-container {
     width: 100%;
     height: 500px;
@@ -701,14 +701,14 @@ body {
     background: var(--bg-secondary);
 }
 
-/* â”€â”€â”€ Charts Container â”€â”€â”€ */
+/* ─── Charts Container ─── */
 .chart-container {
     width: 100%;
     height: 300px;
     position: relative;
 }
 
-/* â”€â”€â”€ Modal â”€â”€â”€ */
+/* ─── Modal ─── */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -790,7 +790,7 @@ body {
     border-top: 1px solid var(--border);
 }
 
-/* â”€â”€â”€ Forms â”€â”€â”€ */
+/* ─── Forms ─── */
 .form-group {
     margin-bottom: 20px;
 }
@@ -836,7 +836,7 @@ body {
     margin-top: 6px;
 }
 
-/* â”€â”€â”€ Progress Bar â”€â”€â”€ */
+/* ─── Progress Bar ─── */
 .progress-bar {
     width: 100%;
     height: 8px;
@@ -871,7 +871,7 @@ body {
     background: var(--neon-beige);
 }
 
-/* â”€â”€â”€ Tabs â”€â”€â”€ */
+/* ─── Tabs ─── */
 .tabs {
     display: flex;
     gap: 4px;
@@ -903,7 +903,7 @@ body {
     color: var(--neon-blue);
 }
 
-/* â”€â”€â”€ Alert Banners â”€â”€â”€ */
+/* ─── Alert Banners ─── */
 .alert {
     display: flex;
     align-items: center;
@@ -938,7 +938,7 @@ body {
     border: 1px solid rgba(0, 255, 65, 0.2);
 }
 
-/* â”€â”€â”€ Empty State â”€â”€â”€ */
+/* ─── Empty State ─── */
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -969,7 +969,7 @@ body {
     margin-bottom: 24px;
 }
 
-/* â”€â”€â”€ Quota Bar â”€â”€â”€ */
+/* ─── Quota Bar ─── */
 .quota-bar {
     display: flex;
     align-items: center;
@@ -997,7 +997,7 @@ body {
     font-family: 'JetBrains Mono', monospace;
 }
 
-/* â”€â”€â”€ Login Page â”€â”€â”€ */
+/* ─── Login Page ─── */
 .login-page {
     min-height: 100vh;
     display: flex;
@@ -1103,7 +1103,7 @@ body {
     text-decoration: underline;
 }
 
-/* â”€â”€â”€ Pricing Cards â”€â”€â”€ */
+/* ─── Pricing Cards ─── */
 .pricing-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1202,7 +1202,7 @@ body {
     color: var(--text-muted);
 }
 
-/* â”€â”€â”€ Responsive â”€â”€â”€ */
+/* ─── Responsive ─── */
 @media (max-width: 1200px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1244,7 +1244,7 @@ body {
     }
 }
 
-/* â”€â”€â”€ Animations â”€â”€â”€ */
+/* ─── Animations ─── */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -1268,7 +1268,7 @@ body {
     animation: slideUp .5s ease forwards;
 }
 
-/* â”€â”€â”€ Utility â”€â”€â”€ */
+/* ─── Utility ─── */
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .text-muted { color: var(--text-muted); }
@@ -1289,11 +1289,11 @@ body {
 .justify-between { justify-content: space-between; }
 .w-full { width: 100%; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   LANDING PAGE (ls-*) â€” Dark Premium Theme
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ═══════════════════════════════════════════════════════════════
+   LANDING PAGE (ls-*) — Dark Premium Theme
+   ═══════════════════════════════════════════════════════════════ */
 
-/* â”€â”€â”€ Landing Page Variables â”€â”€â”€ */
+/* ─── Landing Page Variables ─── */
 :root {
     --ls-bg: #0E1525;
     --ls-surface: #19243C;
@@ -1309,7 +1309,7 @@ body {
     --ls-maxw: 1180px;
 }
 
-/* â”€â”€â”€ Reset landing overrides â”€â”€â”€ */
+/* ─── Reset landing overrides ─── */
 .ls-header, .ls-hero, .ls-section, .ls-cta-section, .ls-footer {
     font-family: 'Inter', sans-serif;
     color: var(--ls-body);
@@ -1321,7 +1321,7 @@ body {
     padding: 0 32px;
 }
 
-/* â”€â”€â”€ Header â”€â”€â”€ */
+/* ─── Header ─── */
 .ls-header {
     position: fixed;
     top: 0;
@@ -1395,7 +1395,7 @@ body {
     cursor: pointer;
 }
 
-/* â”€â”€â”€ Buttons â”€â”€â”€ */
+/* ─── Buttons ─── */
 .ls-btn {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -1453,7 +1453,7 @@ body {
     justify-content: center;
 }
 
-/* â”€â”€â”€ Hero â”€â”€â”€ */
+/* ─── Hero ─── */
 .ls-hero {
     position: relative;
     padding: 160px 0 100px;
@@ -1547,7 +1547,7 @@ body {
     color: var(--ls-muted);
 }
 
-/* â”€â”€â”€ Sections â”€â”€â”€ */
+/* ─── Sections ─── */
 .ls-section {
     padding: 84px 0;
     background: var(--ls-bg);
@@ -1577,7 +1577,7 @@ body {
     margin: 0 auto;
 }
 
-/* â”€â”€â”€ Feature Cards â”€â”€â”€ */
+/* ─── Feature Cards ─── */
 .ls-features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -1628,7 +1628,7 @@ body {
     color: var(--ls-body);
 }
 
-/* â”€â”€â”€ Steps â”€â”€â”€ */
+/* ─── Steps ─── */
 .ls-steps {
     display: flex;
     align-items: flex-start;
@@ -1671,7 +1671,7 @@ body {
     margin-top: 30px;
 }
 
-/* â”€â”€â”€ Pricing â”€â”€â”€ */
+/* ─── Pricing ─── */
 .ls-pricing-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1772,7 +1772,7 @@ body {
     color: var(--ls-muted);
 }
 
-/* â”€â”€â”€ FAQ â”€â”€â”€ */
+/* ─── FAQ ─── */
 .ls-faq-list {
     max-width: 720px;
     margin: 0 auto;
@@ -1815,7 +1815,7 @@ body {
 }
 
 .ls-faq-item[open] summary::after {
-    content: 'âˆ’';
+    content: '−';
 }
 
 .ls-faq-item p {
@@ -1825,7 +1825,7 @@ body {
     color: var(--ls-body);
 }
 
-/* â”€â”€â”€ CTA Section â”€â”€â”€ */
+/* ─── CTA Section ─── */
 .ls-cta-section {
     position: relative;
     padding: 100px 0;
@@ -1866,7 +1866,7 @@ body {
     margin-right: auto;
 }
 
-/* â”€â”€â”€ Footer â”€â”€â”€ */
+/* ─── Footer ─── */
 .ls-footer {
     padding: 64px 0 0;
     background: var(--ls-bg);
@@ -1931,7 +1931,7 @@ body {
     color: var(--ls-gold);
 }
 
-/* â”€â”€â”€ Modal â”€â”€â”€ */
+/* ─── Modal ─── */
 .ls-modal-overlay {
     position: fixed;
     inset: 0;
@@ -2079,12 +2079,8 @@ body {
     color: var(--ls-gold-soft);
 }
 
-/* â”€â”€â”€ Login Page Legacy Override â”€â”€â”€ */
-.login-page {
-    display: none;
-}
 
-/* â”€â”€â”€ Responsive â”€â”€â”€ */
+/* ─── Responsive ─── */
 @media (max-width: 768px) {
     .ls-nav {
         display: none;
@@ -2161,4 +2157,4 @@ body {
     .ls-container {
         padding: 0 20px;
     }
-}
+}
