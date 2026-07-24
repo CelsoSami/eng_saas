@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Análise de Terreno - TerraeScope</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -36,7 +36,6 @@
                     <div class="nav-section-title">Conta</div>
                     <a href="assinatura.html" class="nav-item"><span class="icon"><i class="fas fa-crown"></i></span> Assinatura</a>
                     <a href="config.html" class="nav-item"><span class="icon"><i class="fas fa-cog"></i></span> Configurações</a>
-                    <a href="#" class="nav-item" onclick="event.preventDefault(); license.logout();"><span class="icon"><i class="fas fa-sign-out-alt"></i></span> Sair</a>
                 </div>
             </nav>
             <div class="sidebar-footer">
@@ -222,15 +221,15 @@
     <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="db.js"></script>
-    <script src="license.js"></script>
+    <script src="../js/db.js"></script>
+    <script src="../js/license.js"></script>
     <script>
         let terrenoAtual = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await db.init();
             const sessao = await license.verificarSessao();
-            if (!sessao) { window.location.href = 'index.html'; return; }
+            if (!sessao) { window.location.href = '../index.html'; return; }
             updateUserUI();
             checkResponsive();
 
@@ -267,7 +266,7 @@
             document.getElementById('a-area').textContent = terrenoAtual.area ? terrenoAtual.area + ' m²' : '—';
             document.getElementById('a-matricula').textContent = terrenoAtual.matricula || '—';
             document.getElementById('a-cep').textContent = terrenoAtual.cep || '—';
-            document.getElementById('a-valor').textContent = (terrenoAtual.valor_mercado || terrenoAtual.valorMercado) ? 'R$ ' + (terrenoAtual.valor_mercado || terrenoAtual.valorMercado).toLocaleString('pt-BR') : '—';
+            document.getElementById('a-valor').textContent = terrenoAtual.valor_mercado ? 'R$ ' + Number(terrenoAtual.valor_mercado).toLocaleString('pt-BR') : '—';
             document.getElementById('a-zona').textContent = terrenoAtual.zona || '—';
             document.getElementById('a-iptu').textContent = terrenoAtual.iptu || 'Consultar prefeitura';
             document.getElementById('a-zona-uso').textContent = terrenoAtual.zona || '—';
@@ -320,8 +319,8 @@
         async function adicionarAoProjeto(projetoId) {
             const projeto = await db.get('projetos', projetoId);
             if (!projeto) return;
-            if (!projeto.terrenoIds) projeto.terrenoIds = [];
-            if (!projeto.terrenoIds.includes(terrenoAtual.id)) { projeto.terrenoIds.push(terrenoAtual.id); await db.update('projetos', projeto); }
+            if (!projeto.terreno_ids) projeto.terreno_ids = [];
+            if (!projeto.terreno_ids.includes(terrenoAtual.id)) { projeto.terreno_ids.push(terrenoAtual.id); await db.update('projetos', projeto); }
             showAlert('Terreno adicionado ao projeto!', 'success');
             fecharModal('modal-projeto');
         }
