@@ -6,6 +6,12 @@
     <title>Buscar Terrenos - TerraeScope</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .comp-suggestions { position:absolute; top:100%; left:0; right:0; background:var(--bg-secondary); border:1px solid var(--border); border-radius:0 0 10px 10px; max-height:240px; overflow-y:auto; z-index:10; display:none; }
+        .comp-suggestion { padding:8px 12px; font-size:12px; cursor:pointer; border-bottom:1px solid var(--border); transition:.1s; }
+        .comp-suggestion:last-child { border-bottom:none; }
+        .comp-suggestion:hover { background:var(--neon-blue-dim); color:var(--neon-blue); }
+    </style>
 </head>
 <body>
     <div class="app-layout">
@@ -83,9 +89,12 @@
                         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;">
                             <div style="flex:1;min-width:240px;">
                                 <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Endereço do terreno</label>
-                                <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg-tertiary);">
-                                    <input type="text" id="buscaEndereco" placeholder="Ex: Rua Marques de Lavradio, 499" style="border:0;outline:0;padding:12px 14px;font-size:15px;flex:1;min-width:0;background:transparent;color:var(--text-primary);">
-                                    <button onclick="buscaLocalizar()" style="border:0;background:var(--neon-blue);color:#0a1628;padding:0 22px;font-weight:800;cursor:pointer;"><i class="fas fa-search"></i> Localizar</button>
+                                <div style="position:relative;">
+                                    <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg-tertiary);">
+                                        <input type="text" id="buscaEndereco" placeholder="Ex: Rua Marques de Lavradio, 499" autocomplete="off" style="border:0;outline:0;padding:12px 14px;font-size:15px;flex:1;min-width:0;background:transparent;color:var(--text-primary);">
+                                        <button onclick="buscaLocalizar()" style="border:0;background:var(--neon-blue);color:#0a1628;padding:0 22px;font-weight:800;cursor:pointer;"><i class="fas fa-search"></i> Localizar</button>
+                                    </div>
+                                    <div id="buscaSuggestions" class="comp-suggestions" style="position:absolute;top:100%;left:0;right:0;background:var(--bg-secondary);border:1px solid var(--border);border-radius:0 0 10px 10px;max-height:240px;overflow-y:auto;z-index:10;display:none;"></div>
                                 </div>
                                 <div id="buscaStatus" style="font-size:12px;color:var(--text-muted);margin-top:6px;">Digite um endereço de Campo Grande - MS para consultar os índices urbanísticos.</div>
                             </div>
@@ -299,7 +308,36 @@
                 });
             });
 
-            document.getElementById('buscaEndereco').addEventListener('keydown', function(e) {
+            // Autocomplete de logradouros
+            const endInput = document.getElementById('buscaEndereco');
+            const sugBox = document.getElementById('buscaSuggestions');
+
+            endInput.addEventListener('input', function() {
+                const q = normalize(this.value);
+                if (!q || this.value.length < 2) { sugBox.style.display = 'none'; return; }
+                const logradouros = (window.URB1_MAP_DATA?.logradouros || [])
+                    .filter(l => normalize(l.nome).includes(q))
+                    .slice(0, 10);
+                if (!logradouros.length) { sugBox.style.display = 'none'; return; }
+                sugBox.innerHTML = logradouros.map(l =>
+                    '<div class="comp-suggestion" data-value="' + l.nome + '">' + l.nome + '<br><small style="color:var(--text-muted);font-size:10px;">' + (l.ceps ? 'CEP ' + l.ceps.join(', ') : '') + '</small></div>'
+                ).join('');
+                sugBox.style.display = '';
+            });
+
+            sugBox.addEventListener('click', function(e) {
+                const div = e.target.closest('.comp-suggestion');
+                if (!div) return;
+                endInput.value = div.dataset.value;
+                sugBox.style.display = 'none';
+                buscaLocalizar();
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!endInput.contains(e.target) && !sugBox.contains(e.target)) sugBox.style.display = 'none';
+            });
+
+            endInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') { e.preventDefault(); buscaLocalizar(); }
             });
         }
