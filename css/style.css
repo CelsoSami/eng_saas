@@ -2413,6 +2413,22 @@ body {
   background: var(--neon-blue-dim); color: var(--neon-blue);
   padding: 7px 12px; border-radius: 999px; font-size: 11px; font-weight: 900; white-space: nowrap;
 }
+.urb1-type-buttons {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+}
+.urb1-type-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-tertiary); color: var(--text-primary); cursor: pointer;
+  transition: all .2s; text-align: left; font-family: inherit;
+}
+.urb1-type-btn:hover { border-color: var(--neon-blue); background: var(--neon-blue-dim); }
+.urb1-type-btn.active { border-color: var(--neon-blue); background: var(--neon-blue-dim); box-shadow: 0 0 0 1px var(--neon-blue); }
+.urb1-type-btn svg { width: 18px; height: 18px; color: var(--neon-blue); margin-bottom: 4px; }
+.urb1-type-btn-label { font-size: 13px; font-weight: 800; }
+.urb1-type-btn-count { font-size: 10px; color: var(--text-muted); }
+@media (max-width: 600px) { .urb1-type-buttons { grid-template-columns: repeat(2,1fr); } }
+
 .urb1-activity-summary {
   background: var(--bg-tertiary); border-radius: 9px; padding: 11px;
   margin-top: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);

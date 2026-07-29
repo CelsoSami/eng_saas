@@ -237,12 +237,16 @@
 
                       <div class="urb1-form-section">
                         <h3>2. O que você pretende fazer?</h3>
-                        <p>Escolha a categoria mais próxima. A descrição traz exemplos e o porte previsto na lei.</p>
+                        <p>Primeiro escolha o tipo geral de construção. Depois selecione uma das atividades disponíveis dentro dele.</p>
                         <div class="urb1-fields">
                           <div class="urb1-field full">
-                            <label for="urb1UseCategory">Categoria e atividade</label>
-                            <select id="urb1UseCategory"><option value="">Selecione uma atividade</option></select>
-                            <div class="urb1-activity-summary" id="urb1ActivitySummary">Selecione uma categoria para ver os exemplos e limites.</div>
+                            <label>Tipo de construção</label>
+                            <div class="urb1-type-buttons" id="urb1TypeButtons"></div>
+                          </div>
+                          <div class="urb1-field full">
+                            <label for="urb1UseCategory">Atividade específica e porte</label>
+                            <select id="urb1UseCategory"><option value="">Escolha primeiro o tipo de construção</option></select>
+                            <div class="urb1-activity-summary" id="urb1ActivitySummary">Escolha um tipo acima para visualizar as atividades correspondentes.</div>
                           </div>
                           <div class="urb1-field">
                             <label for="urb1BuiltArea">Área que pretende construir</label>
@@ -549,19 +553,43 @@
                 bairroSelect.appendChild(opt);
             });
 
-            const catSelect = document.getElementById('urb1UseCategory');
             const groups = URB1.listCategoriesByGroup();
-            Object.keys(groups).forEach(group => {
-                const og = document.createElement('optgroup');
-                og.label = group;
-                groups[group].forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.code; opt.textContent = `${c.code} · ${c.porte}`;
-                    opt.dataset.desc = c.description;
-                    og.appendChild(opt);
+            const groupKeys = Object.keys(groups);
+            const groupLabel = { 'Especial': 'Usos especiais' };
+            const groupIcons = {
+                'Residencial': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+                'Comércio varejista': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+                'Comércio atacadista': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+                'Serviços': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+                'Industrial': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22V2l8 6V2l10 8v12"/><line x1="2" y1="22" x2="22" y2="22"/></svg>',
+                'Especial': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
+            };
+            const btnContainer = document.getElementById('urb1TypeButtons');
+            groupKeys.forEach(group => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'urb1-type-btn';
+                const label = groupLabel[group] || group;
+                btn.innerHTML = `${groupIcons[group] || ''}<span class="urb1-type-btn-label">${label}</span><span class="urb1-type-btn-count">${groups[group].length} atividades</span>`;
+                btn.dataset.group = group;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.urb1-type-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const catSelect = document.getElementById('urb1UseCategory');
+                    catSelect.innerHTML = '<option value="">Selecione uma atividade</option>';
+                    groups[group].forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.code;
+                        opt.textContent = `${c.code} · ${c.porte}`;
+                        opt.dataset.desc = c.description;
+                        catSelect.appendChild(opt);
+                    });
+                    document.getElementById('urb1ActivitySummary').textContent = 'Selecione uma categoria para ver os exemplos e limites.';
                 });
-                catSelect.appendChild(og);
+                btnContainer.appendChild(btn);
             });
+
+            const catSelect = document.getElementById('urb1UseCategory');
 
             // Parking rules
             const parkSelect = document.getElementById('urb1ParkingRule');
