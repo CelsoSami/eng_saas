@@ -84,13 +84,13 @@
                     <div class="comp-input-group" id="inputsContainer">
                         <div class="comp-input-wrap">
                             <label class="form-label" id="label1">Bairro 1</label>
-                            <input type="text" class="form-input" id="input1" placeholder="Digite o nome do bairro..." autocomplete="off">
-                            <div class="comp-suggestions" id="suggestions1"></div>
+                            <input type="text" class="form-input" id="input1" placeholder="Digite o nome do bairro..." autocomplete="off" list="compDatalist1">
+                            <datalist id="compDatalist1"></datalist>
                         </div>
                         <div class="comp-input-wrap">
                             <label class="form-label" id="label2">Bairro 2</label>
-                            <input type="text" class="form-input" id="input2" placeholder="Digite o nome do bairro..." autocomplete="off">
-                            <div class="comp-suggestions" id="suggestions2"></div>
+                            <input type="text" class="form-input" id="input2" placeholder="Digite o nome do bairro..." autocomplete="off" list="compDatalist2">
+                            <datalist id="compDatalist2"></datalist>
                         </div>
                     </div>
                     <div style="text-align:right;">
@@ -118,7 +118,6 @@
     <script>
         let modoAtual = 'bairro';
         let todosTerrenos = [];
-        let selBairros = [];
 
         function normalize(text) {
             return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
@@ -128,15 +127,24 @@
             return String(v).replace('.',',');
         }
 
+        function recarregarDatalists() {
+            const dl1 = document.getElementById('compDatalist1');
+            const dl2 = document.getElementById('compDatalist2');
+            const items = modoAtual === 'bairro'
+                ? URB1.listarBairros()
+                : todosTerrenos.map(t => t.logradouro || 'Terreno ' + t.id);
+            const opts = items.map(v => '<option value="' + v + '">').join('');
+            dl1.innerHTML = opts;
+            dl2.innerHTML = opts;
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             await db.init();
             const sessao = await license.verificarSessao();
             if (!sessao) { window.location.href = '../index.html'; return; }
             updateUserUI();
             todosTerrenos = await db.getAll('terrenos');
-            const lista = URB1.listarBairros();
-            selBairros = lista.map(n => { const b = URB1.consultarBairro(n); return { nome: n, z: b ? b.z : '' }; });
-            initAutocomplete();
+            recarregarDatalists();
             checkResponsive();
         });
 
@@ -159,59 +167,10 @@
             document.getElementById('label2').textContent = modo === 'bairro' ? 'Bairro 2' : 'Terreno 2';
             document.getElementById('input1').value = '';
             document.getElementById('input2').value = '';
-            document.getElementById('suggestions1').style.display = 'none';
-            document.getElementById('suggestions2').style.display = 'none';
             document.getElementById('input1').placeholder = modo === 'bairro' ? 'Digite o nome do bairro...' : 'Digite o endereco do terreno...';
             document.getElementById('input2').placeholder = modo === 'bairro' ? 'Digite o nome do bairro...' : 'Digite o endereco do terreno...';
+            recarregarDatalists();
             document.getElementById('comparativo-container').innerHTML = '<div class="empty-state" style="padding:60px 20px;"><div class="empty-state-icon"><i class="fas fa-balance-scale"></i></div><h3>Compare ' + (modo === 'bairro' ? 'bairros' : 'terrenos') + '</h3><p>Preencha os dois campos acima e clique em Comparar</p></div>';
-        }
-
-        function initAutocomplete() {
-            const input1 = document.getElementById('input1');
-            const input2 = document.getElementById('input2');
-            const sug1 = document.getElementById('suggestions1');
-            const sug2 = document.getElementById('suggestions2');
-
-            function buildHandler(input, sug) {
-                let timer;
-                input.addEventListener('input', function() {
-                    clearTimeout(timer);
-                    timer = setTimeout(() => {
-                        const q = normalize(this.value);
-                        if (!q || this.value.length < 2) { sug.style.display = 'none'; return; }
-                        let items;
-                        if (modoAtual === 'bairro') {
-                            items = selBairros.filter(b => normalize(b.nome).includes(q)).slice(0, 10);
-                        } else {
-                            items = todosTerrenos.filter(t => normalize(t.logradouro || t.cidade || '').includes(q)).slice(0, 10);
-                        }
-                        if (!items.length) { sug.style.display = 'none'; return; }
-                        sug.innerHTML = items.map(item => {
-                            if (modoAtual === 'bairro') {
-                                return '<div class="comp-suggestion" data-value="' + item.nome + '">' + item.nome + '<small>Zona ' + item.z + '</small></div>';
-                            } else {
-                                return '<div class="comp-suggestion" data-value="' + (item.logradouro || 'Terreno ' + item.id) + '" data-id="' + item.id + '">' + (item.logradouro || 'Terreno ' + item.id) + '<small>' + (item.cidade || '') + '</small></div>';
-                            }
-                        }).join('');
-                        sug.style.display = 'block';
-                    }, 150);
-                });
-
-                sug.addEventListener('click', function(e) {
-                    const div = e.target.closest('.comp-suggestion');
-                    if (!div) return;
-                    input.value = div.dataset.value;
-                    input.dataset.id = div.dataset.id || '';
-                    sug.style.display = 'none';
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (!input.contains(e.target) && !sug.contains(e.target)) sug.style.display = 'none';
-                });
-            }
-
-            buildHandler(input1, sug1);
-            buildHandler(input2, sug2);
         }
 
         function comparar() {

@@ -48,8 +48,16 @@
         .map-uses-group { margin-bottom:10px; }
         .map-uses-group-title { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--neon-blue); margin-bottom:4px; }
         .map-uses-codes { display:flex; flex-wrap:wrap; gap:4px; }
-        .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:default; transition:background .15s,border-color .15s; }
+        .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:pointer; transition:background .15s,border-color .15s; position:relative; }
         .map-uses-code:hover { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
+        .map-uses-code.pinned { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
+
+        .map-uses-tooltip { display:none; position:fixed; z-index:9999; background:#1a1f2e; border:1px solid var(--neon-blue); border-radius:8px; padding:10px 14px; font-size:12px; line-height:1.5; color:var(--text-primary); max-width:320px; box-shadow:0 8px 32px rgba(0,0,0,.5); pointer-events:auto; }
+        .map-uses-tooltip .tt-close { position:absolute; top:4px; right:6px; font-size:14px; color:var(--text-muted); cursor:pointer; border:0; background:0; padding:2px 6px; }
+        .map-uses-tooltip .tt-close:hover { color:var(--text-primary); }
+        .map-uses-tooltip .tt-code { font-weight:800; color:var(--neon-blue); margin-bottom:2px; }
+        .map-uses-tooltip .tt-desc { color:var(--text-primary); margin-bottom:2px; }
+        .map-uses-tooltip .tt-porte { color:var(--text-muted); font-size:10px; }
 
         @media print {
             .map-uses-code { border:1px solid #aaa; background:#f5f5f5; color:#1a1a1a; }
@@ -171,6 +179,7 @@
                                 <div class="map-uses-section-title">Usos e atividades indicados</div>
                                 <div class="map-uses-section-sub" id="resultUsesSub">passe o mouse ou toque em um código</div>
                                 <div id="resultUses"></div>
+                                <div class="map-uses-tooltip" id="usesTooltip"><button class="tt-close" onclick="fecharTooltip()">&times;</button><div class="tt-code" id="ttCode"></div><div class="tt-desc" id="ttDesc"></div><div class="tt-porte" id="ttPorte"></div></div>
                             </div>
                             <div class="map-warning" id="resultWarning"></div>
                             <div style="margin-top:12px; text-align:right;">
@@ -205,16 +214,61 @@
             return String(v).replace('.',',');
         }
 
-        function wrapTooltip(text, maxLen) {
-            if (!text || text.length <= maxLen) return text;
-            const words = text.split(' ');
-            let lines = [], line = '';
-            words.forEach(w => {
-                if ((line + w).length >= maxLen) { lines.push(line.trim()); line = w + ' '; }
-                else { line += w + ' '; }
+        document.addEventListener('click', function(e) {
+            const tp = document.getElementById('usesTooltip');
+            if (tp && tp.style.display === 'block' && !e.target.closest('.map-uses-code') && !e.target.closest('#usesTooltip')) {
+                fecharTooltip();
+            }
+        });
+
+        let _tooltipPinned = false;
+
+        function mostrarTooltip(el) {
+            const tp = document.getElementById('usesTooltip');
+            document.getElementById('ttCode').textContent = el.dataset.code;
+            document.getElementById('ttDesc').textContent = el.dataset.desc;
+            document.getElementById('ttPorte').textContent = 'Porte: ' + el.dataset.porte;
+            const rect = el.getBoundingClientRect();
+            const top = rect.bottom + 6;
+            const left = Math.min(rect.left, window.innerWidth - 330);
+            tp.style.left = left + 'px';
+            tp.style.top = top + 'px';
+            tp.style.display = 'block';
+        }
+
+        function esconderTooltip() {
+            if (_tooltipPinned) return;
+            document.getElementById('usesTooltip').style.display = 'none';
+        }
+
+        function fecharTooltip() {
+            _tooltipPinned = false;
+            document.getElementById('usesTooltip').style.display = 'none';
+        }
+
+        function setupTooltipEvents() {
+            const container = document.getElementById('resultUses');
+            if (!container) return;
+
+            container.addEventListener('mouseover', function(e) {
+                const el = e.target.closest('.map-uses-code');
+                if (el) { mostrarTooltip(el); }
             });
-            if (line.trim()) lines.push(line.trim());
-            return lines.join('&#10;');
+
+            container.addEventListener('mouseout', function(e) {
+                const el = e.target.closest('.map-uses-code');
+                if (el) { esconderTooltip(); }
+            });
+
+            container.addEventListener('click', function(e) {
+                const el = e.target.closest('.map-uses-code');
+                if (el) {
+                    _tooltipPinned = !_tooltipPinned;
+                    document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('pinned'));
+                    if (_tooltipPinned) { el.classList.add('pinned'); mostrarTooltip(el); }
+                    else { fecharTooltip(); }
+                }
+            });
         }
 
         function ringContains(point, ring) {
@@ -330,10 +384,11 @@
                     const cats = grupos[g];
                     if (!cats || !cats.length) return '';
                     return '<div class="map-uses-group"><div class="map-uses-group-title">' + g + '</div><div class="map-uses-codes">' +
-                        cats.map(c => '<span class="map-uses-code" title="' + wrapTooltip(c.description + ' · Porte: ' + c.porte, 70) + '">' + c.code + '</span>').join('') +
+                        cats.map(c => '<span class="map-uses-code" data-code="' + c.code + '" data-desc="' + c.description.replace(/"/g,'&quot;') + '" data-porte="' + c.porte.replace(/"/g,'&quot;') + '">' + c.code + '</span>').join('') +
                         '</div></div>';
                 }).join('');
                 usesEl.style.display = '';
+                setupTooltipEvents();
             } else {
                 usesEl.style.display = 'none';
             }
