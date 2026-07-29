@@ -48,17 +48,20 @@
         .map-uses-group { margin-bottom:10px; }
         .map-uses-group-title { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--neon-blue); margin-bottom:4px; }
         .map-uses-codes { display:flex; flex-wrap:wrap; gap:4px; }
-        .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:default; transition:background .15s,border-color .15s; }
-        .map-uses-code { cursor:pointer; }
+        .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:pointer; transition:background .15s,border-color .15s; }
         .map-uses-code:hover { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
-        .map-uses-code.pinned { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
+        .map-uses-code.selected { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
 
-        .map-uses-tooltip { display:none; position:fixed; z-index:99999; background:#1a1f2e; border:1px solid var(--neon-blue); border-radius:8px; padding:10px 14px; font-size:12px; line-height:1.5; color:var(--text-primary); max-width:320px; box-shadow:0 8px 32px rgba(0,0,0,.5); pointer-events:auto; }
-        .map-uses-tooltip .tt-close { position:absolute; top:4px; right:6px; font-size:14px; color:var(--text-muted); cursor:pointer; border:0; background:0; padding:2px 6px; }
-        .map-uses-tooltip .tt-close:hover { color:var(--text-primary); }
-        .map-uses-tooltip .tt-code { font-weight:800; color:var(--neon-blue); margin-bottom:2px; }
-        .map-uses-tooltip .tt-desc { color:var(--text-primary); margin-bottom:2px; }
-        .map-uses-tooltip .tt-porte { color:var(--text-muted); font-size:10px; }
+        .map-desc-panel { display:none; margin-top:12px; background:var(--bg-tertiary); border:1px solid var(--neon-blue); border-radius:10px; padding:14px 16px; animation:slideUp .2s ease both; }
+        .map-desc-panel.active { display:block; }
+        .map-desc-panel-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+        .map-desc-panel-code { font-weight:800; font-size:15px; color:var(--neon-blue); }
+        .map-desc-panel-close { border:0; background:0; color:var(--text-muted); font-size:20px; cursor:pointer; padding:0 4px; line-height:1; }
+        .map-desc-panel-close:hover { color:var(--text-primary); }
+        .map-desc-panel-desc { color:var(--text-primary); font-size:13px; line-height:1.6; }
+        .map-desc-panel-meta { color:var(--text-muted); font-size:11px; margin-top:6px; }
+
+        @keyframes slideUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
         @media print {
             .map-uses-code { border:1px solid #aaa; background:#f5f5f5; color:#1a1a1a; }
@@ -178,8 +181,7 @@
                             <div class="map-data-grid" id="resultDataGrid"></div>
                             <div class="map-uses-section" id="resultUsesSection" style="display:none;">
                                 <div class="map-uses-section-title">Usos e atividades indicados</div>
-                                <div class="map-uses-section-sub" id="resultUsesSub">passe o mouse ou toque em um código</div>
-                                <div class="map-uses-tooltip" id="usesTooltip"><button class="tt-close" onclick="fecharTooltip()">&times;</button><div class="tt-code" id="ttCode"></div><div class="tt-desc" id="ttDesc"></div><div class="tt-porte" id="ttPorte"></div></div>
+                                 <div class="map-uses-section-sub" id="resultUsesSub">clique em um código para ver a descrição</div>
                                 <div id="resultUses"></div>
                             </div>
                             <div class="map-uses-section" id="resultEnvSection" style="display:none;">
@@ -187,6 +189,13 @@
                                 <div class="map-uses-section-sub">parâmetros ambientais do perímetro</div>
                                 <div id="resultEnv"></div>
                             </div>
+                            <div class="map-desc-panel" id="descPanel">
+                                <div class="map-desc-panel-top">
+                                    <span class="map-desc-panel-code" id="descPanelCode"></span>
+                                    <button class="map-desc-panel-close" onclick="fecharDescPainel()">&times;</button>
+                                </div>
+                                <div class="map-desc-panel-desc" id="descPanelDesc"></div>
+                                <div class="map-desc-panel-meta" id="descPanelMeta"></div>
                             </div>
                             <div class="map-warning" id="resultWarning"></div>
                             <div style="margin-top:12px; text-align:right;">
@@ -221,65 +230,24 @@
             return String(v).replace('.',',');
         }
 
-        let _tooltipPinned = false;
-        let _mouseX = 0, _mouseY = 0;
-
-        document.addEventListener('mousemove', function(e) {
-            _mouseX = e.clientX;
-            _mouseY = e.clientY;
-        });
-
-        document.addEventListener('click', function(e) {
-            const tp = document.getElementById('usesTooltip');
-            if (tp && tp.style.display === 'block' && !e.target.closest('.map-uses-code') && !e.target.closest('#usesTooltip')) {
-                fecharTooltip();
-            }
-        });
-
-        function mostrarTooltip(el) {
-            const tp = document.getElementById('usesTooltip');
-            const porteEl = document.getElementById('ttPorte');
-            document.getElementById('ttCode').textContent = el.dataset.code;
-            document.getElementById('ttDesc').textContent = el.dataset.desc;
-            if (el.dataset.porte) {
-                porteEl.textContent = 'Porte: ' + el.dataset.porte;
-                porteEl.style.display = '';
-            } else {
-                porteEl.style.display = 'none';
-            }
-            tp.style.display = 'block';
-            const r = tp.getBoundingClientRect();
-            const w = r.width;
-            const h = r.height;
-            const cx = _mouseX;
-            const cy = _mouseY;
-            let left = cx - w / 2;
-            let top = cy - h - 2;
-            if (left < 2) left = 2;
-            if (left + w > window.innerWidth - 2) left = window.innerWidth - w - 2;
-            if (top < 2) top = cy + 12;
-            tp.style.left = left + 'px';
-            tp.style.top = top + 'px';
+        function mostrarDescPainel(el) {
+            document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('descPanelCode').textContent = el.dataset.code;
+            document.getElementById('descPanelDesc').textContent = el.dataset.desc;
+            document.getElementById('descPanelMeta').textContent = el.dataset.porte ? 'Porte: ' + el.dataset.porte : '';
+            document.getElementById('descPanel').classList.add('active');
         }
 
-        function esconderTooltip() {
-            if (_tooltipPinned) return;
-            document.getElementById('usesTooltip').style.display = 'none';
-        }
-
-        function fecharTooltip() {
-            _tooltipPinned = false;
-            document.getElementById('usesTooltip').style.display = 'none';
+        function fecharDescPainel() {
+            document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('selected'));
+            document.getElementById('descPanel').classList.remove('active');
         }
 
         function anexarEventosBadge(badge) {
-            badge.addEventListener('mouseenter', function(e) { mostrarTooltip(this); });
-            badge.addEventListener('mouseleave', function(e) { esconderTooltip(); });
             badge.addEventListener('click', function(e) {
-                _tooltipPinned = !_tooltipPinned;
-                document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('pinned'));
-                if (_tooltipPinned) { this.classList.add('pinned'); mostrarTooltip(this); }
-                else { fecharTooltip(); }
+                if (this.classList.contains('selected')) { fecharDescPainel(); }
+                else { mostrarDescPainel(this); }
                 e.stopPropagation();
             });
         }
