@@ -223,14 +223,7 @@
 
         let _tooltipPinned = false;
 
-        let _mouseX = 0, _mouseY = 0;
-
-        document.addEventListener('mousemove', function(e) {
-            _mouseX = e.clientX;
-            _mouseY = e.clientY;
-        });
-
-        function mostrarTooltip(el) {
+        function mostrarTooltip(e, el) {
             const tp = document.getElementById('usesTooltip');
             document.getElementById('ttCode').textContent = el.dataset.code;
             document.getElementById('ttDesc').textContent = el.dataset.desc;
@@ -238,16 +231,16 @@
             tp.style.left = '-999px';
             tp.style.top = '-999px';
             tp.style.display = 'block';
-            tp.style.visibility = 'hidden';
             const w = tp.offsetWidth;
             const h = tp.offsetHeight;
-            let left = _mouseX - w / 2;
-            let top = _mouseY - h - 2;
+            const cx = e.clientX;
+            const cy = e.clientY;
+            let left = cx - w / 2;
+            let top = cy - h - 2;
             if (left < 2) left = 2;
             if (left + w > window.innerWidth - 2) left = window.innerWidth - w - 2;
             tp.style.left = left + 'px';
             tp.style.top = top + 'px';
-            tp.style.visibility = 'visible';
         }
 
         function esconderTooltip() {
@@ -266,7 +259,7 @@
 
             container.addEventListener('mouseover', function(e) {
                 const el = e.target.closest('.map-uses-code');
-                if (el) { mostrarTooltip(el); }
+                if (el) { mostrarTooltip(e, el); }
             });
 
             container.addEventListener('mouseout', function(e) {
@@ -279,7 +272,7 @@
                 if (el) {
                     _tooltipPinned = !_tooltipPinned;
                     document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('pinned'));
-                    if (_tooltipPinned) { el.classList.add('pinned'); mostrarTooltip(el); }
+                    if (_tooltipPinned) { el.classList.add('pinned'); mostrarTooltip(e, el); }
                     else { fecharTooltip(); }
                 }
             });
