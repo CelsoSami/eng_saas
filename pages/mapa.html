@@ -205,6 +205,18 @@
             return String(v).replace('.',',');
         }
 
+        function wrapTooltip(text, maxLen) {
+            if (!text || text.length <= maxLen) return text;
+            const words = text.split(' ');
+            let lines = [], line = '';
+            words.forEach(w => {
+                if ((line + w).length >= maxLen) { lines.push(line.trim()); line = w + ' '; }
+                else { line += w + ' '; }
+            });
+            if (line.trim()) lines.push(line.trim());
+            return lines.join('&#10;');
+        }
+
         function ringContains(point, ring) {
             let inside = false;
             for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
@@ -318,7 +330,7 @@
                     const cats = grupos[g];
                     if (!cats || !cats.length) return '';
                     return '<div class="map-uses-group"><div class="map-uses-group-title">' + g + '</div><div class="map-uses-codes">' +
-                        cats.map(c => '<span class="map-uses-code" title="' + c.description + ' · Porte: ' + c.porte + '">' + c.code + '</span>').join('') +
+                        cats.map(c => '<span class="map-uses-code" title="' + wrapTooltip(c.description + ' · Porte: ' + c.porte, 70) + '">' + c.code + '</span>').join('') +
                         '</div></div>';
                 }).join('');
                 usesEl.style.display = '';
