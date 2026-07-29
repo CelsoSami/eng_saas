@@ -48,9 +48,16 @@
         .map-uses-group { margin-bottom:10px; }
         .map-uses-group-title { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--neon-blue); margin-bottom:4px; }
         .map-uses-codes { display:flex; flex-wrap:wrap; gap:4px; }
-        .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:pointer; transition:background .15s,border-color .15s; }
+        .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:pointer; transition:background .15s,border-color .15s; position:relative; }
         .map-uses-code:hover { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
         .map-uses-code.selected { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
+        .map-uses-code[data-porte]:not([data-porte=""]):hover::after {
+            content:"Porte: " attr(data-porte);
+            position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
+            background:#1a1f2e; color:var(--text-primary); border:1px solid var(--neon-blue);
+            border-radius:6px; padding:4px 10px; font-size:10px; font-weight:600;
+            white-space:nowrap; z-index:10; pointer-events:none; box-shadow:0 4px 12px rgba(0,0,0,.4);
+        }
 
         .map-desc-panel { display:none; margin-top:12px; background:var(--bg-tertiary); border:1px solid var(--neon-blue); border-radius:10px; padding:14px 16px; animation:slideUp .2s ease both; }
         .map-desc-panel.active { display:block; }
