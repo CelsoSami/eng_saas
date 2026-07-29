@@ -827,6 +827,9 @@ body {
 .form-select option {
     background: #1a1f2e; color: var(--text-primary);
 }
+.form-select optgroup {
+    background: #0d1117; color: var(--neon-blue); font-weight: 700; font-size: 12px;
+}
 
 .form-textarea {
     resize: vertical;
@@ -2282,6 +2285,9 @@ body {
 }
 .urb1-field option {
   background: #1a1f2e; color: var(--text-primary);
+}
+.urb1-field optgroup {
+  background: #0d1117; color: var(--neon-blue); font-weight: 700; font-size: 12px;
 }
 .urb1-field input:focus, .urb1-field select:focus {
   border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0,212,255,.08);
