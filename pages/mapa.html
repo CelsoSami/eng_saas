@@ -228,13 +228,19 @@
             document.getElementById('ttCode').textContent = el.dataset.code;
             document.getElementById('ttDesc').textContent = el.dataset.desc;
             document.getElementById('ttPorte').textContent = 'Porte: ' + el.dataset.porte;
+            tp.style.visibility = 'hidden';
             tp.style.display = 'block';
+            void tp.offsetHeight;
             const rect = el.getBoundingClientRect();
             const tpRect = tp.getBoundingClientRect();
-            const top = rect.top - tpRect.height - 8;
-            const left = Math.max(4, Math.min(rect.left + rect.width / 2 - tpRect.width / 2, window.innerWidth - tpRect.width - 4));
+            let top = rect.top - tpRect.height - 8;
+            let left = rect.left + rect.width / 2 - tpRect.width / 2;
+            if (top < 4) top = rect.bottom + 6;
+            if (left < 4) left = 4;
+            if (left + tpRect.width > window.innerWidth - 4) left = window.innerWidth - tpRect.width - 4;
             tp.style.left = left + 'px';
             tp.style.top = top + 'px';
+            tp.style.visibility = 'visible';
         }
 
         function esconderTooltip() {
