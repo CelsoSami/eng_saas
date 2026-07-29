@@ -491,12 +491,14 @@ Vilasboas|Z3|ZA3|0.40|25%|0.50|0.50`;
 
   // ─── API PÚBLICA ───
   return {
+    bairros,
     consultarBairro,
     listarBairros,
     getZoneInfo,
     getCategory,
     listCategoriesByGroup,
     categories,
+    allowed,
     isAllowed,
     calcularPotencial,
     getUsosPorGrupo,
