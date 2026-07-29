@@ -577,16 +577,20 @@
 
             // Search input
             const searchInput = document.getElementById('urb1SearchInput');
+            const sugContainer = document.getElementById('urb1Suggestions');
             searchInput.addEventListener('input', () => {
                 const q = searchInput.value.toLowerCase().trim();
-                const sug = document.getElementById('urb1Suggestions');
-                if (!q) { sug.classList.remove('open'); return; }
+                if (!q) { sugContainer.classList.remove('open'); return; }
                 const matches = URB1.listarBairros().filter(n => n.toLowerCase().includes(q)).slice(0, 8);
-                if (matches.length === 0) { sug.classList.remove('open'); return; }
-                sug.innerHTML = matches.map(n => `<div class="urb1-suggest-item" onclick="urb1SelectBairro('${n}')"><span>${n}</span><small>Campo Grande · MS</small></div>`).join('');
-                sug.classList.add('open');
+                if (matches.length === 0) { sugContainer.classList.remove('open'); return; }
+                sugContainer.innerHTML = matches.map(n => `<div class="urb1-suggest-item" data-nome="${n.replace(/"/g, '&quot;')}"><span>${n}</span><small>Campo Grande · MS</small></div>`).join('');
+                sugContainer.classList.add('open');
             });
-            searchInput.addEventListener('blur', () => setTimeout(() => document.getElementById('urb1Suggestions').classList.remove('open'), 200));
+            sugContainer.addEventListener('click', (e) => {
+                const item = e.target.closest('.urb1-suggest-item');
+                if (item) { urb1SelectBairro(item.dataset.nome); }
+            });
+            searchInput.addEventListener('blur', () => setTimeout(() => sugContainer.classList.remove('open'), 200));
             searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); urb1ConsultarBairro(); } });
 
             // Category select
