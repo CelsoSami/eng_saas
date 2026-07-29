@@ -228,31 +228,25 @@
         document.addEventListener('mousemove', function(e) {
             _mouseX = e.clientX;
             _mouseY = e.clientY;
-            const tp = document.getElementById('usesTooltip');
-            if (tp.style.display === 'block' && !_tooltipPinned) {
-                reposicionarTooltip(tp);
-            }
         });
-
-        function reposicionarTooltip(tp) {
-            const tpRect = tp.getBoundingClientRect();
-            let left = _mouseX - tpRect.width / 2;
-            let top = _mouseY - tpRect.height - 2;
-            if (left < 2) left = 2;
-            if (left + tpRect.width > window.innerWidth - 2) left = window.innerWidth - tpRect.width - 2;
-            tp.style.left = left + 'px';
-            tp.style.top = top + 'px';
-        }
 
         function mostrarTooltip(el) {
             const tp = document.getElementById('usesTooltip');
             document.getElementById('ttCode').textContent = el.dataset.code;
             document.getElementById('ttDesc').textContent = el.dataset.desc;
             document.getElementById('ttPorte').textContent = 'Porte: ' + el.dataset.porte;
-            tp.style.visibility = 'hidden';
+            tp.style.left = '-999px';
+            tp.style.top = '-999px';
             tp.style.display = 'block';
-            void tp.offsetHeight;
-            reposicionarTooltip(tp);
+            tp.style.visibility = 'hidden';
+            const w = tp.offsetWidth;
+            const h = tp.offsetHeight;
+            let left = _mouseX - w / 2;
+            let top = _mouseY - h - 2;
+            if (left < 2) left = 2;
+            if (left + w > window.innerWidth - 2) left = window.innerWidth - w - 2;
+            tp.style.left = left + 'px';
+            tp.style.top = top + 'px';
             tp.style.visibility = 'visible';
         }
 
