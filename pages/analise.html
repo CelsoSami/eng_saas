@@ -22,7 +22,7 @@
                 </div>
                 <div class="nav-section">
                     <div class="nav-section-title">Análises</div>
-                    <a href="analise.html" class="nav-item active"><span class="icon"><i class="fas fa-chart-bar"></i></span> Análise de Terreno</a>
+                    <a href="analise.html" class="nav-item active"><span class="icon"><i class="fas fa-building"></i></span> Análise de Bairro</a>
                     <a href="comparativo.html" class="nav-item"><span class="icon"><i class="fas fa-balance-scale"></i></span> Comparativo</a>
                     <a href="bi.html" class="nav-item"><span class="icon"><i class="fas fa-chart-line"></i></span> BI & Relatórios <span class="badge tag-beige">PRO</span></a>
                 </div>
@@ -55,8 +55,8 @@
                 <div class="header-left">
                     <button class="header-btn" onclick="toggleSidebar()" style="display:none;" id="menu-toggle"><i class="fas fa-bars"></i></button>
                     <div>
-                        <h1 class="header-title">Análise de Terreno</h1>
-                        <div class="header-breadcrumb"><a href="dashboard.html">Início</a> <i class="fas fa-chevron-right" style="font-size:10px;"></i> Análise</div>
+                        <h1 class="header-title">Análise de Bairro</h1>
+                        <div class="header-breadcrumb"><a href="dashboard.html">Início</a> <i class="fas fa-chevron-right" style="font-size:10px;"></i> Zoneamento</div>
                     </div>
                 </div>
                 <div class="header-right" id="header-actions" style="display:none;">
@@ -67,23 +67,290 @@
             </header>
 
             <div class="page-content">
-                <!-- Tela de seleção (quando não tem ID) -->
-                <div id="select-screen">
-                    <div class="card" style="max-width:600px; margin:60px auto; text-align:center;">
-                        <div class="empty-state" style="padding:40px;">
-                            <div class="empty-state-icon"><i class="fas fa-chart-bar"></i></div>
-                            <h3>Selecione um Terreno</h3>
-                            <p>Escolha um terreno para visualizar a análise completa</p>
-                            <div style="margin-top:20px;">
-                                <input type="text" class="form-input" id="buscaTerreno" placeholder="Buscar por logradouro ou cidade..." style="margin-bottom:12px; text-align:center;">
-                                <div id="sugestoes-terrenos" style="text-align:left;"></div>
-                                <a href="busca.html" class="btn btn-ghost" style="margin-top:12px;"><i class="fas fa-search"></i> Ir para busca</a>
-                            </div>
-                        </div>
+                <!-- URB1 — Simulador de Zoneamento (padrão) -->
+                <div id="urb1-screen">
+
+                  <!-- Hero -->
+                  <div class="urb1-hero">
+                    <div class="urb1-eyebrow">Campo Grande · MS</div>
+                    <h2>Entenda seu terreno antes de decidir.</h2>
+                    <p>Consulte um bairro ou faça uma análise inicial do que pode ser construído, com explicações simples e parâmetros preservados.</p>
+
+                    <div class="urb1-search">
+                      <div class="urb1-search-flex">
+                        <input id="urb1SearchInput" autocomplete="off" placeholder="Digite um bairro, por exemplo: Santa Fé">
+                        <button onclick="urb1ConsultarBairro()">Consultar</button>
+                      </div>
+                      <div class="urb1-suggestions" id="urb1Suggestions"></div>
                     </div>
+
+                    <div class="urb1-modules">
+                      <button class="urb1-mod-btn active" data-module="urb1Consulta">
+                        <div class="icon"><i class="fas fa-building"></i></div>
+                        <b>1. Consultar um bairro</b>
+                        <small>Zoneamento e índices completos</small>
+                      </button>
+                      <button class="urb1-mod-btn" data-module="urb1Simulador">
+                        <div class="icon"><i class="fas fa-drafting-compass"></i></div>
+                        <b>2. Analisar um terreno</b>
+                        <small>Potencial, usos, vagas e via</small>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Módulo 1: Consulta de Bairro -->
+                  <div class="urb1-module active" id="urb1Consulta">
+
+                    <div class="urb1-empty" id="urb1Empty">
+                      <div><strong>Escolha um bairro para começar</strong>A consulta combina zoneamento urbano, ambiental e os índices do Anexo 8.2.</div>
+                    </div>
+
+                    <div class="urb1-result" id="urb1Result">
+                      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin:0 0 20px;">
+                        <div>
+                          <h2 style="font-size:clamp(26px,3.5vw,38px); letter-spacing:-.04em; line-height:1; margin:0;" id="urb1BairroNome"></h2>
+                          <p style="margin:8px 0 0; color:var(--text-muted); font-size:13px;">Resumo regulatório do bairro selecionado</p>
+                        </div>
+                        <div class="urb1-tags"><span class="urb1-tag green" id="urb1TagZ"></span><span class="urb1-tag" id="urb1TagZA"></span></div>
+                      </div>
+
+                      <div class="urb1-metrics">
+                        <div class="urb1-metric">
+                          <span class="urb1-metric-label">Ocupação <i class="urb1-help" tabindex="0" data-tip="Percentual máximo do terreno que pode ser coberto pela projeção da edificação.">?</i></span>
+                          <div class="urb1-metric-value" id="urb1TaxaOcupacao"></div>
+                          <div class="urb1-metric-sub">Taxa de ocupação</div>
+                        </div>
+                        <div class="urb1-metric">
+                          <span class="urb1-metric-label">CA básico <i class="urb1-help" tabindex="0" data-tip="Quanto pode ser construído sem comprar potencial adicional.">?</i></span>
+                          <div class="urb1-metric-value" id="urb1CaBasico"></div>
+                          <div class="urb1-metric-sub">Coef. de aproveitamento</div>
+                        </div>
+                        <div class="urb1-metric">
+                          <span class="urb1-metric-label">CA máximo <i class="urb1-help" tabindex="0" data-tip="Limite total de área computável quando são utilizados instrumentos como a outorga onerosa.">?</i></span>
+                          <div class="urb1-metric-value" id="urb1CaMaximo"></div>
+                          <div class="urb1-metric-sub">Com instrumentos</div>
+                        </div>
+                        <div class="urb1-metric">
+                          <span class="urb1-metric-label">TRA mínima <i class="urb1-help" tabindex="0" data-tip="Desempenho ambiental mínimo exigido, calculado pela combinação de vegetação e drenagem.">?</i></span>
+                          <div class="urb1-metric-value" id="urb1TraMinima"></div>
+                          <div class="urb1-metric-sub">Relevância ambiental</div>
+                        </div>
+                        <div class="urb1-metric">
+                          <span class="urb1-metric-label">Permeabilidade <i class="urb1-help" tabindex="0" data-tip="Parte mínima do lote que deve permitir infiltração de água no solo.">?</i></span>
+                          <div class="urb1-metric-value" id="urb1Permeabilidade"></div>
+                          <div class="urb1-metric-sub">Taxa mínima</div>
+                        </div>
+                      </div>
+
+                      <div class="urb1-grid urb1-grid-2">
+                        <div class="card">
+                          <div style="text-transform:uppercase; letter-spacing:.13em; font-size:10px; color:var(--neon-blue); font-weight:900; margin-bottom:16px;">Zoneamento urbano</div>
+                          <h3 style="margin:0 0 16px; font-size:18px;">Índices e instrumentos</h3>
+                          <div class="urb1-datalist">
+                            <div class="urb1-datarow"><span>CA mínimo (Camin)</span><strong id="urb1CaMinimo"></strong></div>
+                            <div class="urb1-datarow"><span>CA básico (Cabas)</span><strong id="urb1CaBasico2"></strong></div>
+                            <div class="urb1-datarow"><span>CA máximo (Camax)</span><strong id="urb1CaMaximo2"></strong></div>
+                            <div class="urb1-datarow"><span>Outorga / TDC</span><strong id="urb1Outorga"></strong></div>
+                            <div class="urb1-datarow"><span>Índice de elevação</span><strong id="urb1IndiceElevacao"></strong></div>
+                            <div class="urb1-datarow"><span>Área mínima do lote</span><strong id="urb1AreaLote"></strong></div>
+                            <div class="urb1-datarow"><span>Testada de esquina</span><strong id="urb1TestadaEsquina"></strong></div>
+                            <div class="urb1-datarow"><span>Testada meio de quadra</span><strong id="urb1TestadaMeio"></strong></div>
+                          </div>
+                        </div>
+
+                        <div class="card">
+                          <div style="text-transform:uppercase; letter-spacing:.13em; font-size:10px; color:var(--neon-blue); font-weight:900; margin-bottom:16px;">Zoneamento ambiental</div>
+                          <h3 style="margin:0 0 16px; font-size:18px;">Parâmetros da TRA</h3>
+                          <div class="urb1-datalist">
+                            <div class="urb1-datarow"><span>Zona ambiental</span><strong id="urb1ZAValue"></strong></div>
+                            <div class="urb1-datarow"><span>TRA mínima</span><strong id="urb1TRAValue"></strong></div>
+                            <div class="urb1-datarow"><span>Fator alfa</span><strong id="urb1Alfa"></strong></div>
+                            <div class="urb1-datarow"><span>Fator beta</span><strong id="urb1Beta"></strong></div>
+                            <div class="urb1-datarow"><span>Permeabilidade</span><strong id="urb1PermValue"></strong></div>
+                          </div>
+                          <div class="urb1-formula"><code>TRA = V<sup>α</sup> × D<sup>β</sup></code><small>V = Indicador de Vegetação<br>D = Indicador de Drenagem</small></div>
+                        </div>
+                      </div>
+
+                      <div class="card" style="margin-top:16px;">
+                        <div style="text-transform:uppercase; letter-spacing:.13em; font-size:10px; color:var(--neon-blue); font-weight:900; margin-bottom:16px;">Implantação</div>
+                        <h3 style="margin:0 0 16px; font-size:18px;">Recuos mínimos</h3>
+                        <div class="urb1-rules">
+                          <div class="urb1-rule"><b>Frente</b><p id="urb1RecuoFrente"></p></div>
+                          <div class="urb1-rule"><b>Laterais e fundos</b><p id="urb1RecuoLateral"></p></div>
+                          <div class="urb1-rule"><b>Com outorga onerosa ou TDC</b><p id="urb1RecuoOutorga"></p></div>
+                        </div>
+                        <details class="urb1-notes" id="urb1NotasBox"><summary>Ver condições e notas aplicáveis</summary><ol id="urb1NotasLista"></ol></details>
+                      </div>
+
+                      <p class="urb1-legal">Consulta informativa baseada no PDDUA e anexos fornecidos. Eixos de adensamento, zonas especiais e condições específicas do lote podem alterar os parâmetros. Confirme a viabilidade oficial antes de projetar ou licenciar.</p>
+                    </div>
+                  </div>
+
+                  <!-- Módulo 2: Simulador -->
+                  <div class="urb1-module" id="urb1Simulador">
+                    <div style="display:flex; justify-content:space-between; align-items:end; gap:20px; margin:0 0 20px;">
+                      <div>
+                        <h2 style="font-size:clamp(26px,3.5vw,36px); letter-spacing:-.04em; line-height:1; margin:0 0 8px;">O que posso construir?</h2>
+                        <p style="margin:0; color:var(--text-muted); font-size:13px; max-width:600px;">Informe apenas o que você sabe. A análise separa resultados calculáveis, condições pendentes e pontos que precisam de consulta oficial.</p>
+                      </div>
+                      <span class="urb1-step-badge">Análise preliminar</span>
+                    </div>
+
+                    <form class="urb1-form-card" id="urb1SimForm">
+                      <div class="urb1-form-section">
+                        <h3>1. Onde fica e qual é o tamanho?</h3>
+                        <p>Com bairro e área já conseguimos calcular boa parte do potencial.</p>
+                        <div class="urb1-fields">
+                          <div class="urb1-field wide">
+                            <label for="urb1SimBairro">Bairro</label>
+                            <select id="urb1SimBairro"><option value="">Selecione o bairro</option></select>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1LotArea">Área do terreno <i class="urb1-help" tabindex="0" data-tip="Área total indicada na matrícula ou no cadastro do imóvel.">?</i></label>
+                            <input id="urb1LotArea" type="number" min="1" step="0.01" value="1000" required>
+                            <small>em metros quadrados</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1LotFront">Frente do terreno</label>
+                            <input id="urb1LotFront" type="number" min="0" step="0.01" placeholder="Ex.: 20">
+                            <small>opcional, em metros</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1LotDepth">Profundidade</label>
+                            <input id="urb1LotDepth" type="number" min="0" step="0.01" placeholder="Ex.: 50">
+                            <small>opcional, em metros</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1StreetWidth">Largura total da via <i class="urb1-help" tabindex="0" data-tip="Faixa de domínio da rua inteira, não somente a pista.">?</i></label>
+                            <input id="urb1StreetWidth" type="number" min="0" step="0.01" placeholder="Não sei">
+                            <small>opcional, em metros</small>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="urb1-form-section">
+                        <h3>2. O que você pretende fazer?</h3>
+                        <p>Escolha a categoria mais próxima. A descrição traz exemplos e o porte previsto na lei.</p>
+                        <div class="urb1-fields">
+                          <div class="urb1-field full">
+                            <label for="urb1UseCategory">Categoria e atividade</label>
+                            <select id="urb1UseCategory"><option value="">Selecione uma atividade</option></select>
+                            <div class="urb1-activity-summary" id="urb1ActivitySummary">Selecione uma categoria para ver os exemplos e limites.</div>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1BuiltArea">Área que pretende construir</label>
+                            <input id="urb1BuiltArea" type="number" min="0" step="0.01" placeholder="Ex.: 1500">
+                            <small>m² computáveis, se souber</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1Units">Unidades</label>
+                            <input id="urb1Units" type="number" min="0" step="1" placeholder="Casas, aptos ou lojas">
+                            <small>se aplicável</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1Rooms">Quartos</label>
+                            <input id="urb1Rooms" type="number" min="0" step="1" placeholder="Hotel, motel">
+                            <small>se aplicável</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1Seats">Assentos</label>
+                            <input id="urb1Seats" type="number" min="0" step="1" placeholder="Igreja, cinema">
+                            <small>se aplicável</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1Floors">Pavimentos pretendidos <i class="urb1-help" tabindex="0" data-tip="Informe quantos pavimentos o projeto terá, contando térreo e os superiores.">?</i></label>
+                            <input id="urb1Floors" type="number" min="1" step="1" placeholder="Ex.: 4" required>
+                            <small>incluindo o térreo</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1Height">Altura da edificação <i class="urb1-help" tabindex="0" data-tip="Altura total proposta, em metros. Necessária para calcular recuos como h/4, h/6.">?</i></label>
+                            <input id="urb1Height" type="number" min="0.1" step="0.01" placeholder="Ex.: 12" required>
+                            <small>h, em metros</small>
+                          </div>
+                          <div class="urb1-field">
+                            <label for="urb1UseOutorga">Usará outorga onerosa ou TDC?</label>
+                            <select id="urb1UseOutorga">
+                              <option value="nao">Não</option>
+                              <option value="sim">Sim</option>
+                            </select>
+                            <small>muda IE e recuos em algumas zonas</small>
+                          </div>
+                          <div class="urb1-field wide">
+                            <label for="urb1ParkingRule">Atividade para cálculo de vagas</label>
+                            <select id="urb1ParkingRule"></select>
+                            <small>Você pode ajustar se a regra sugerida não representar o empreendimento.</small>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="urb1-submit" type="submit">Analisar possibilidades</button>
+                    </form>
+
+                    <div class="urb1-sim-result" id="urb1SimResult">
+                      <div class="urb1-verdict" id="urb1Verdict">
+                        <div>
+                          <span class="urb1-verdict-label">Resultado da categoria de uso</span>
+                          <h3 id="urb1VerdictTitle"></h3>
+                          <p id="urb1VerdictText"></p>
+                        </div>
+                        <div class="urb1-tags"><span class="urb1-tag green" id="urb1SimZ"></span><span class="urb1-tag" id="urb1SimZA"></span><span class="urb1-tag" id="urb1SimCat"></span></div>
+                      </div>
+
+                      <div class="urb1-report-actions">
+                        <button class="urb1-report-btn" type="button" onclick="urb1GerarRelatorio()"><i class="fas fa-file-pdf"></i> GERAR RELATÓRIO · PDF</button>
+                      </div>
+
+                      <div class="urb1-calc-grid">
+                        <div class="urb1-calc"><span>Projeção máxima no solo</span><strong id="urb1CalcFootprint"></strong><small id="urb1CalcFootprintSub"></small></div>
+                        <div class="urb1-calc"><span>Construção pelo CA básico</span><strong id="urb1CalcBasic"></strong><small>potencial sem aquisição adicional</small></div>
+                        <div class="urb1-calc"><span>Limite pelo CA máximo</span><strong id="urb1CalcMax"></strong><small>quando admitidos os instrumentos</small></div>
+                        <div class="urb1-calc"><span>Área permeável mínima</span><strong id="urb1CalcPerm"></strong><small id="urb1CalcPermSub"></small></div>
+                        <div class="urb1-calc"><span>Índice de elevação</span><strong id="urb1CalcFloors"></strong><small id="urb1CalcFloorsSub"></small></div>
+                        <div class="urb1-calc"><span>Vagas estimadas</span><strong id="urb1CalcParking"></strong><small id="urb1CalcParkingSub"></small></div>
+                        <div class="urb1-calc"><span>Via mínima</span><strong id="urb1CalcRoad"></strong><small id="urb1CalcRoadSub"></small></div>
+                        <div class="urb1-calc"><span>Porte informado</span><strong id="urb1CalcPorte"></strong><small id="urb1CalcPorteSub"></small></div>
+                      </div>
+
+                      <div class="urb1-detail-grid">
+                        <div class="card">
+                          <div style="text-transform:uppercase; letter-spacing:.13em; font-size:10px; color:var(--neon-blue); font-weight:900; margin-bottom:12px;">Leitura simples</div>
+                          <h3 style="margin:0 0 14px; font-size:17px;">Como esse resultado se forma</h3>
+                          <div class="urb1-rules" id="urb1PlainRules"></div>
+                          <div class="urb1-explain" id="urb1PendingInfo"></div>
+                        </div>
+                        <div class="card">
+                          <div style="text-transform:uppercase; letter-spacing:.13em; font-size:10px; color:var(--neon-blue); font-weight:900; margin-bottom:12px;">Croqui conceitual</div>
+                          <h3 style="margin:0 0 8px; font-size:17px;">Ocupação do terreno</h3>
+                          <div class="urb1-sketch" id="urb1Sketch">
+                            <div class="urb1-building" id="urb1Building">EDIFICAÇÃO<br><span id="urb1SketchFootprint"></span></div>
+                            <span class="urb1-dim urb1-dim-front" id="urb1SketchFront"></span>
+                            <span class="urb1-dim urb1-dim-side" id="urb1SketchDepth"></span>
+                          </div>
+                          <p class="urb1-legal">Diagrama educativo, sem escala e sem substituir implantação arquitetônica.</p>
+                        </div>
+                      </div>
+
+                      <div class="card" style="margin-top:14px;">
+                        <div style="text-transform:uppercase; letter-spacing:.13em; font-size:10px; color:var(--neon-blue); font-weight:900; margin-bottom:12px;">Infraestrutura e condicionantes</div>
+                        <h3 style="margin:0 0 14px; font-size:17px;">O que a categoria exige</h3>
+                        <div class="urb1-check-list" id="urb1InfraChecklist"></div>
+                        <div class="urb1-explain" id="urb1ParkingExplain"></div>
+                      </div>
+
+                      <div class="card" style="margin-top:14px;">
+                        <div style="text-transform:uppercase; letter-spacing:.13em; font-size:10px; color:var(--neon-blue); font-weight:900; margin-bottom:12px;">Mapa de possibilidades</div>
+                        <h3 style="margin:0 0 8px; font-size:17px;">Outros usos listados para esta zona</h3>
+                        <p style="color:var(--text-muted); font-size:12px; margin-bottom:12px;">Abra apenas o grupo que interessa. A presença na lista não elimina as condições de porte, via, infraestrutura ou licenciamento.</p>
+                        <div class="urb1-possibilities" id="urb1AllowedList"></div>
+                      </div>
+
+                      <p class="urb1-legal">Resultado preliminar. O imóvel pode estar em eixo de adensamento, ZEIS, ZEIC, ZEPA, área ambiental, faixa não edificável ou outra situação específica. A categoria escolhida deve corresponder à atividade real e o projeto final depende da consulta de viabilidade e do licenciamento municipal.</p>
+                    </div>
+                  </div>
+
                 </div>
 
-                <!-- Tela de análise (quando tem ID) -->
+                <!-- Tela de análise de terreno (quando tem ID) -->
                 <div id="analise-screen" style="display:none;">
                     <!-- Info do terreno -->
                     <div class="card" style="margin-bottom:24px;">
@@ -224,9 +491,13 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="../js/db.js"></script>
     <script src="../js/license.js"></script>
+    <script src="../js/urb1.js"></script>
     <script>
         let terrenoAtual = null;
 
+        // ═══════════════════════════════════════════
+        // INICIALIZAÇÃO
+        // ═══════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', async () => {
             await db.init();
             const sessao = await license.verificarSessao();
@@ -237,9 +508,10 @@
             const params = new URLSearchParams(window.location.search);
             const terrenoId = parseInt(params.get('terreno'));
             if (terrenoId) {
+                document.getElementById('urb1-screen').style.display = 'none';
                 await carregarTerreno(terrenoId);
             } else {
-                carregarSelecao();
+                initURB1();
             }
         });
 
@@ -254,11 +526,422 @@
             }
         }
 
+        // ═══════════════════════════════════════════
+        // URB1 — INICIALIZAÇÃO
+        // ═══════════════════════════════════════════
+
+        let urb1BairroAtual = null;
+        let urb1LastReport = null;
+
+        function initURB1() {
+            // Popular selects
+            const bairroSelect = document.getElementById('urb1SimBairro');
+            URB1.listarBairros().forEach(n => {
+                const opt = document.createElement('option');
+                opt.value = n; opt.textContent = n;
+                bairroSelect.appendChild(opt);
+            });
+
+            const catSelect = document.getElementById('urb1UseCategory');
+            const groups = URB1.listCategoriesByGroup();
+            Object.keys(groups).forEach(group => {
+                const og = document.createElement('optgroup');
+                og.label = group;
+                groups[group].forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.code; opt.textContent = `${c.code} · ${c.porte}`;
+                    opt.dataset.desc = c.description;
+                    og.appendChild(opt);
+                });
+                catSelect.appendChild(og);
+            });
+
+            // Parking rules
+            const parkSelect = document.getElementById('urb1ParkingRule');
+            Object.entries(URB1.parkingRules).forEach(([k, v]) => {
+                const opt = document.createElement('option');
+                opt.value = k; opt.textContent = v.label;
+                parkSelect.appendChild(opt);
+            });
+
+            // Module switching (hero buttons)
+            document.querySelectorAll('.urb1-mod-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.urb1-mod-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const mod = document.getElementById(btn.dataset.module);
+                    document.querySelectorAll('.urb1-module').forEach(m => m.classList.remove('active'));
+                    mod.classList.add('active');
+                });
+            });
+
+            // Search input
+            const searchInput = document.getElementById('urb1SearchInput');
+            searchInput.addEventListener('input', () => {
+                const q = searchInput.value.toLowerCase().trim();
+                const sug = document.getElementById('urb1Suggestions');
+                if (!q) { sug.classList.remove('open'); return; }
+                const matches = URB1.listarBairros().filter(n => n.toLowerCase().includes(q)).slice(0, 8);
+                if (matches.length === 0) { sug.classList.remove('open'); return; }
+                sug.innerHTML = matches.map(n => `<div class="urb1-suggest-item" onclick="urb1SelectBairro('${n}')"><span>${n}</span><small>Campo Grande · MS</small></div>`).join('');
+                sug.classList.add('open');
+            });
+            searchInput.addEventListener('blur', () => setTimeout(() => document.getElementById('urb1Suggestions').classList.remove('open'), 200));
+            searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); urb1ConsultarBairro(); } });
+
+            // Category select
+            document.getElementById('urb1UseCategory').addEventListener('change', function() {
+                const opt = this.options[this.selectedIndex];
+                const summary = document.getElementById('urb1ActivitySummary');
+                if (opt && opt.dataset.desc) {
+                    summary.textContent = opt.dataset.desc;
+                } else {
+                    summary.textContent = 'Selecione uma categoria para ver os exemplos e limites.';
+                }
+                // Auto-set parking rule
+                const cat = URB1.getCategory(this.value);
+                if (cat && URB1.parkingRules[cat.parking]) {
+                    document.getElementById('urb1ParkingRule').value = cat.parking;
+                }
+            });
+
+            // Auto-fill from bairro select
+            document.getElementById('urb1SimBairro').addEventListener('change', function() {
+                if (this.value) {
+                    const b = URB1.consultarBairro(this.value);
+                    if (b) urb1BairroAtual = b;
+                }
+            });
+
+            // Sim form submit
+            document.getElementById('urb1SimForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                urb1Analisar();
+            });
+        }
+
+        // ═══════════════════════════════════════════
+        // URB1 — CONSULTA DE BAIRRO
+        // ═══════════════════════════════════════════
+
+        function urb1ConsultarBairro() {
+            const q = document.getElementById('urb1SearchInput').value.trim();
+            if (!q) return;
+            const b = URB1.consultarBairro(q);
+            if (!b) { showAlert('Bairro não encontrado', 'warning'); return; }
+            urb1ExibirResultado(b);
+        }
+
+        function urb1SelectBairro(nome) {
+            document.getElementById('urb1SearchInput').value = nome;
+            document.getElementById('urb1Suggestions').classList.remove('open');
+            const b = URB1.consultarBairro(nome);
+            if (b) urb1ExibirResultado(b);
+        }
+
+        function urb1ExibirResultado(b) {
+            urb1BairroAtual = b;
+            const u = URB1.getZoneInfo(b.z);
+            if (!u) return;
+
+            document.getElementById('urb1Empty').style.display = 'none';
+            const result = document.getElementById('urb1Result');
+            result.classList.add('show');
+
+            document.getElementById('urb1BairroNome').textContent = b.nome;
+            document.getElementById('urb1TagZ').textContent = b.z;
+            document.getElementById('urb1TagZA').textContent = b.za;
+
+            document.getElementById('urb1TaxaOcupacao').textContent = u.ocupacao;
+            document.getElementById('urb1CaBasico').textContent = u.cabas;
+            document.getElementById('urb1CaMaximo').textContent = u.camax;
+            document.getElementById('urb1TraMinima').textContent = b.tra;
+            document.getElementById('urb1Permeabilidade').textContent = b.perm;
+
+            document.getElementById('urb1CaMinimo').textContent = u.camin;
+            document.getElementById('urb1CaBasico2').textContent = u.cabas;
+            document.getElementById('urb1CaMaximo2').textContent = u.camax;
+            document.getElementById('urb1Outorga').textContent = u.outorga;
+            document.getElementById('urb1IndiceElevacao').textContent = u.ie;
+            document.getElementById('urb1AreaLote').textContent = u.area;
+            document.getElementById('urb1TestadaEsquina').textContent = u.esquina;
+            document.getElementById('urb1TestadaMeio').textContent = u.meio;
+
+            document.getElementById('urb1ZAValue').textContent = b.za;
+            document.getElementById('urb1TRAValue').textContent = b.tra;
+            document.getElementById('urb1Alfa').textContent = b.alfa;
+            document.getElementById('urb1Beta').textContent = b.beta;
+            document.getElementById('urb1PermValue').textContent = b.perm;
+
+            document.getElementById('urb1RecuoFrente').textContent = u.frente;
+            document.getElementById('urb1RecuoLateral').textContent = u.lateral;
+            document.getElementById('urb1RecuoOutorga').textContent = u.outorgaRec;
+
+            // Notas
+            const notasList = document.getElementById('urb1NotasLista');
+            notasList.innerHTML = '';
+            if (u.notas && u.notas.length > 0) {
+                u.notas.forEach(id => {
+                    if (URB1.notas[id]) {
+                        const li = document.createElement('li');
+                        li.textContent = URB1.notas[id];
+                        notasList.appendChild(li);
+                    }
+                });
+                document.getElementById('urb1NotasBox').style.display = 'block';
+            } else {
+                document.getElementById('urb1NotasBox').style.display = 'none';
+            }
+
+            // Scroll to results
+            result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ═══════════════════════════════════════════
+        // URB1 — SIMULADOR
+        // ═══════════════════════════════════════════
+
+        function urb1Analisar() {
+            const bairroNome = document.getElementById('urb1SimBairro').value;
+            if (!bairroNome) { showAlert('Selecione um bairro', 'warning'); return; }
+
+            const b = URB1.consultarBairro(bairroNome);
+            if (!b) { showAlert('Bairro não encontrado', 'warning'); return; }
+            urb1BairroAtual = b;
+
+            const params = {
+                area: parseFloat(document.getElementById('urb1LotArea').value) || 0,
+                frente: parseFloat(document.getElementById('urb1LotFront').value) || 0,
+                profundidade: parseFloat(document.getElementById('urb1LotDepth').value) || 0,
+                via: parseFloat(document.getElementById('urb1StreetWidth').value) || 0,
+                built: parseFloat(document.getElementById('urb1BuiltArea').value) || 0,
+                units: parseInt(document.getElementById('urb1Units').value) || 0,
+                rooms: parseInt(document.getElementById('urb1Rooms').value) || 0,
+                seats: parseInt(document.getElementById('urb1Seats').value) || 0,
+                floors: parseInt(document.getElementById('urb1Floors').value) || 1,
+                height: parseFloat(document.getElementById('urb1Height').value) || 3,
+                useOutorga: document.getElementById('urb1UseOutorga').value === 'sim',
+                catCode: document.getElementById('urb1UseCategory').value
+            };
+
+            if (!params.catCode) { showAlert('Selecione uma categoria de uso', 'warning'); return; }
+
+            const r = URB1.calcularPotencial(b, params);
+            if (!r) { showAlert('Erro ao calcular potencial', 'danger'); return; }
+
+            urb1LastReport = { b, params, r };
+            urb1ExibirResultadoSimulacao(r, b, params);
+        }
+
+        function urb1ExibirResultadoSimulacao(r, b, params) {
+            const result = document.getElementById('urb1SimResult');
+            result.classList.add('show');
+
+            // Verdict
+            const v = document.getElementById('urb1Verdict');
+            v.className = 'urb1-verdict ' + r.verdict.type;
+            document.getElementById('urb1VerdictTitle').textContent = r.verdict.title;
+            document.getElementById('urb1VerdictText').textContent = r.verdict.text;
+            document.getElementById('urb1SimZ').textContent = b.z;
+            document.getElementById('urb1SimZA').textContent = b.za;
+            document.getElementById('urb1SimCat').textContent = params.catCode;
+
+            // Calc grid
+            document.getElementById('urb1CalcFootprint').textContent = r.footprint.toFixed(0) + ' m²';
+            document.getElementById('urb1CalcFootprintSub').textContent = r.footprintSub;
+            document.getElementById('urb1CalcBasic').textContent = r.basic.toFixed(0) + ' m²';
+            document.getElementById('urb1CalcMax').textContent = r.maximo.toFixed(0) + ' m²';
+            document.getElementById('urb1CalcPerm').textContent = r.permeable.toFixed(0) + ' m²';
+            document.getElementById('urb1CalcPermSub').textContent = r.permeableSub;
+            document.getElementById('urb1CalcFloors').textContent = r.ieCompatible ? params.floors + ' pav.' : params.floors + ' pav. (excede)';
+            document.getElementById('urb1CalcFloorsSub').textContent = r.ieSub;
+            document.getElementById('urb1CalcParking').textContent = r.parking > 0 ? r.parking : 'Pendente';
+            document.getElementById('urb1CalcParkingSub').textContent = r.parkingSub;
+            document.getElementById('urb1CalcRoad').textContent = r.road ? r.road.label : 'Nenhum';
+            document.getElementById('urb1CalcRoadSub').textContent = r.roadOk === null ? (r.road && r.road.width > 0 ? 'Informe a via' : 'Sem mínimo') : (r.roadOk ? 'Atende' : 'Verificar');
+            document.getElementById('urb1CalcPorte').textContent = r.porteStatus;
+            document.getElementById('urb1CalcPorteSub').textContent = r.porteSub;
+
+            // Plain rules
+            const rules = document.getElementById('urb1PlainRules');
+            rules.innerHTML = `
+                <div class="urb1-rule"><b>Quanto ocupa o chão</b><p>A edificação pode projetar até <strong>${r.footprint.toFixed(0)} m²</strong> sobre o terreno, antes de considerar recuos e outras restrições.</p></div>
+                <div class="urb1-rule"><b>Quanto pode construir</b><p>O CA básico resulta em <strong>${r.basic.toFixed(0)} m²</strong>. O teto de <strong>${r.maximo.toFixed(0)} m²</strong> depende dos instrumentos e condições aplicáveis.</p></div>
+                <div class="urb1-rule"><b>Parte ambiental</b><p>Reserve no mínimo <strong>${r.permeable.toFixed(0)} m²</strong> como área permeável e atenda à TRA ${b.tra} usando vegetação e drenagem.</p></div>
+                <div class="urb1-rule"><b>Pavimentos e IE</b><p>A proposta tem ${params.floors} pavimentos e o limite indicado para esta condição é ${r.ieSub}.</p></div>
+            `;
+
+            // Recuos
+            let recuoFrontal = r.setbacks.frontalText;
+            if (r.setbacks.frontal === 0) recuoFrontal = 'Livre para a proposta de ' + params.floors + ' pavimentos.';
+            else recuoFrontal = recuoFrontal + ' para a proposta de ' + params.floors + ' pavimentos.';
+            rules.innerHTML += `
+                <div class="urb1-rule"><b>Recuo frontal calculado</b><p>${recuoFrontal}</p></div>
+                <div class="urb1-rule"><b>Recuos laterais e de fundos calculados</b><p>${r.setbacks.lateralText === 'Livre' ? 'Livre para a proposta de ' + params.floors + ' pavimentos.' : r.setbacks.lateralText}</p></div>
+            `;
+
+            // Pending info
+            const pending = document.getElementById('urb1PendingInfo');
+            const missing = [];
+            if (!params.frente) missing.push('frente do terreno, para conferir a testada mínima');
+            if (!params.profundidade) missing.push('profundidade, para representar melhor a implantação');
+            if (!params.via) missing.push('largura total da via, para verificar o acesso');
+            if (!params.built) missing.push('área construída');
+            if (!params.units) missing.push('número de unidades para calcular as vagas');
+            if (missing.length > 0) {
+                pending.innerHTML = '<strong>Ainda falta confirmar:</strong> ' + missing.join('; ') + '.';
+            } else {
+                pending.innerHTML = 'Todas as informações necessárias foram fornecidas.';
+            }
+
+            // Sketch
+            const to = params.area * (b.z === 'Z1' ? 0.7 : 0.5);
+            const shapeSize = Math.max(34, Math.min(72, Math.sqrt(to) * 82));
+            document.getElementById('urb1Building').style.width = shapeSize + '%';
+            document.getElementById('urb1Building').style.height = (shapeSize * 0.6) + '%';
+            document.getElementById('urb1SketchFootprint').textContent = r.footprint.toFixed(0) + ' m²';
+            document.getElementById('urb1SketchFront').textContent = params.frente ? params.frente + ' m' : 'frente não informada';
+            document.getElementById('urb1SketchDepth').textContent = params.profundidade ? params.profundidade + ' m' : 'prof. não informada';
+
+            // Infra
+            const infra = document.getElementById('urb1InfraChecklist');
+            const infraData = r.infra;
+            infra.innerHTML = '';
+            const infraItems = [
+                { key: 'agua', label: 'Abastecimento de água potável' },
+                { key: 'pavimentacao', label: 'Vias pavimentadas' },
+                { key: 'drenagem', label: 'Drenagem pluvial' },
+                { key: 'esgoto', label: 'Esgotamento sanitário' },
+                { key: 'energia', label: 'Energia elétrica' }
+            ];
+            infraItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'urb1-check ' + (infraData[item.key] ? 'req' : 'nreq');
+                div.textContent = item.label + (infraData[item.key] ? ': exigível' : ': não exigível');
+                infra.appendChild(div);
+            });
+
+            document.getElementById('urb1ParkingExplain').textContent =
+                'Estacionamento: ' + r.parkingLabel + '. ' +
+                (r.parking > 0 ? 'Total estimado: ' + r.parking + ' vagas. ' : '') +
+                (r.parkingDescarga ? 'Área de carga e descarga exigível. ' : '') +
+                (r.parkingEmbarque ? 'Área de embarque e desembarque exigível.' : '');
+
+            // Allowed uses
+            const allowedList = document.getElementById('urb1AllowedList');
+            const usos = URB1.getUsosPorGrupo(b.z, b.nome);
+            allowedList.innerHTML = '';
+            Object.keys(usos).sort().forEach(group => {
+                const details = document.createElement('details');
+                const summary = document.createElement('summary');
+                summary.textContent = group + ' · ' + usos[group].length + ' categorias';
+                details.appendChild(summary);
+                const ul = document.createElement('ul');
+                usos[group].forEach(c => {
+                    const li = document.createElement('li');
+                    li.textContent = c.code + ' — ' + c.porte;
+                    ul.appendChild(li);
+                });
+                details.appendChild(ul);
+                allowedList.appendChild(details);
+            });
+
+            result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ═══════════════════════════════════════════
+        // URB1 — RELATÓRIO PDF
+        // ═══════════════════════════════════════════
+
+        function urb1GerarRelatorio() {
+            if (!urb1LastReport) return;
+            const { b, params, r } = urb1LastReport;
+
+            const printWin = window.open('', '_blank', 'width=900,height=700');
+            printWin.document.write(`
+                <!DOCTYPE html><html lang="pt-BR"><head>
+                <meta charset="UTF-8"><title>Relatório URB1 - ${b.nome}</title>
+                <style>
+                    @page { size: A4; margin: 15mm; }
+                    * { box-sizing: border-box; }
+                    body { font-family: Arial, sans-serif; color: #111; font-size: 11px; line-height: 1.5; }
+                    .header { display: flex; justify-content: space-between; border-bottom: 3px solid #111; padding-bottom: 10px; margin-bottom: 16px; }
+                    .logo { font-size: 24px; font-weight: 950; }
+                    .date { font-size: 9px; color: #555; text-align: right; }
+                    h1 { font-size: 20px; margin: 0 0 4px; }
+                    h2 { font-size: 12px; margin: 18px 0 6px; text-transform: uppercase; letter-spacing: .05em; }
+                    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+                    .item { border: 1px solid #bbb; padding: 7px; }
+                    .item span { display: block; font-size: 7px; text-transform: uppercase; color: #666; margin-bottom: 3px; }
+                    .item b { font-size: 11px; }
+                    table { width: 100%; border-collapse: collapse; font-size: 10px; margin: 10px 0; }
+                    td { border: 1px solid #bbb; padding: 6px; vertical-align: top; }
+                    td:first-child { width: 35%; font-weight: bold; }
+                    .alert { border: 2px solid #111; padding: 8px; margin: 10px 0; font-size: 9px; }
+                    .footer { margin-top: 14px; border-top: 1px solid #aaa; padding-top: 6px; font-size: 7px; color: #666; }
+                </style>
+                </head><body>
+                <div class="header">
+                    <div><div class="logo">URB1</div><div style="font-size:9px;color:#555;">Inteligência urbanística</div></div>
+                    <div class="date">${new Date().toLocaleString('pt-BR')}<br>Relatório preliminar</div>
+                </div>
+                <h1>Relatório de viabilidade urbanística</h1>
+                <p style="color:#555;font-size:10px;">Bairro ${b.nome} · ${b.z}/${b.za} · Campo Grande/MS</p>
+
+                <h2>Terreno e proposta</h2>
+                <table>
+                    <tr><td>Bairro</td><td>${b.nome} (${b.z}/${b.za})</td></tr>
+                    <tr><td>Área do terreno</td><td>${params.area} m²</td></tr>
+                    <tr><td>Frente / Profundidade</td><td>${params.frente || 'não informada'} m / ${params.profundidade || 'não informada'} m</td></tr>
+                    <tr><td>Largura da via</td><td>${params.via || 'não informada'} m</td></tr>
+                    <tr><td>Categoria de uso</td><td>${params.catCode}</td></tr>
+                    <tr><td>Área construída pretendida</td><td>${params.built || 'não informada'} m²</td></tr>
+                    <tr><td>Pavimentos / Altura</td><td>${params.floors} pav. / ${params.height} m</td></tr>
+                    <tr><td>Outorga onerosa / TDC</td><td>${params.useOutorga ? 'Sim' : 'Não'}</td></tr>
+                </table>
+
+                <h2>Potencial construtivo</h2>
+                <div class="grid">
+                    <div class="item"><span>Projeção máxima no solo</span><b>${r.footprint.toFixed(0)} m²</b></div>
+                    <div class="item"><span>CA básico (sem aquisição)</span><b>${r.basic.toFixed(0)} m²</b></div>
+                    <div class="item"><span>CA máximo (com instrumentos)</span><b>${r.maximo.toFixed(0)} m²</b></div>
+                    <div class="item"><span>Área permeável mínima</span><b>${r.permeable.toFixed(0)} m²</b></div>
+                </div>
+
+                <h2>Implantação calculada</h2>
+                <table>
+                    <tr><td>Índice de Elevação (IE)</td><td>${params.floors} pav. · Limite: ${r.ieSub}</td></tr>
+                    <tr><td>Recuo frontal</td><td>${r.setbacks.frontalText}</td></tr>
+                    <tr><td>Recuos laterais/fundos</td><td>${r.setbacks.lateralText}</td></tr>
+                    <tr><td>Via mínima exigida</td><td>${r.road ? r.road.label : 'Nenhum'}</td></tr>
+                    <tr><td>Estacionamento estimado</td><td>${r.parking > 0 ? r.parking + ' vagas' : 'Pendente'}</td></tr>
+                    <tr><td>Porte</td><td>${r.porteStatus} · ${r.porteSub}</td></tr>
+                </table>
+
+                <h2>Conclusão</h2>
+                <div class="alert">
+                    <strong>${r.verdict.title}</strong><br>
+                    ${r.verdict.text}
+                </div>
+
+                <div class="footer">
+                    Documento gerado em ${new Date().toLocaleString('pt-BR')}. Este é um relatório informativo baseado no PDDUA de Campo Grande/MS e não substitui consulta de viabilidade oficial, projeto arquitetônico ou licenciamento municipal. Confirme os dados com a prefeitura antes de projetar ou construir. Eixos de adensamento, ZEIS, ZEIC, ZEPA, áreas ambientais e faixas não edificáveis podem alterar os parâmetros.
+                </div>
+                </body></html>
+            `);
+            printWin.document.close();
+            printWin.focus();
+            setTimeout(() => printWin.print(), 500);
+        }
+
+        // ═══════════════════════════════════════════
+        // TERRAESCOPE — ANÁLISE DE TERRENO
+        // ═══════════════════════════════════════════
+
         async function carregarTerreno(id) {
             terrenoAtual = await db.get('terrenos', id);
             if (!terrenoAtual) { showAlert('Terreno não encontrado', 'danger'); return; }
 
-            document.getElementById('select-screen').style.display = 'none';
             document.getElementById('analise-screen').style.display = 'block';
             document.getElementById('header-actions').style.display = 'flex';
 
@@ -280,18 +963,6 @@
 
             await db.add('historico', { tipo: 'analise', terreno_id: id, logradouro: terrenoAtual.logradouro });
             await license.registrarUso('analise');
-        }
-
-        function carregarSelecao() {
-            document.getElementById('select-screen').style.display = 'block';
-            document.getElementById('analise-screen').style.display = 'none';
-            document.getElementById('buscaTerreno').addEventListener('input', async (e) => {
-                const q = e.target.value.toLowerCase();
-                if (!q) { document.getElementById('sugestoes-terrenos').innerHTML = ''; return; }
-                const terrenos = await db.getAll('terrenos');
-                const filtrados = terrenos.filter(t => (t.logradouro || '').toLowerCase().includes(q) || (t.cidade || '').toLowerCase().includes(q)).slice(0, 5);
-                document.getElementById('sugestoes-terrenos').innerHTML = filtrados.map(t => `<div style="padding:10px 14px; cursor:pointer; border-bottom:1px solid var(--border); border-radius:6px;" onclick="window.location.href='analise.html?terreno=${t.id}'"><strong>${t.logradouro || '—'}</strong> <span style="color:var(--text-muted); font-size:12px;">${t.cidade || ''} - ${t.uf || ''}</span></div>`).join('');
-            });
         }
 
         async function toggleFavorito() {
