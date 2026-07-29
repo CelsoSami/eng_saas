@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         #zoneMap { width:100%; height:560px; border-radius:0; background:#1a1f2e; }
+        @media (max-width: 768px) { #zoneMap { height:380px; } }
+        @media (max-width: 480px) { #zoneMap { height:300px; } }
         .leaflet-container { background:#1a1f2e !important; font-family:'Inter',sans-serif; }
         .leaflet-tile-pane { filter:invert(1) hue-rotate(180deg) saturate(0.6) brightness(0.7); }
         .leaflet-control-zoom a { background:var(--bg-secondary) !important; color:var(--text-primary) !important; border-color:var(--border) !important; }
@@ -66,6 +68,7 @@
                 </div>
             </div>
         </aside>
+        <div id="sidebar-overlay"></div>
 
         <main class="main-content">
             <header class="top-header">
@@ -1459,7 +1462,17 @@
           });
         });
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleSidebar() {
+            const s=document.getElementById('sidebar'),o=document.getElementById('sidebar-overlay');
+            s.classList.toggle('open');if(o)o.classList.toggle('active');
+        }
+            document.addEventListener('DOMContentLoaded',function(){
+                const o=document.getElementById('sidebar-overlay');
+                if(o)o.addEventListener('click',toggleSidebar);
+                document.querySelectorAll('.nav-item').forEach(function(n){
+                    n.addEventListener('click',function(){ if(window.innerWidth<=768){document.getElementById('sidebar').classList.remove('open');if(o)o.classList.remove('active');} });
+                });
+            });
 
         function checkResponsive() {
             const toggle = document.getElementById('menu-toggle');

@@ -41,11 +41,8 @@
         .map-data-item strong { font-size:12px; color:var(--text-primary); }
         .map-warning { padding:12px 14px; border-radius:10px; background:rgba(255,200,50,.1); border:1px solid rgba(255,200,50,.2); color:var(--neon-beige); font-size:12px; line-height:1.5; margin:12px 0; }
         .map-warning:empty { display:none; }
-        @media (max-width:768px) {
-            .mapa-layout { flex-direction:column; height:auto; }
-            .mapa-sidebar { width:100% !important; max-height:200px; }
-            #zoneMap { min-height:400px; }
-            .map-data-grid { grid-template-columns:1fr; }
+        @media (max-width:480px) {
+            #zoneMap { min-height:350px; }
         }
     </style>
 </head>
@@ -89,6 +86,7 @@
                 </div>
             </div>
         </aside>
+        <div id="sidebar-overlay"></div>
 
         <main class="main-content">
             <header class="top-header">
@@ -423,7 +421,17 @@
             setTimeout(() => alert.remove(), 5000);
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleSidebar() {
+            const s=document.getElementById('sidebar'),o=document.getElementById('sidebar-overlay');
+            s.classList.toggle('open');if(o)o.classList.toggle('active');
+        }
+        document.addEventListener('DOMContentLoaded',function(){
+            const o=document.getElementById('sidebar-overlay');
+            if(o)o.addEventListener('click',toggleSidebar);
+            document.querySelectorAll('.nav-item').forEach(function(n){
+                n.addEventListener('click',function(){ if(window.innerWidth<=768){document.getElementById('sidebar').classList.remove('open');if(o)o.classList.remove('active');} });
+            });
+        });
         function checkResponsive() {
             const toggle = document.getElementById('menu-toggle');
             if (window.innerWidth <= 768) { toggle.style.display = 'grid'; } else { toggle.style.display = 'none'; }

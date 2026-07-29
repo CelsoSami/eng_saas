@@ -94,6 +94,7 @@
                 </div>
             </div>
         </aside>
+        <div id="sidebar-overlay"></div>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -371,8 +372,16 @@
         }
 
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+            const s=document.getElementById('sidebar'),o=document.getElementById('sidebar-overlay');
+            s.classList.toggle('open');if(o)o.classList.toggle('active');
         }
+        document.addEventListener('DOMContentLoaded',function(){
+            const o=document.getElementById('sidebar-overlay');
+            if(o)o.addEventListener('click',toggleSidebar);
+            document.querySelectorAll('.nav-item').forEach(function(n){
+                n.addEventListener('click',function(){ if(window.innerWidth<=768){document.getElementById('sidebar').classList.remove('open');if(o)o.classList.remove('active');} });
+            });
+        });
 
         function checkResponsive() {
             const toggle = document.getElementById('menu-toggle');
