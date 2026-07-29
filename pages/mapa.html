@@ -182,6 +182,12 @@
                                 <div class="map-uses-tooltip" id="usesTooltip"><button class="tt-close" onclick="fecharTooltip()">&times;</button><div class="tt-code" id="ttCode"></div><div class="tt-desc" id="ttDesc"></div><div class="tt-porte" id="ttPorte"></div></div>
                                 <div id="resultUses"></div>
                             </div>
+                            <div class="map-uses-section" id="resultEnvSection" style="display:none;">
+                                <div class="map-uses-section-title">Zoneamento ambiental</div>
+                                <div class="map-uses-section-sub">parâmetros ambientais do perímetro</div>
+                                <div id="resultEnv"></div>
+                            </div>
+                            </div>
                             <div class="map-warning" id="resultWarning"></div>
                             <div style="margin-top:12px; text-align:right;">
                                 <button class="urb1-report-btn" id="resultPdfBtn" disabled><i class="fas fa-file-pdf"></i> BAIXAR RELATÓRIO · PDF</button>
@@ -232,9 +238,15 @@
 
         function mostrarTooltip(el) {
             const tp = document.getElementById('usesTooltip');
+            const porteEl = document.getElementById('ttPorte');
             document.getElementById('ttCode').textContent = el.dataset.code;
             document.getElementById('ttDesc').textContent = el.dataset.desc;
-            document.getElementById('ttPorte').textContent = 'Porte: ' + el.dataset.porte;
+            if (el.dataset.porte) {
+                porteEl.textContent = 'Porte: ' + el.dataset.porte;
+                porteEl.style.display = '';
+            } else {
+                porteEl.style.display = 'none';
+            }
             tp.style.display = 'block';
             const r = tp.getBoundingClientRect();
             const w = r.width;
@@ -368,12 +380,7 @@
                 mapItem('Testada meio', urban?.meio),
                 mapItem('Recuo frontal', urban?.frente),
                 mapItem('Laterais/fundos', urban?.lateral),
-                mapItem('Recuo outorga', urban?.outorgaRec),
-                mapItem('Zona ambiental', base?.za),
-                mapItem('TRA mínima', base ? formatDecimal(base.tra) : null),
-                mapItem('Permeabilidade', base?.perm),
-                mapItem('Fator alfa', base ? formatDecimal(base.alfa) : null),
-                mapItem('Fator beta', base ? formatDecimal(base.beta) : null)
+                mapItem('Recuo outorga', urban?.outorgaRec)
             ].join('');
 
             const usesEl = document.getElementById('resultUsesSection');
@@ -409,8 +416,40 @@
                 });
                 usesContainer.appendChild(df);
                 usesEl.style.display = '';
+
+                const envContainer = document.getElementById('resultEnv');
+                const envDescs = {
+                    ZA: 'Zona Ambiental — classificação do bairro conforme o grau de restrição ambiental.',
+                    TRA: 'Taxa de Ocupação Máxima — percentual máximo do terreno que pode ser ocupado.',
+                    PERM: 'Taxa de Permeabilidade — percentual mínimo do terreno que deve permanecer permeável.',
+                    ALFA: 'Coeficiente de ajuste aplicado ao potencial construtivo na zona ambiental.',
+                    BETA: 'Coeficiente de ajuste aplicado ao potencial construtivo na zona ambiental.'
+                };
+                const envItems = [
+                    { code: 'ZA', value: base.za, desc: envDescs.ZA },
+                    { code: 'TRA', value: formatDecimal(base.tra), desc: envDescs.TRA },
+                    { code: 'PERM', value: base.perm, desc: envDescs.PERM },
+                    { code: 'ALFA', value: formatDecimal(base.alfa), desc: envDescs.ALFA },
+                    { code: 'BETA', value: formatDecimal(base.beta), desc: envDescs.BETA }
+                ];
+                envContainer.innerHTML = '';
+                const envCodesDiv = document.createElement('div');
+                envCodesDiv.className = 'map-uses-codes';
+                envItems.forEach(item => {
+                    const span = document.createElement('span');
+                    span.className = 'map-uses-code';
+                    span.dataset.code = item.code + ' ' + item.value;
+                    span.dataset.desc = item.desc;
+                    span.dataset.porte = '';
+                    span.textContent = item.code + ' ' + item.value;
+                    anexarEventosBadge(span);
+                    envCodesDiv.appendChild(span);
+                });
+                envContainer.appendChild(envCodesDiv);
+                document.getElementById('resultEnvSection').style.display = '';
             } else {
                 usesEl.style.display = 'none';
+                document.getElementById('resultEnvSection').style.display = 'none';
             }
 
             const alerts = [];
