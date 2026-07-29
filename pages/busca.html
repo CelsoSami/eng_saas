@@ -322,7 +322,7 @@
                 sugBox.innerHTML = logradouros.map(l =>
                     '<div class="comp-suggestion" data-value="' + l.nome + '">' + l.nome + '<br><small style="color:var(--text-muted);font-size:10px;">' + (l.ceps ? 'CEP ' + l.ceps.join(', ') : '') + '</small></div>'
                 ).join('');
-                sugBox.style.display = '';
+                sugBox.style.display = 'block';
             });
 
             sugBox.addEventListener('click', function(e) {
