@@ -2587,6 +2587,89 @@ body {
 
     .card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
+/* ─── Busca / Dashboard — Tabs, autocomplete, value props ─── */
+.busca-tab {
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+}
+.busca-tab.active {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+.busca-panel { display: none; }
+.busca-panel.active { display: block; }
+
+.busca-suggestions, .dash-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    display: none;
+    max-height: 320px;
+    overflow-y: auto;
+    margin-top: 2px;
+}
+.busca-suggestions.open, .dash-suggestions.open { display: block; }
+.busca-suggestion, .dash-suggestion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    border: 0;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+}
+.busca-suggestion:hover, .dash-suggestion:hover { background: rgba(255,255,255,.06); }
+.busca-suggestion small, .dash-suggestion small { color: var(--text-muted); font-size: 12px; }
+
+.dash-vp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+.dash-vp {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: all .2s;
+}
+.dash-vp:hover { border-color: var(--neon-blue-dim); }
+.dash-vp-locked { opacity: .7; }
+.dash-vp-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    margin-bottom: 14px;
+}
+.dash-vp-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.dash-vp-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; flex: 1; margin-bottom: 14px; }
+.dash-vp-cta { align-self: flex-start; }
+
 @media (max-width: 480px) {
     .stats-grid { grid-template-columns: 1fr; }
     .urb1-calc-grid { grid-template-columns: 1fr; }

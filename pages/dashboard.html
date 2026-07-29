@@ -9,7 +9,6 @@
 </head>
 <body>
     <div class="app-layout">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="dashboard.html" class="sidebar-logo">
@@ -17,7 +16,6 @@
                     TerraeScope
                 </a>
             </div>
-
             <nav class="sidebar-nav">
                 <div class="nav-section">
                     <div class="nav-section-title">Principal</div>
@@ -35,7 +33,6 @@
                         Mapa Interativo
                     </a>
                 </div>
-
                 <div class="nav-section">
                     <div class="nav-section-title">Análises</div>
                     <a href="analise.html" class="nav-item">
@@ -52,7 +49,6 @@
                         <span class="badge tag-beige">PRO</span>
                     </a>
                 </div>
-
                 <div class="nav-section">
                     <div class="nav-section-title">Gestão</div>
                     <a href="projetos.html" class="nav-item">
@@ -68,7 +64,6 @@
                         Histórico
                     </a>
                 </div>
-
                 <div class="nav-section">
                     <div class="nav-section-title">Conta</div>
                     <a href="assinatura.html" class="nav-item">
@@ -81,24 +76,20 @@
                     </a>
                 </div>
             </nav>
-
             <div class="sidebar-footer">
-                <div class="sidebar-user" onclick="toggleUserMenu()">
+                <div class="sidebar-user">
                     <div class="sidebar-user-avatar" id="user-avatar">US</div>
                     <div class="sidebar-user-info">
                         <div class="sidebar-user-name" id="user-name">Usuário</div>
                         <div class="sidebar-user-plan" id="user-plan">Plano Gratuito</div>
                     </div>
                     <button class="btn btn-ghost btn-sm" style="margin-left:auto; color:var(--text-muted);" onclick="fazerLogout()" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
-                    <i class="fas fa-chevron-down" style="color:var(--text-muted); font-size:12px;"></i>
                 </div>
             </div>
         </aside>
         <div id="sidebar-overlay"></div>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Header -->
             <header class="top-header">
                 <div class="header-left">
                     <button class="header-btn" onclick="toggleSidebar()" style="display:none;" id="menu-toggle">
@@ -112,159 +103,201 @@
                     </div>
                 </div>
                 <div class="header-right">
-                    <div class="header-search">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" placeholder="Buscar terrenos, projetos...">
-                    </div>
-                    <button class="header-btn">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-dot"></span>
-                    </button>
                     <button class="header-btn" onclick="exportarDados()">
                         <i class="fas fa-download"></i>
                     </button>
                 </div>
             </header>
 
-            <!-- Page Content -->
             <div class="page-content">
-                <!-- Quota Bar -->
-                <div class="quota-bar" id="quota-bar">
-                    <div style="width:40px; height:40px; border-radius:10px; background:var(--neon-blue-dim); display:grid; place-items:center; color:var(--neon-blue);">
-                        <i class="fas fa-gauge-high"></i>
-                    </div>
-                    <div class="quota-info">
-                        <div class="quota-label">Uso mensal: <strong id="quota-text">0 de 10 buscas realizadas</strong></div>
-                        <div class="progress-bar" style="max-width:300px;">
-                            <div class="progress-fill blue" id="quota-progress" style="width:0%"></div>
+
+                <!-- HERO: Stats + Welcome -->
+                <div class="card" style="border-color:var(--neon-blue-dim);margin-bottom:24px;background:linear-gradient(135deg,var(--bg-secondary),var(--bg-tertiary));">
+                    <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+                        <div style="flex:1;min-width:240px;">
+                            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+                                <span class="badge" style="background:var(--neon-blue-dim);color:var(--neon-blue);font-size:11px;">Campo Grande · MS</span>
+                                <span class="badge tag-beige" style="font-size:11px;">PDDUA 2018</span>
+                            </div>
+                            <h1 style="font-size:24px;font-weight:700;margin:0 0 6px;">Central de Inteligência Urbanística</h1>
+                            <p style="color:var(--text-muted);font-size:14px;margin:0 0 16px;">Consulte índices construtivos, simule o potencial do seu terreno, compare zonas e explore o mapa interativo — tudo com base na legislação oficial de Campo Grande.</p>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <a href="analise.html" class="btn btn-primary"><i class="fas fa-building"></i> Análise Completa</a>
+                                <a href="mapa.html" class="btn btn-secondary"><i class="fas fa-map-marked-alt"></i> Mapa Interativo</a>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                            <div style="text-align:center;padding:14px 18px;background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border);min-width:90px;">
+                                <div style="font-size:26px;font-weight:700;color:var(--neon-blue);" id="dash-total-bairros">—</div>
+                                <div style="font-size:10px;color:var(--text-muted);">Bairros</div>
+                            </div>
+                            <div style="text-align:center;padding:14px 18px;background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border);min-width:90px;">
+                                <div style="font-size:26px;font-weight:700;color:var(--neon-green);">5</div>
+                                <div style="font-size:10px;color:var(--text-muted);">Zonas</div>
+                            </div>
+                            <div style="text-align:center;padding:14px 18px;background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border);min-width:90px;">
+                                <div style="font-size:26px;font-weight:700;color:var(--neon-yellow);" id="dash-total-categorias">—</div>
+                                <div style="font-size:10px;color:var(--text-muted);">Usos</div>
+                            </div>
+                            <div style="text-align:center;padding:14px 18px;background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border);min-width:90px;">
+                                <div style="font-size:26px;font-weight:700;color:var(--neon-beige);" id="dash-total-zonas">—</div>
+                                <div style="font-size:10px;color:var(--text-muted);">Zonas Ambientais</div>
+                            </div>
                         </div>
                     </div>
-                    <a href="assinatura.html" class="btn btn-sm btn-secondary">Fazer upgrade</a>
                 </div>
 
-                <!-- Stats Grid -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-card-icon blue"><i class="fas fa-search-location"></i></div>
-                        <div class="stat-card-value" id="stat-buscas">0</div>
-                        <div class="stat-card-label">Buscas realizadas</div>
-                        <div class="stat-card-change positive"><i class="fas fa-arrow-up"></i> +12% este mês</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-icon green"><i class="fas fa-map-pin"></i></div>
-                        <div class="stat-card-value" id="stat-terrenos">0</div>
-                        <div class="stat-card-label">Terrenos salvos</div>
-                        <div class="stat-card-change positive"><i class="fas fa-arrow-up"></i> +5 este mês</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-icon beige"><i class="fas fa-project-diagram"></i></div>
-                        <div class="stat-card-value" id="stat-projetos">0</div>
-                        <div class="stat-card-label">Projetos ativos</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-icon yellow"><i class="fas fa-chart-pie"></i></div>
-                        <div class="stat-card-value" id="stat-analises">0</div>
-                        <div class="stat-card-label">Análises feitas</div>
-                    </div>
-                </div>
+                <!-- GRID: Bairro Consult + Zone Comparison -->
+                <div class="grid-2" style="margin-bottom:24px;">
 
-                <!-- Quick Actions -->
-                <div class="grid-2" style="margin-bottom:32px;">
+                    <!-- BAIRRO CONSULT with full result -->
                     <div class="card">
                         <div class="card-header">
                             <div>
-                                <div class="card-title">Ações Rápidas</div>
-                                <div class="card-subtitle">Acesse as funcionalidades principais</div>
+                                <div class="card-title"><i class="fas fa-search" style="margin-right:8px;color:var(--neon-blue);"></i>Consultar Bairro</div>
+                                <div class="card-subtitle">Veja todos os índices urbanísticos de qualquer bairro</div>
                             </div>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                            <a href="busca.html" class="btn btn-secondary" style="justify-content:flex-start;">
-                                <i class="fas fa-search"></i> Buscar Terreno
-                            </a>
-                            <a href="mapa.html" class="btn btn-secondary" style="justify-content:flex-start;">
-                                <i class="fas fa-map"></i> Ver no Mapa
-                            </a>
-                            <a href="analise.html" class="btn btn-secondary" style="justify-content:flex-start;">
-                                <i class="fas fa-chart-bar"></i> Nova Análise
-                            </a>
-                            <a href="projetos.html" class="btn btn-secondary" style="justify-content:flex-start;">
-                                <i class="fas fa-plus"></i> Criar Projeto
-                            </a>
+                        <div style="position:relative;margin-bottom:12px;">
+                            <div style="display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg-tertiary);">
+                                <input type="text" id="dashBairroInput" placeholder="Ex: Santa Fé, Jardim dos Estados, Centro..." style="border:0;outline:0;padding:12px 14px;font-size:14px;flex:1;min-width:0;background:transparent;color:var(--text-primary);">
+                                <button onclick="dashConsultarBairro()" style="border:0;background:var(--neon-blue);color:#0a1628;padding:0 18px;font-weight:800;cursor:pointer;"><i class="fas fa-search"></i></button>
+                            </div>
+                            <div class="dash-suggestions" id="dashBairroSuggestions"></div>
                         </div>
+                        <div id="dashBairroEmpty" style="text-align:center;padding:24px 16px;color:var(--text-muted);">
+                            <i class="fas fa-building" style="font-size:28px;opacity:0.25;margin-bottom:8px;display:block;"></i>
+                            <p style="margin:0;font-size:13px;">Digite o nome de um bairro para visualizar seus índices completos e potencial construtivo.</p>
+                        </div>
+                        <div id="dashBairroResult" style="display:none;"></div>
                     </div>
 
+                    <!-- ZONE COMPARISON TABLE -->
                     <div class="card">
                         <div class="card-header">
                             <div>
-                                <div class="card-title">Plano Atual</div>
-                                <div class="card-subtitle">Detalhes da sua assinatura</div>
+                                <div class="card-title"><i class="fas fa-layer-group" style="margin-right:8px;color:var(--neon-green);"></i>Comparativo de Zonas</div>
+                                <div class="card-subtitle">Potencial construtivo de Z1 a Z5 lado a lado</div>
                             </div>
-                            <a href="assinatura.html" class="btn btn-sm btn-ghost">Ver planos</a>
                         </div>
-                        <div style="text-align:center; padding:20px 0;">
-                            <div style="font-size:24px; font-weight:700; color:var(--neon-blue); margin-bottom:4px;" id="plan-name">Gratuito</div>
-                            <div style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">R$ 0/mês</div>
-                            <div style="display:flex; justify-content:center; gap:24px; font-size:13px; color:var(--text-secondary);">
-                                <div><span style="color:var(--neon-blue); font-weight:600;" id="plan-buscas">10</span> buscas</div>
-                                <div><span style="color:var(--neon-blue); font-weight:600;" id="plan-projetos">3</span> projetos</div>
-                                <div><span style="color:var(--neon-blue); font-weight:600;" id="plan-analises">5</span> análises</div>
+                        <div id="dashZoneTable" style="overflow-x:auto;"></div>
+                    </div>
+                </div>
+
+                <!-- CALCULATOR: Potencial Construtivo -->
+                <div class="card" style="margin-bottom:24px;border-color:var(--neon-green-dim);">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title"><i class="fas fa-calculator" style="margin-right:8px;color:var(--neon-green);"></i>Calculadora de Potencial Construtivo</div>
+                            <div class="card-subtitle">Descubra instantaneamente o potencial do seu terreno</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;">
+                        <div style="flex:1;min-width:120px;">
+                            <label style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">Área do terreno (m²)</label>
+                            <input type="number" id="dashCalcArea" placeholder="Ex: 360" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                        </div>
+                        <div style="flex:1;min-width:120px;">
+                            <label style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">Zona do terreno</label>
+                            <select id="dashCalcZona" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                                <option value="Z1">Z1 · Preservação</option>
+                                <option value="Z2">Z2 · Baixa densidade</option>
+                                <option value="Z3" selected>Z3 · Média densidade</option>
+                                <option value="Z4">Z4 · Alta densidade</option>
+                                <option value="Z5">Z5 · Corredor urbano</option>
+                            </select>
+                        </div>
+                        <div style="flex:1;min-width:120px;">
+                            <label style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">Nº de pavimentos</label>
+                            <input type="number" id="dashCalcPav" placeholder="Ex: 4" value="4" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" onclick="dashCalcular()" style="height:42px;"><i class="fas fa-calculator"></i> Calcular</button>
+                        </div>
+                    </div>
+                    <div id="dashCalcResult" style="display:none;margin-top:16px;"></div>
+                </div>
+
+                <!-- VALUE PROPS -->
+                <div style="margin-bottom:24px;">
+                    <h2 style="font-size:16px;font-weight:700;margin-bottom:16px;">Ferramentas que fazem a diferença</h2>
+                    <div class="dash-vp-grid">
+                        <div class="dash-vp">
+                            <div class="dash-vp-icon" style="background:var(--neon-blue-dim);color:var(--neon-blue);"><i class="fas fa-map-marked-alt"></i></div>
+                            <div class="dash-vp-title">Mapa Interativo</div>
+                            <div class="dash-vp-desc">Clique em qualquer ponto de Campo Grande e veja na hora os índices urbanísticos, zoneamento e usos permitidos com relatório PDF.</div>
+                            <a href="mapa.html" class="btn btn-sm btn-ghost dash-vp-cta">Abrir mapa <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="dash-vp">
+                            <div class="dash-vp-icon" style="background:var(--neon-green-dim);color:var(--neon-green);"><i class="fas fa-building"></i></div>
+                            <div class="dash-vp-title">Análise de Bairro</div>
+                            <div class="dash-vp-desc">Simule a viabilidade de construções com dados reais: taxas de ocupação, CA, recuos, infraestrutura, vagas e muito mais.</div>
+                            <a href="analise.html" class="btn btn-sm btn-ghost dash-vp-cta">Consultar <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="dash-vp">
+                            <div class="dash-vp-icon" style="background:var(--neon-beige-dim);color:var(--neon-beige);"><i class="fas fa-file-pdf"></i></div>
+                            <div class="dash-vp-title">Relatório PDF</div>
+                            <div class="dash-vp-desc">Relatórios profissionais com todos os índices, cálculos e usos permitidos — prontos para imprimir ou compartilhar.</div>
+                            <a href="analise.html" class="btn btn-sm btn-ghost dash-vp-cta">Gerar <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="dash-vp dash-vp-locked">
+                            <div class="dash-vp-icon" style="background:var(--neon-yellow-dim);color:var(--neon-yellow);"><i class="fas fa-crown"></i></div>
+                            <div class="dash-vp-title">BI & Relatórios Avançados</div>
+                            <div class="dash-vp-desc">Dashboards exclusivos, exportação de dados, comparativos ilimitados e API. <span class="badge tag-beige" style="font-size:10px;">PRO</span></div>
+                            <a href="assinatura.html" class="btn btn-sm btn-ghost dash-vp-cta">Desbloquear <i class="fas fa-lock"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLAN -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Seu plano</div>
+                            <div class="card-subtitle" id="dash-plan-subtitle">Gratuito — 10 consultas/mês</div>
+                        </div>
+                        <a href="assinatura.html" class="btn btn-primary btn-sm">Gerenciar assinatura</a>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+                        <div>
+                            <div style="font-size:28px;font-weight:700;color:var(--neon-blue);" id="dashPlanName">Gratuito</div>
+                            <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">
+                                <span id="dashPlanBuscas">10</span> consultas/mês ·
+                                <span id="dashPlanProjetos">3</span> projetos ·
+                                <span id="dashPlanAnalises">5</span> análises
+                            </div>
+                        </div>
+                        <div style="min-width:180px;">
+                            <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;display:flex;justify-content:space-between;">
+                                <span>Uso mensal</span>
+                                <span id="dashPlanUso">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill blue" id="dashPlanProgress" style="width:0%"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Activity & Terrenos -->
-                <div class="grid-2">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Atividade Recente</div>
-                            <a href="historico.html" class="btn btn-sm btn-ghost">Ver tudo</a>
-                        </div>
-                        <div id="recent-activity">
-                            <div class="empty-state" style="padding:30px;">
-                                <div class="empty-state-icon" style="width:50px; height:50px; font-size:20px;"><i class="fas fa-clock"></i></div>
-                                <p style="margin:0; font-size:13px;">Nenhuma atividade recente</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Terrenos em Destaque</div>
-                            <a href="busca.html" class="btn btn-sm btn-ghost">Ver todos</a>
-                        </div>
-                        <div id="featured-terrenos">
-                            <div class="empty-state" style="padding:30px;">
-                                <div class="empty-state-icon" style="width:50px; height:50px; font-size:20px;"><i class="fas fa-map-marker-alt"></i></div>
-                                <p style="margin:0; font-size:13px;">Nenhum terreno salvo ainda</p>
-                                <a href="busca.html" class="btn btn-sm btn-primary" style="margin-top:12px;">Buscar terrenos</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
     </div>
 
-    <div id="alert-container" style="position:fixed; top:20px; right:20px; z-index:9999;"></div>
+    <div id="alert-container" style="position:fixed;top:20px;right:20px;z-index:9999;"></div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="../js/db.js"></script>
     <script src="../js/license.js"></script>
+    <script src="../js/urb1.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             await db.init();
             const sessao = await license.verificarSessao();
-            if (!sessao) {
-                window.location.href = '../index.html';
-                return;
-            }
+            if (!sessao) { window.location.href = '../index.html'; return; }
 
             updateUserUI();
             updateQuota();
-            loadStats();
-            loadRecentActivity();
-            loadFeaturedTerrenos();
+            initDash();
             checkResponsive();
         });
 
@@ -275,84 +308,246 @@
                 document.getElementById('user-name').textContent = user.nome || 'Usuário';
                 document.getElementById('user-avatar').textContent = (user.nome || 'US').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                 document.getElementById('user-plan').textContent = 'Plano ' + plano.nome;
-                document.getElementById('plan-name').textContent = plano.nome;
-                document.getElementById('plan-buscas').textContent = plano.limiteBuscas === -1 ? '∞' : plano.limiteBuscas;
-                document.getElementById('plan-projetos').textContent = plano.limiteProjetos === -1 ? '∞' : plano.limiteProjetos;
-                document.getElementById('plan-analises').textContent = plano.limiteAnalises === -1 ? '∞' : plano.limiteAnalises;
+                const badge = document.getElementById('quota-badge');
+                if (badge) badge.textContent = plano.limiteBuscas === -1 ? '∞' : plano.limiteBuscas;
             }
         }
 
         function updateQuota() {
             const uso = license.getUso();
             const plano = license.getPlanoInfo();
-            if (uso && plano) {
-                const limite = plano.limiteBuscas;
-                const usado = uso.buscas;
-                document.getElementById('quota-text').textContent = `${usado} de ${limite === -1 ? '∞' : limite} buscas realizadas`;
-                if (limite > 0) {
-                    const pct = Math.min((usado / limite) * 100, 100);
-                    document.getElementById('quota-progress').style.width = pct + '%';
-                    if (pct > 80) {
-                        document.getElementById('quota-progress').classList.remove('blue');
-                        document.getElementById('quota-progress').classList.add('red');
-                    }
-                }
-                document.getElementById('stat-buscas').textContent = usado;
+            if (!uso || !plano) return;
+            const limite = plano.limiteBuscas;
+            const usado = uso.buscas;
+            const pct = limite > 0 ? Math.min((usado / limite) * 100, 100) : 0;
+            const el = document.getElementById('dashPlanProgress');
+            if (el) el.style.width = pct + '%';
+            const usoEl = document.getElementById('dashPlanUso');
+            if (usoEl) usoEl.textContent = limite > 0 ? Math.round(pct) + '%' : usado + ' usos';
+            const subtitle = document.getElementById('dash-plan-subtitle');
+            if (subtitle) subtitle.textContent = plano.nome + ' — ' + (limite === -1 ? 'uso ilimitado' : usado + ' de ' + limite + ' consultas usadas');
+            document.getElementById('dashPlanBuscas').textContent = limite === -1 ? '∞' : limite;
+            document.getElementById('dashPlanProjetos').textContent = plano.limiteProjetos === -1 ? '∞' : plano.limiteProjetos;
+            document.getElementById('dashPlanAnalises').textContent = plano.limiteAnalises === -1 ? '∞' : plano.limiteAnalises;
+        }
+
+        function normalize(text) {
+            return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+        }
+
+        function initDash() {
+            if (typeof URB1 === 'undefined' || !URB1.bairros) {
+                document.getElementById('dash-total-bairros').textContent = '—';
+                return;
             }
+
+            const bairros = URB1.bairros;
+            const categorias = URB1.categories || [];
+            const zonas = [...new Set(bairros.map(b => b.za))].sort();
+            const zoneColors = { Z1: '#365dff', Z2: '#00a078', Z3: '#a6d800', Z4: '#f4a126', Z5: '#d95852' };
+
+            document.getElementById('dash-total-bairros').textContent = bairros.length;
+            document.getElementById('dash-total-categorias').textContent = categorias.length;
+            document.getElementById('dash-total-zonas').textContent = zonas.length;
+
+            // Zone comparison table
+            const rows = [
+                { label: 'Taxa de ocupação', field: 'ocupacao' },
+                { label: 'CA básico', field: 'cabas' },
+                { label: 'CA máximo', field: 'camax' },
+                { label: 'Outorga / TDC', field: 'outorga' },
+                { label: 'IE (sem outorga)', field: 'ie' },
+                { label: 'Área mín. lote', field: 'area' },
+                { label: 'Testada meio', field: 'meio' },
+                { label: 'Testada esquina', field: 'esquina' },
+            ];
+            const zLabels = { Z1: 'Z1 · Preservação', Z2: 'Z2 · Baixa dens.', Z3: 'Z3 · Média dens.', Z4: 'Z4 · Alta dens.', Z5: 'Z5 · Corredor' };
+
+            let html = '<table class="table"><thead><tr><th>Índice</th>';
+            ['Z1','Z2','Z3','Z4','Z5'].forEach(z => {
+                html += `<th style="color:${zoneColors[z]};text-align:center;">${zLabels[z]}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            rows.forEach(r => {
+                html += `<tr><td style="font-weight:600;font-size:13px;">${r.label}</td>`;
+                ['Z1','Z2','Z3','Z4','Z5'].forEach(z => {
+                    const val = URB1.urbano[z]?.[r.field] || '—';
+                    html += `<td style="text-align:center;font-size:13px;">${val}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('dashZoneTable').innerHTML = html;
+
+            // Bairro autocomplete
+            const input = document.getElementById('dashBairroInput');
+            const suggest = document.getElementById('dashBairroSuggestions');
+
+            input.addEventListener('input', function() {
+                const val = normalize(this.value);
+                if (!val) { suggest.classList.remove('open'); return; }
+                const matches = bairros.filter(b => normalize(b.nome).includes(val)).slice(0, 8);
+                if (!matches.length) { suggest.classList.remove('open'); return; }
+                suggest.innerHTML = matches.map(b =>
+                    `<button type="button" class="dash-suggestion" data-nome="${b.nome}">
+                        <span style="font-weight:600;">${b.nome}</span>
+                        <span>
+                            <span class="badge" style="background:${zoneColors[b.z]};color:#fff;font-size:10px;padding:2px 8px;">${b.z}</span>
+                            <span class="badge" style="background:var(--neon-green-dim);color:var(--neon-green);font-size:10px;padding:2px 8px;">${b.za}</span>
+                        </span>
+                    </button>`
+                ).join('');
+                suggest.classList.add('open');
+            });
+
+            suggest.addEventListener('mousedown', function(e) {
+                const btn = e.target.closest('.dash-suggestion');
+                if (!btn) return;
+                e.preventDefault();
+                suggest.classList.remove('open');
+                input.value = btn.dataset.nome;
+                dashShowResult(btn.dataset.nome);
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); dashConsultarBairro(); }
+            });
+
+            const lastBairro = localStorage.getItem('urb1_last_bairro');
+            if (lastBairro) { input.value = lastBairro; dashShowResult(lastBairro); }
         }
 
-        async function loadStats() {
-            try {
-                const terrenos = await db.count('terrenos');
-                const projetos = await db.count('projetos');
-                const analises = await db.count('analises');
-                document.getElementById('stat-terrenos').textContent = terrenos;
-                document.getElementById('stat-projetos').textContent = projetos;
-                document.getElementById('stat-analises').textContent = analises;
-            } catch (e) { }
+        function dashConsultarBairro() {
+            const val = document.getElementById('dashBairroInput').value;
+            if (!val) return;
+            dashShowResult(val);
         }
 
-        async function loadRecentActivity() {
-            try {
-                const analises = await db.getAll('analises');
-                const container = document.getElementById('recent-activity');
-                if (analises.length === 0) return;
+        function dashShowResult(nome) {
+            const bairro = URB1.bairros.find(b => normalize(b.nome) === normalize(nome));
+            if (!bairro) { showAlert('Bairro não encontrado', 'warning'); return; }
 
-                const recentes = analises.sort((a, b) => new Date(b.criado_em) - new Date(a.criado_em)).slice(0, 5);
-                container.innerHTML = recentes.map(a => `
-                    <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border);">
-                        <div style="width:36px; height:36px; border-radius:8px; background:var(--neon-blue-dim); display:grid; place-items:center; color:var(--neon-blue); font-size:14px;">
-                            <i class="fas fa-chart-bar"></i>
+            const urban = URB1.urbano[bairro.z];
+            const zoneColors = { Z1: '#365dff', Z2: '#00a078', Z3: '#a6d800', Z4: '#f4a126', Z5: '#d95852' };
+            const zaColors = { ZA1: '#1a73e8', ZA2: '#34a853', ZA3: '#fbbc04', ZA4: '#ea4335', ZA5: '#8e24aa' };
+            const result = document.getElementById('dashBairroResult');
+            const empty = document.getElementById('dashBairroEmpty');
+            empty.style.display = 'none';
+            localStorage.setItem('urb1_last_bairro', bairro.nome);
+
+            const cabas = urban ? parseFloat(urban.cabas.replace(',','.')) : 0;
+            const camax = urban ? parseFloat(urban.camax.replace(',','.')) : 0;
+            const potBasico = (360 * cabas).toLocaleString('pt-BR');
+            const potMax = (360 * camax).toLocaleString('pt-BR');
+
+            result.innerHTML = `
+                <div style="background:var(--bg-tertiary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+                    <div style="padding:16px 18px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border);">
+                        <div>
+                            <div style="font-size:20px;font-weight:700;">${bairro.nome}</div>
+                            <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+                                <span class="badge" style="background:${zoneColors[bairro.z]};color:#fff;font-size:11px;padding:3px 10px;">${bairro.z}</span>
+                                <span class="badge" style="background:${zaColors[bairro.za] || 'var(--neon-green-dim)'};color:#fff;font-size:11px;padding:3px 10px;">${bairro.za}</span>
+                            </div>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-size:14px; font-weight:500; color:var(--text-primary);">${a.tipo || 'Análise'}</div>
-                            <div style="font-size:12px; color:var(--text-muted);">${new Date(a.criado_em).toLocaleDateString('pt-BR')}</div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <a href="analise.html?bairro=${encodeURIComponent(bairro.nome)}" class="btn btn-sm btn-primary"><i class="fas fa-chart-bar"></i> Análise completa</a>
+                            <a href="mapa.html?bairro=${encodeURIComponent(bairro.nome)}" class="btn btn-sm btn-ghost"><i class="fas fa-map-marked-alt"></i> Ver no mapa</a>
                         </div>
                     </div>
-                `).join('');
-            } catch (e) { }
+                    <div style="padding:16px 18px;">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;">
+                            ${urban ? [
+                                { label: 'Taxa de ocupação', value: urban.ocupacao || '—' },
+                                { label: 'CA básico', value: urban.cabas || '—' },
+                                { label: 'CA máximo', value: urban.camax || '—' },
+                                { label: 'Outorga / TDC', value: urban.outorga || '—' },
+                                { label: 'IE máximo', value: urban.ie || '—' },
+                                { label: 'Área mín. lote', value: urban.area || '—' },
+                                { label: 'Testada meio', value: urban.meio || '—' },
+                                { label: 'Testada esquina', value: urban.esquina || '—' },
+                                { label: 'Recuo frontal', value: urban.frente || '—' },
+                                { label: 'Recuos lat./fundos', value: urban.lateral || '—' },
+                                { label: 'TRA mínima', value: bairro.tra },
+                                { label: 'Permeabilidade', value: bairro.perm },
+                            ].map(i => `<div style="background:var(--bg-secondary);border-radius:8px;padding:10px 12px;">
+                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${i.label}</div>
+                                <div style="font-size:15px;font-weight:700;">${i.value}</div>
+                            </div>`).join('') : ''}
+                        </div>
+                        ${urban ? `
+                        <div style="margin-top:14px;padding:12px 14px;background:var(--neon-green-dim);border-radius:8px;border:1px solid rgba(0,255,136,.15);">
+                            <div style="font-size:13px;font-weight:700;color:var(--neon-green);margin-bottom:6px;"><i class="fas fa-lightbulb"></i> Potencial construtivo ( terreno de 360 m² )</div>
+                            <div style="font-size:22px;font-weight:700;">${potBasico} m² <span style="font-size:13px;font-weight:400;color:var(--text-muted);">CA básico</span> &middot; ${potMax} m² <span style="font-size:13px;font-weight:400;color:var(--text-muted);">CA máximo</span></div>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+            result.style.display = 'block';
         }
 
-        async function loadFeaturedTerrenos() {
-            try {
-                const terrenos = await db.getAll('terrenos');
-                const container = document.getElementById('featured-terrenos');
-                if (terrenos.length === 0) return;
+        function dashCalcular() {
+            const area = parseFloat(document.getElementById('dashCalcArea').value);
+            const zona = document.getElementById('dashCalcZona').value;
+            const pav = parseInt(document.getElementById('dashCalcPav').value) || 0;
+            if (!area || area <= 0) { showAlert('Digite a área do terreno', 'warning'); return; }
 
-                const destaque = terrenos.slice(0, 3);
-                container.innerHTML = destaque.map(t => `
-                    <a href="analise.html?terreno=${t.id}" style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); text-decoration:none; color:inherit;">
-                        <div style="width:36px; height:36px; border-radius:8px; background:var(--neon-green-dim); display:grid; place-items:center; color:var(--neon-green); font-size:14px;">
-                            <i class="fas fa-map-pin"></i>
+            const u = URB1.urbano[zona];
+            if (!u) return;
+
+            const to = zona === 'Z1' ? 0.7 : 0.5;
+            const cabas = parseFloat(u.cabas.replace(',','.'));
+            const camax = parseFloat(u.camax.replace(',','.'));
+            const ieBase = { Z1: Infinity, Z2: 6, Z3: 4, Z4: 4, Z5: 2 }[zona];
+            const ieOk = pav <= ieBase;
+            const footprint = area * to;
+            const basico = area * cabas;
+            const maximo = area * camax;
+
+            const result = document.getElementById('dashCalcResult');
+            result.style.display = 'block';
+            result.innerHTML = `
+                <div style="background:var(--bg-tertiary);border-radius:10px;padding:8px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;">
+                        <div style="padding:12px;background:var(--bg-secondary);border-radius:8px;">
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Área do terreno</div>
+                            <div style="font-size:20px;font-weight:700;">${area} m²</div>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-size:14px; font-weight:500; color:var(--text-primary);">${t.logradouro || 'Terreno'}</div>
-                            <div style="font-size:12px; color:var(--text-muted);">${t.cidade || ''} - ${t.uf || ''}</div>
+                        <div style="padding:12px;background:var(--bg-secondary);border-radius:8px;">
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Zona</div>
+                            <div style="font-size:20px;font-weight:700;">${zona}</div>
                         </div>
-                        <i class="fas fa-chevron-right" style="color:var(--text-muted); font-size:12px;"></i>
-                    </a>
-                `).join('');
-            } catch (e) { }
+                        <div style="padding:12px;background:var(--bg-secondary);border-radius:8px;">
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Taxa de ocupação</div>
+                            <div style="font-size:20px;font-weight:700;">${(to*100)}%</div>
+                        </div>
+                        <div style="padding:12px;background:var(--bg-secondary);border-radius:8px;">
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">CA básico</div>
+                            <div style="font-size:20px;font-weight:700;">${cabas}</div>
+                        </div>
+                        <div style="padding:12px;background:var(--bg-secondary);border-radius:8px;">
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">CA máximo</div>
+                            <div style="font-size:20px;font-weight:700;">${camax}</div>
+                        </div>
+                        <div style="padding:12px;background:var(--bg-secondary);border-radius:8px;">
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">IE ${pav > 0 ? '('+pav+' pav.)' : ''}</div>
+                            <div style="font-size:20px;font-weight:700;color:${ieOk ? 'var(--neon-green)' : 'var(--neon-red)'};">${ieOk ? 'OK' : 'Excede limite'}</div>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
+                        <div style="padding:14px;background:var(--neon-blue-dim);border-radius:10px;text-align:center;">
+                            <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Potencial básico (CA básico)</div>
+                            <div style="font-size:28px;font-weight:700;color:var(--neon-blue);">${basico.toLocaleString('pt-BR')} m²</div>
+                            <div style="font-size:11px;color:var(--text-muted);">${area} m² x ${cabas}</div>
+                        </div>
+                        <div style="padding:14px;background:var(--neon-beige-dim);border-radius:10px;text-align:center;">
+                            <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Potencial máximo (CA máximo + outorga)</div>
+                            <div style="font-size:28px;font-weight:700;color:var(--neon-beige);">${maximo.toLocaleString('pt-BR')} m²</div>
+                            <div style="font-size:11px;color:var(--text-muted);">${area} m² x ${camax}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         async function exportarDados() {
@@ -362,7 +557,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `terraescope-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.download = 'terraescope-backup-' + new Date().toISOString().split('T')[0] + '.json';
                 a.click();
                 URL.revokeObjectURL(url);
                 showAlert('Dados exportados com sucesso!', 'success');
@@ -385,21 +580,16 @@
 
         function checkResponsive() {
             const toggle = document.getElementById('menu-toggle');
-            if (window.innerWidth <= 768) {
-                toggle.style.display = 'grid';
-            } else {
-                toggle.style.display = 'none';
-            }
+            if (window.innerWidth <= 768) { toggle.style.display = 'grid'; } else { toggle.style.display = 'none'; }
         }
-
         window.addEventListener('resize', checkResponsive);
 
-        function showAlert(message, type = 'info') {
+        function showAlert(message, type) {
             const container = document.getElementById('alert-container');
             const icons = { info: 'info-circle', success: 'check-circle', danger: 'exclamation-circle', warning: 'exclamation-triangle' };
             const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.innerHTML = `<i class="fas fa-${icons[type]}"></i> ${message}`;
+            alert.className = 'alert alert-' + (type || 'info');
+            alert.innerHTML = '<i class="fas fa-' + (icons[type] || icons.info) + '"></i> ' + message;
             container.appendChild(alert);
             setTimeout(() => alert.remove(), 5000);
         }
