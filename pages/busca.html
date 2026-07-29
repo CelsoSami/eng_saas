@@ -76,48 +76,18 @@
                     <div class="card" style="border-color:var(--neon-blue-dim);">
                         <div class="card-header">
                             <div>
-                                <div class="card-title"><i class="fas fa-map-pin" style="margin-right:8px;color:var(--neon-blue);"></i>Dados do Terreno</div>
-                                <div class="card-subtitle">Informe os dados do terreno para calcular o potencial construtivo completo</div>
+                                <div class="card-title"><i class="fas fa-map-marker-alt" style="margin-right:8px;color:var(--neon-blue);"></i>Localizar Terreno por Endereço</div>
+                                <div class="card-subtitle">Digite o endereço para identificar automaticamente o bairro e obter todos os índices urbanísticos</div>
                             </div>
                         </div>
-                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
-                            <div>
-                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Bairro *</label>
-                                <div style="position:relative;">
-                                    <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg-tertiary);">
-                                        <input type="text" id="buscaBairroInput" placeholder="Ex: Santa Fé, Centro..." style="border:0;outline:0;padding:10px 12px;font-size:14px;flex:1;min-width:0;background:transparent;color:var(--text-primary);">
-                                    </div>
-                                    <div class="busca-suggestions" id="buscaBairroSuggestions"></div>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;">
+                            <div style="flex:1;min-width:240px;">
+                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Endereço do terreno</label>
+                                <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg-tertiary);">
+                                    <input type="text" id="buscaEndereco" placeholder="Ex: Rua Marques de Lavradio, 499" style="border:0;outline:0;padding:12px 14px;font-size:15px;flex:1;min-width:0;background:transparent;color:var(--text-primary);">
+                                    <button onclick="buscaLocalizar()" style="border:0;background:var(--neon-blue);color:#0a1628;padding:0 22px;font-weight:800;cursor:pointer;"><i class="fas fa-search"></i> Localizar</button>
                                 </div>
-                            </div>
-                            <div>
-                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Área do terreno (m²) *</label>
-                                <input type="number" id="buscaArea" placeholder="Ex: 360" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
-                            </div>
-                            <div>
-                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Testada (m)</label>
-                                <input type="number" id="buscaTestada" placeholder="Ex: 10" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
-                            </div>
-                            <div>
-                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Profundidade (m)</label>
-                                <input type="number" id="buscaProf" placeholder="Ex: 30" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
-                            </div>
-                            <div>
-                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Largura da via (m)</label>
-                                <input type="number" id="buscaVia" placeholder="Ex: 15" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
-                            </div>
-                            <div>
-                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Pavimentos pretendidos</label>
-                                <input type="number" id="buscaPav" placeholder="Ex: 4" value="2" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
-                            </div>
-                            <div>
-                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Categoria de uso</label>
-                                <select id="buscaCategoria" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
-                                    <option value="">Selecione...</option>
-                                </select>
-                            </div>
-                            <div style="display:flex;align-items:end;">
-                                <button class="btn btn-primary" onclick="buscaAnalisar()" style="flex:1;height:42px;"><i class="fas fa-calculator"></i> Analisar Viabilidade</button>
+                                <div id="buscaStatus" style="font-size:12px;color:var(--text-muted);margin-top:6px;">Digite um endereço de Campo Grande - MS para consultar os índices urbanísticos.</div>
                             </div>
                         </div>
                     </div>
@@ -284,6 +254,7 @@
     <script src="../js/db.js"></script>
     <script src="../js/license.js"></script>
     <script src="../js/urb1.js"></script>
+    <script src="../js/map-data.js"></script>
     <script>
         let resultadosBusca = [];
         let viewMode = 'grid';
@@ -313,62 +284,8 @@
             return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
         }
 
-        // ─── Terrain Analysis ───
+        // ─── Geocoding + Spatial Bairro Lookup ───
         function initBusca() {
-            if (typeof URB1 === 'undefined' || !URB1.bairros) return;
-
-            const bairros = URB1.bairros;
-            const input = document.getElementById('buscaBairroInput');
-            const suggest = document.getElementById('buscaBairroSuggestions');
-            const selectCat = document.getElementById('buscaCategoria');
-            const zoneColors = { Z1: '#365dff', Z2: '#00a078', Z3: '#a6d800', Z4: '#f4a126', Z5: '#d95852' };
-
-            input.addEventListener('input', function() {
-                const val = normalize(this.value);
-                if (!val) { suggest.classList.remove('open'); return; }
-                const matches = bairros.filter(b => normalize(b.nome).includes(val)).slice(0, 8);
-                if (!matches.length) { suggest.classList.remove('open'); return; }
-                suggest.innerHTML = matches.map(b =>
-                    `<button type="button" class="busca-suggestion" data-nome="${b.nome}">
-                        <span style="font-weight:600;">${b.nome}</span>
-                        <span>
-                            <span class="badge" style="background:${zoneColors[b.z]};color:#fff;font-size:10px;padding:2px 8px;">${b.z}</span>
-                            <span class="badge" style="background:var(--neon-green-dim);color:var(--neon-green);font-size:10px;padding:2px 8px;">${b.za}</span>
-                        </span>
-                    </button>`
-                ).join('');
-                suggest.classList.add('open');
-            });
-
-            suggest.addEventListener('mousedown', function(e) {
-                const btn = e.target.closest('.busca-suggestion');
-                if (!btn) return;
-                e.preventDefault();
-                suggest.classList.remove('open');
-                input.value = btn.dataset.nome;
-            });
-
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); buscaAnalisar(); }
-            });
-
-            // Populate categories dropdown
-            const groups = URB1.listCategoriesByGroup();
-            const gruposOrdem = ['Residencial', 'Comércio varejista', 'Comércio atacadista', 'Serviços', 'Industrial', 'Especial'];
-            gruposOrdem.forEach(g => {
-                const items = groups[g] || [];
-                if (!items.length) return;
-                const opt = document.createElement('optgroup');
-                opt.label = g;
-                items.forEach(c => {
-                    const o = document.createElement('option');
-                    o.value = c.code;
-                    o.textContent = c.code + ' - ' + c.porte;
-                    opt.appendChild(o);
-                });
-                selectCat.appendChild(opt);
-            });
-
             // Tab switching
             document.querySelectorAll('.busca-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
@@ -382,48 +299,93 @@
                 });
             });
 
-            const lastBairro = localStorage.getItem('urb1_last_bairro');
-            if (lastBairro) { input.value = lastBairro; }
+            document.getElementById('buscaEndereco').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); buscaLocalizar(); }
+            });
         }
 
-        function buscaAnalisar() {
-            const nome = document.getElementById('buscaBairroInput').value.trim();
-            const area = parseFloat(document.getElementById('buscaArea').value);
-            if (!nome) { showAlert('Digite o nome do bairro', 'warning'); return; }
-            if (!area || area <= 0) { showAlert('Digite a área do terreno', 'warning'); return; }
+        let _buscando = false;
+        async function buscaLocalizar() {
+            if (_buscando) return;
+            const q = document.getElementById('buscaEndereco').value.trim();
+            if (!q) { showAlert('Digite um endereço', 'warning'); return; }
 
-            const bairro = URB1.bairros.find(b => normalize(b.nome) === normalize(nome));
-            if (!bairro) { showAlert('Bairro não encontrado. Verifique o nome.', 'warning'); return; }
+            _buscando = true;
+            const status = document.getElementById('buscaStatus');
+            status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Geocodificando endereço...';
 
-            const via = parseFloat(document.getElementById('buscaVia').value) || null;
-            const testada = parseFloat(document.getElementById('buscaTestada').value) || null;
-            const prof = parseFloat(document.getElementById('buscaProf').value) || null;
-            const pav = parseInt(document.getElementById('buscaPav').value) || 2;
-            const catCode = document.getElementById('buscaCategoria').value || 'R1';
+            try {
+                const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(q + ', Campo Grande, MS, Brasil') + '&addressdetails=1');
+                if (!resp.ok) throw new Error('Falha na geocodificação');
+                const data = await resp.json();
+                if (!data.length) {
+                    status.innerHTML = 'Endereço não encontrado. Tente incluir "Campo Grande" na busca.';
+                    showAlert('Endereço não localizado', 'warning');
+                    _buscando = false;
+                    return;
+                }
 
-            // Call URB1 calculation engine
-            const result = URB1.calcularPotencial(bairro, {
-                area, frente: testada, profundidade: prof, via,
-                built: area * (parseFloat(URB1.urbano[bairro.z]?.cabas.replace(',','.')) || 1),
-                units: catCode.startsWith('R') || catCode.startsWith('E') ? 1 : 0,
-                rooms: 0, seats: 0, floors: pav, height: pav * 3, useOutorga: false, catCode
-            });
+                const { lat, lon, display_name } = data[0];
+                const point = [parseFloat(lon), parseFloat(lat)];
 
-            if (!result) { showAlert('Erro ao calcular potencial', 'danger'); return; }
+                status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Identificando bairro no mapa...';
 
+                // Load map data and find bairro
+                if (!window.URB1_MAP_DATA || !window.URB1_MAP_DATA.bairros) {
+                    status.innerHTML = 'Base de dados geográficos não carregada.';
+                    showAlert('Mapa não disponível', 'danger');
+                    _buscando = false;
+                    return;
+                }
+
+                const found = featuresAt(window.URB1_MAP_DATA.bairros, point);
+                if (!found.length) {
+                    status.innerHTML = 'Coordenadas encontradas, mas o ponto não está dentro de nenhum bairro cadastrado.';
+                    showAlert('Fora da área de abrangência', 'warning');
+                    _buscando = false;
+                    return;
+                }
+
+                const props = found[0].properties || {};
+                const bairroNome = props.bairro || props.name || '';
+                if (!bairroNome) {
+                    status.innerHTML = 'Bairro identificado mas sem nome nos dados geográficos.';
+                    showAlert('Bairro sem nome', 'warning');
+                    _buscando = false;
+                    return;
+                }
+
+                // Match to URB1 bairro
+                const bairro = URB1.bairros.find(b => normalize(b.nome) === normalize(bairroNome));
+                if (!bairro) {
+                    status.innerHTML = `Bairro "${bairroNome}" encontrado no mapa mas sem dados urbanísticos.`;
+                    showAlert('Bairro sem dados URB1', 'warning');
+                    _buscando = false;
+                    return;
+                }
+
+                localStorage.setItem('urb1_last_bairro', bairro.nome);
+                status.innerHTML = `<i class="fas fa-check-circle" style="color:var(--neon-green);"></i> ${display_name}`;
+
+                // Exibir resultado com opção de calcular potencial
+                buscaExibirBairro(bairro, { lat, lon, endereco: display_name });
+
+            } catch (e) {
+                status.innerHTML = 'Erro ao consultar o endereço.';
+                showAlert('Erro na consulta: ' + e.message, 'danger');
+            }
+            _buscando = false;
+        }
+
+        function buscaExibirBairro(bairro, geo) {
             const urban = URB1.urbano[bairro.z];
             const usos = URB1.getUsosPorGrupo(bairro.z, bairro.nome);
-            localStorage.setItem('urb1_last_bairro', bairro.nome);
+            const el = document.getElementById('buscaResultArea');
+            el.style.display = 'block';
 
-            buscaRenderResult({ bairro, urban, result, usos, area, pav, catCode, via });
-        }
-
-        function buscaRenderResult(d) {
-            const { bairro, urban, result, usos, area, pav, catCode } = d;
             const zoneColors = { Z1: '#365dff', Z2: '#00a078', Z3: '#a6d800', Z4: '#f4a126', Z5: '#d95852' };
             const zaColors = { ZA1: '#1a73e8', ZA2: '#34a853', ZA3: '#fbbc04', ZA4: '#ea4335', ZA5: '#8e24aa' };
             const zoneDesc = { Z1: 'Preservação · Maior potencial construtivo', Z2: 'Baixa densidade · Uso misto controlado', Z3: 'Média densidade · Expansão urbana', Z4: 'Alta densidade · Adensamento consolidado', Z5: 'Corredor urbano · Atividades econômicas' };
-            const cat = URB1.getCategory(catCode);
             const gruposOrdem = ['Residencial', 'Comércio varejista', 'Comércio atacadista', 'Serviços', 'Industrial', 'Especial'];
 
             const usosHtml = gruposOrdem.map(g => {
@@ -438,11 +400,6 @@
                     ${vals.map((v,i) => `<td style="text-align:center;font-size:12px;padding:4px 6px;${['Z1','Z2','Z3','Z4','Z5'][i] === bairro.z ? 'background:rgba(255,255,255,.06);font-weight:700;' : ''}">${v}</td>`).join('')}</tr>`;
             }).join('');
 
-            const verdictColor = { ok: 'var(--neon-green)', warn: 'var(--neon-yellow)', no: 'var(--neon-red)' };
-            const verdictBg = { ok: 'rgba(0,255,136,.1)', warn: 'rgba(255,200,0,.1)', no: 'rgba(255,0,0,.1)' };
-
-            const el = document.getElementById('buscaResultArea');
-            el.style.display = 'block';
             el.innerHTML = `
                 <div style="background:var(--bg-tertiary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
                     <!-- Header -->
@@ -454,75 +411,15 @@
                                 <span class="badge" style="background:${zaColors[bairro.za] || 'var(--neon-green-dim)'};color:#fff;font-size:12px;padding:4px 14px;">${bairro.za}</span>
                             </div>
                             <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${zoneDesc[bairro.z] || ''}</div>
-                            <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">${area} m² · ${pav} pavimentos · ${cat ? cat.code + ' - ' + cat.porte : 'R1 - 1 unidade'}</div>
+                            ${geo ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px;"><i class="fas fa-map-pin"></i> ${geo.endereco}</div>` : ''}
                         </div>
                         <div style="display:flex;gap:6px;flex-wrap:wrap;">
                             <a href="analise.html?bairro=${encodeURIComponent(bairro.nome)}" class="btn btn-sm btn-primary"><i class="fas fa-chart-bar"></i> Análise detalhada</a>
-                            <a href="mapa.html?bairro=${encodeURIComponent(bairro.nome)}" class="btn btn-sm btn-ghost"><i class="fas fa-map-marked-alt"></i> Ver no mapa</a>
+                            <a href="mapa.html?bairro=${encodeURIComponent(bairro.nome)}&lat=${geo.lat}&lon=${geo.lon}" class="btn btn-sm btn-ghost"><i class="fas fa-map-marked-alt"></i> Ver no mapa</a>
                         </div>
                     </div>
 
                     <div style="padding:18px 20px;">
-                        <!-- Verdict -->
-                        <div style="margin-bottom:18px;padding:14px 18px;border-radius:10px;background:${verdictBg[result.verdict.type]};border:1px solid ${verdictColor[result.verdict.type]};">
-                            <div style="display:flex;align-items:center;gap:10px;">
-                                <span style="font-size:20px;color:${verdictColor[result.verdict.type]};">
-                                    <i class="fas ${result.verdict.type === 'ok' ? 'fa-check-circle' : result.verdict.type === 'warn' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
-                                </span>
-                                <div>
-                                    <div style="font-weight:700;font-size:15px;color:${verdictColor[result.verdict.type]};">${result.verdict.title}</div>
-                                    <div style="font-size:13px;color:var(--text-muted);">${result.verdict.text}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Calculation Results Grid -->
-                        <div style="margin-bottom:18px;">
-                            <div style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--neon-blue);"><i class="fas fa-calculator"></i> Resultados dos Cálculos</div>
-                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">
-                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
-                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Área de ocupação</div>
-                                    <div style="font-size:18px;font-weight:700;">${result.footprint.toFixed(0)} m²</div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${result.footprintSub}</div>
-                                </div>
-                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
-                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">CA básico</div>
-                                    <div style="font-size:18px;font-weight:700;">${result.basic.toFixed(0)} m²</div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${result.basicSub}</div>
-                                </div>
-                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
-                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">CA máximo</div>
-                                    <div style="font-size:18px;font-weight:700;color:var(--neon-beige);">${result.maximo.toFixed(0)} m²</div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${result.maximoSub}</div>
-                                </div>
-                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
-                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Área permeável</div>
-                                    <div style="font-size:18px;font-weight:700;">${result.permeable.toFixed(0)} m²</div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${result.permeableSub}</div>
-                                </div>
-                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
-                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Índice de Elevação</div>
-                                    <div style="font-size:18px;font-weight:700;color:${result.ieCompatible ? 'var(--neon-green)' : 'var(--neon-red)'};">${result.ieLabel}</div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${result.ieSub}</div>
-                                </div>
-                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
-                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Estacionamento</div>
-                                    <div style="font-size:18px;font-weight:700;">${result.parking} vagas</div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${result.parkingSub}</div>
-                                </div>
-                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
-                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Porte</div>
-                                    <div style="font-size:18px;font-weight:700;">${result.porteStatus}</div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${result.porteSub}</div>
-                                </div>
-                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
-                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Recuo frontal</div>
-                                    <div style="font-size:18px;font-weight:700;">${result.setbacks.frontalText}</div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${result.setbacks.lateralText}</div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Index Grid -->
                         <div style="margin-bottom:18px;">
                             <div style="font-size:14px;font-weight:700;margin-bottom:10px;">Índices Urbanísticos — ${bairro.z}</div>
@@ -575,6 +472,29 @@
                             </div>
                         </div>
 
+                        <!-- Potencial construtivo interativo -->
+                        <div style="margin-bottom:18px;padding:18px;background:var(--bg-secondary);border-radius:10px;border:1px solid var(--neon-blue-dim);">
+                            <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--neon-blue);"><i class="fas fa-calculator"></i> Calcular Potencial Construtivo</div>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;">
+                                <div style="flex:1;min-width:120px;">
+                                    <label style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">Área do terreno (m²)</label>
+                                    <input type="number" id="buscaCalcArea" placeholder="Ex: 300" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                                </div>
+                                <div style="flex:1;min-width:120px;">
+                                    <label style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">Pavimentos</label>
+                                    <input type="number" id="buscaCalcPav" placeholder="Ex: 4" value="2" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                                </div>
+                                <div style="flex:1;min-width:120px;">
+                                    <label style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">Largura da via (m)</label>
+                                    <input type="number" id="buscaCalcVia" placeholder="Ex: 15" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary" onclick="buscaCalcular('${bairro.nome}')" style="height:42px;"><i class="fas fa-calculator"></i> Calcular</button>
+                                </div>
+                            </div>
+                            <div id="buscaCalcResult" style="display:none;margin-top:14px;"></div>
+                        </div>
+
                         <!-- Allowed Uses -->
                         <div style="margin-bottom:18px;">
                             <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Usos Permitidos em ${bairro.z}</div>
@@ -604,6 +524,84 @@
                 </div>
             `;
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function buscaCalcular(bairroNome) {
+            const bairro = URB1.bairros.find(b => normalize(b.nome) === normalize(bairroNome));
+            if (!bairro) return;
+
+            const area = parseFloat(document.getElementById('buscaCalcArea').value);
+            if (!area || area <= 0) { showAlert('Digite a área do terreno para calcular o potencial', 'warning'); return; }
+
+            const u = URB1.urbano[bairro.z];
+            if (!u) return;
+
+            const pav = parseInt(document.getElementById('buscaCalcPav').value) || 2;
+            const via = parseFloat(document.getElementById('buscaCalcVia').value) || null;
+
+            const result = URB1.calcularPotencial(bairro, {
+                area, frente: null, profundidade: null, via,
+                built: area * parseFloat(u.cabas.replace(',','.')),
+                units: 1, rooms: 0, seats: 0, floors: pav, height: pav * 3, useOutorga: false, catCode: 'R1'
+            });
+
+            if (!result) return;
+
+            const el = document.getElementById('buscaCalcResult');
+            el.style.display = 'block';
+            el.innerHTML = `
+                <div style="background:var(--bg-tertiary);border-radius:8px;padding:4px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;">
+                        <div style="padding:10px;background:var(--bg-secondary);border-radius:6px;">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Ocupação</div>
+                            <div style="font-size:16px;font-weight:700;">${result.footprint.toFixed(0)} m²</div>
+                        </div>
+                        <div style="padding:10px;background:var(--bg-secondary);border-radius:6px;">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">CA básico</div>
+                            <div style="font-size:16px;font-weight:700;">${result.basic.toFixed(0)} m²</div>
+                        </div>
+                        <div style="padding:10px;background:var(--bg-secondary);border-radius:6px;">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">CA máximo</div>
+                            <div style="font-size:16px;font-weight:700;color:var(--neon-beige);">${result.maximo.toFixed(0)} m²</div>
+                        </div>
+                        <div style="padding:10px;background:var(--bg-secondary);border-radius:6px;">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Área permeável</div>
+                            <div style="font-size:16px;font-weight:700;">${result.permeable.toFixed(0)} m²</div>
+                        </div>
+                        <div style="padding:10px;background:var(--bg-secondary);border-radius:6px;">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">IE (${pav} pav.)</div>
+                            <div style="font-size:16px;font-weight:700;color:${result.ieCompatible ? 'var(--neon-green)' : 'var(--neon-red)'};">${result.ieCompatible ? 'OK' : 'Excede'}</div>
+                        </div>
+                        <div style="padding:10px;background:var(--bg-secondary);border-radius:6px;">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Estacionamento</div>
+                            <div style="font-size:16px;font-weight:700;">${result.parking} vagas</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:8px;padding:10px 14px;background:${result.verdict.type === 'ok' ? 'rgba(0,255,136,.1)' : result.verdict.type === 'warn' ? 'rgba(255,200,0,.1)' : 'rgba(255,0,0,.1)'};border-radius:6px;">
+                        <span style="font-weight:600;font-size:13px;">${result.verdict.title}</span>
+                        <span style="font-size:12px;color:var(--text-muted);margin-left:8px;">${result.verdict.text}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ─── Spatial helpers (from mapa.html) ───
+        function ringContains(point, ring) {
+            let inside = false;
+            for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+                const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+                const crosses = ((yi > point[1]) !== (yj > point[1])) && (point[0] < (xj - xi) * (point[1] - yi) / (yj - yi) + xi);
+                if (crosses) inside = !inside;
+            }
+            return inside;
+        }
+        function featureContains(feature, point) {
+            if (!feature.geometry) return false;
+            const polygons = feature.geometry.type === "Polygon" ? [feature.geometry.coordinates] : feature.geometry.coordinates;
+            return polygons.some(poly => poly.length && ringContains(point, poly[0]) && !poly.slice(1).some(hole => ringContains(point, hole)));
+        }
+        function featuresAt(collection, point) {
+            return collection.features.filter(f => featureContains(f, point));
         }
 
         // ─── Cadastral Search ───
