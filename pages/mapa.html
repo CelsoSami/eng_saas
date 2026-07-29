@@ -214,6 +214,14 @@
             return String(v).replace('.',',');
         }
 
+        let _tooltipPinned = false;
+        let _mouseX = 0, _mouseY = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            _mouseX = e.clientX;
+            _mouseY = e.clientY;
+        });
+
         document.addEventListener('click', function(e) {
             const tp = document.getElementById('usesTooltip');
             if (tp && tp.style.display === 'block' && !e.target.closest('.map-uses-code') && !e.target.closest('#usesTooltip')) {
@@ -221,9 +229,7 @@
             }
         });
 
-        let _tooltipPinned = false;
-
-        function mostrarTooltip(e, el) {
+        function mostrarTooltip(el) {
             const tp = document.getElementById('usesTooltip');
             document.getElementById('ttCode').textContent = el.dataset.code;
             document.getElementById('ttDesc').textContent = el.dataset.desc;
@@ -233,12 +239,13 @@
             tp.style.display = 'block';
             const w = tp.offsetWidth;
             const h = tp.offsetHeight;
-            const cx = e.clientX;
-            const cy = e.clientY;
+            const cx = _mouseX;
+            const cy = _mouseY;
             let left = cx - w / 2;
             let top = cy - h - 2;
             if (left < 2) left = 2;
             if (left + w > window.innerWidth - 2) left = window.innerWidth - w - 2;
+            if (top < 2) top = cy + 12;
             tp.style.left = left + 'px';
             tp.style.top = top + 'px';
         }
@@ -253,28 +260,19 @@
             document.getElementById('usesTooltip').style.display = 'none';
         }
 
-        function setupTooltipEvents() {
-            const container = document.getElementById('resultUses');
-            if (!container) return;
-
-            container.addEventListener('mouseover', function(e) {
-                const el = e.target.closest('.map-uses-code');
-                if (el) { mostrarTooltip(e, el); }
+        function anexarEventosBadge(badge) {
+            badge.addEventListener('mouseenter', function(e) {
+                mostrarTooltip(this);
             });
-
-            container.addEventListener('mouseout', function(e) {
-                const el = e.target.closest('.map-uses-code');
-                if (el) { esconderTooltip(); }
+            badge.addEventListener('mouseleave', function(e) {
+                esconderTooltip();
             });
-
-            container.addEventListener('click', function(e) {
-                const el = e.target.closest('.map-uses-code');
-                if (el) {
-                    _tooltipPinned = !_tooltipPinned;
-                    document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('pinned'));
-                    if (_tooltipPinned) { el.classList.add('pinned'); mostrarTooltip(e, el); }
-                    else { fecharTooltip(); }
-                }
+            badge.addEventListener('click', function(e) {
+                _tooltipPinned = !_tooltipPinned;
+                document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('pinned'));
+                if (_tooltipPinned) { this.classList.add('pinned'); mostrarTooltip(this); }
+                else { fecharTooltip(); }
+                e.stopPropagation();
             });
         }
 
@@ -387,15 +385,34 @@
             if (base) {
                 const grupos = URB1.getUsosPorGrupo(base.z, base.nome);
                 const groupOrder = ['Residencial','Comércio varejista','Comércio atacadista','Serviços','Industrial','Especial'];
-                usesContainer.innerHTML = groupOrder.map(g => {
+                usesContainer.innerHTML = '';
+                const df = document.createDocumentFragment();
+                groupOrder.forEach(g => {
                     const cats = grupos[g];
-                    if (!cats || !cats.length) return '';
-                    return '<div class="map-uses-group"><div class="map-uses-group-title">' + g + '</div><div class="map-uses-codes">' +
-                        cats.map(c => '<span class="map-uses-code" data-code="' + c.code + '" data-desc="' + c.description.replace(/"/g,'&quot;') + '" data-porte="' + c.porte.replace(/"/g,'&quot;') + '">' + c.code + '</span>').join('') +
-                        '</div></div>';
-                }).join('');
+                    if (!cats || !cats.length) return;
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'map-uses-group';
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'map-uses-group-title';
+                    titleDiv.textContent = g;
+                    groupDiv.appendChild(titleDiv);
+                    const codesDiv = document.createElement('div');
+                    codesDiv.className = 'map-uses-codes';
+                    cats.forEach(c => {
+                        const span = document.createElement('span');
+                        span.className = 'map-uses-code';
+                        span.dataset.code = c.code;
+                        span.dataset.desc = c.description;
+                        span.dataset.porte = c.porte;
+                        span.textContent = c.code;
+                        anexarEventosBadge(span);
+                        codesDiv.appendChild(span);
+                    });
+                    groupDiv.appendChild(codesDiv);
+                    df.appendChild(groupDiv);
+                });
+                usesContainer.appendChild(df);
                 usesEl.style.display = '';
-                setupTooltipEvents();
             } else {
                 usesEl.style.display = 'none';
             }
