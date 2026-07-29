@@ -48,11 +48,12 @@
         .map-uses-group { margin-bottom:10px; }
         .map-uses-group-title { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--neon-blue); margin-bottom:4px; }
         .map-uses-codes { display:flex; flex-wrap:wrap; gap:4px; }
-        .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:pointer; transition:background .15s,border-color .15s; position:relative; }
+        .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:default; transition:background .15s,border-color .15s; }
+        .map-uses-code { cursor:pointer; }
         .map-uses-code:hover { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
         .map-uses-code.pinned { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
 
-        .map-uses-tooltip { display:none; position:fixed; z-index:9999; background:#1a1f2e; border:1px solid var(--neon-blue); border-radius:8px; padding:10px 14px; font-size:12px; line-height:1.5; color:var(--text-primary); max-width:320px; box-shadow:0 8px 32px rgba(0,0,0,.5); pointer-events:auto; }
+        .map-uses-tooltip { display:none; position:fixed; z-index:99999; background:#1a1f2e; border:1px solid var(--neon-blue); border-radius:8px; padding:10px 14px; font-size:12px; line-height:1.5; color:var(--text-primary); max-width:320px; box-shadow:0 8px 32px rgba(0,0,0,.5); pointer-events:auto; }
         .map-uses-tooltip .tt-close { position:absolute; top:4px; right:6px; font-size:14px; color:var(--text-muted); cursor:pointer; border:0; background:0; padding:2px 6px; }
         .map-uses-tooltip .tt-close:hover { color:var(--text-primary); }
         .map-uses-tooltip .tt-code { font-weight:800; color:var(--neon-blue); margin-bottom:2px; }
@@ -178,8 +179,8 @@
                             <div class="map-uses-section" id="resultUsesSection" style="display:none;">
                                 <div class="map-uses-section-title">Usos e atividades indicados</div>
                                 <div class="map-uses-section-sub" id="resultUsesSub">passe o mouse ou toque em um código</div>
-                                <div id="resultUses"></div>
                                 <div class="map-uses-tooltip" id="usesTooltip"><button class="tt-close" onclick="fecharTooltip()">&times;</button><div class="tt-code" id="ttCode"></div><div class="tt-desc" id="ttDesc"></div><div class="tt-porte" id="ttPorte"></div></div>
+                                <div id="resultUses"></div>
                             </div>
                             <div class="map-warning" id="resultWarning"></div>
                             <div style="margin-top:12px; text-align:right;">
@@ -234,11 +235,10 @@
             document.getElementById('ttCode').textContent = el.dataset.code;
             document.getElementById('ttDesc').textContent = el.dataset.desc;
             document.getElementById('ttPorte').textContent = 'Porte: ' + el.dataset.porte;
-            tp.style.left = '-999px';
-            tp.style.top = '-999px';
             tp.style.display = 'block';
-            const w = tp.offsetWidth;
-            const h = tp.offsetHeight;
+            const r = tp.getBoundingClientRect();
+            const w = r.width;
+            const h = r.height;
             const cx = _mouseX;
             const cy = _mouseY;
             let left = cx - w / 2;
@@ -261,12 +261,8 @@
         }
 
         function anexarEventosBadge(badge) {
-            badge.addEventListener('mouseenter', function(e) {
-                mostrarTooltip(this);
-            });
-            badge.addEventListener('mouseleave', function(e) {
-                esconderTooltip();
-            });
+            badge.addEventListener('mouseenter', function(e) { mostrarTooltip(this); });
+            badge.addEventListener('mouseleave', function(e) { esconderTooltip(); });
             badge.addEventListener('click', function(e) {
                 _tooltipPinned = !_tooltipPinned;
                 document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('pinned'));
