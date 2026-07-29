@@ -236,11 +236,10 @@
 
         function reposicionarTooltip(tp) {
             const tpRect = tp.getBoundingClientRect();
-            let left = _mouseX + 8;
-            let top = _mouseY + 8;
-            if (top + tpRect.height > window.innerHeight - 4) top = _mouseY - tpRect.height - 8;
-            if (left + tpRect.width > window.innerWidth - 4) left = _mouseX - tpRect.width - 8;
-            if (left < 4) left = 4;
+            let left = _mouseX - tpRect.width / 2;
+            let top = _mouseY - tpRect.height - 2;
+            if (left < 2) left = 2;
+            if (left + tpRect.width > window.innerWidth - 2) left = window.innerWidth - tpRect.width - 2;
             tp.style.left = left + 'px';
             tp.style.top = top + 'px';
         }
