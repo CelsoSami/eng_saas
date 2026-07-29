@@ -824,6 +824,9 @@ body {
     border-color: var(--neon-blue);
     box-shadow: 0 0 15px rgba(0, 212, 255, 0.08);
 }
+.form-select option {
+    background: #1a1f2e; color: var(--text-primary);
+}
 
 .form-textarea {
     resize: vertical;
@@ -2276,6 +2279,9 @@ body {
   border-radius: 8px; background: var(--bg-tertiary); padding: 0 12px;
   color: var(--text-primary); outline: none; font-size: 14px;
   transition: border-color .2s;
+}
+.urb1-field option {
+  background: #1a1f2e; color: var(--text-primary);
 }
 .urb1-field input:focus, .urb1-field select:focus {
   border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0,212,255,.08);
