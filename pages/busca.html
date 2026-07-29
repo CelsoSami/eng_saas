@@ -67,39 +67,62 @@
 
                 <!-- Tabs -->
                 <div style="display:flex;gap:4px;padding:4px;background:rgba(255,255,255,.04);border-radius:9px;max-width:500px;margin-bottom:24px;">
-                    <button class="busca-tab active" data-tab="urb1">Consultar Bairro</button>
+                    <button class="busca-tab active" data-tab="urb1">Analisar Terreno</button>
                     <button class="busca-tab" data-tab="cadastro">Busca Cadastral</button>
                 </div>
 
-                <!-- ==================== TAB 1: URB1 CONSULT ==================== -->
+                <!-- ==================== TAB 1: ANALISAR TERRENO ==================== -->
                 <div class="busca-panel active" id="buscaUrb1">
-                    <div style="margin-bottom:20px;">
-                        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;">
-                            <div style="flex:1;min-width:200px;">
-                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Digite o nome do bairro</label>
-                                <div style="display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg-tertiary);">
-                                    <input type="text" id="buscaBairroInput" placeholder="Ex: Santa Fé, Centro, Jardim dos Estados..." style="border:0;outline:0;padding:14px 16px;font-size:15px;flex:1;min-width:0;background:transparent;color:var(--text-primary);">
-                                    <button onclick="buscaConsultarBairro()" style="border:0;background:var(--neon-blue);color:#0a1628;padding:0 22px;font-weight:800;cursor:pointer;"><i class="fas fa-search"></i> Consultar</button>
+                    <div class="card" style="border-color:var(--neon-blue-dim);">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title"><i class="fas fa-map-pin" style="margin-right:8px;color:var(--neon-blue);"></i>Dados do Terreno</div>
+                                <div class="card-subtitle">Informe os dados do terreno para calcular o potencial construtivo completo</div>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+                            <div>
+                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Bairro *</label>
+                                <div style="position:relative;">
+                                    <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg-tertiary);">
+                                        <input type="text" id="buscaBairroInput" placeholder="Ex: Santa Fé, Centro..." style="border:0;outline:0;padding:10px 12px;font-size:14px;flex:1;min-width:0;background:transparent;color:var(--text-primary);">
+                                    </div>
+                                    <div class="busca-suggestions" id="buscaBairroSuggestions"></div>
                                 </div>
-                                <div class="busca-suggestions" id="buscaBairroSuggestions"></div>
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Área do terreno (m²) *</label>
+                                <input type="number" id="buscaArea" placeholder="Ex: 360" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Testada (m)</label>
+                                <input type="number" id="buscaTestada" placeholder="Ex: 10" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Profundidade (m)</label>
+                                <input type="number" id="buscaProf" placeholder="Ex: 30" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Largura da via (m)</label>
+                                <input type="number" id="buscaVia" placeholder="Ex: 15" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Pavimentos pretendidos</label>
+                                <input type="number" id="buscaPav" placeholder="Ex: 4" value="2" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">Categoria de uso</label>
+                                <select id="buscaCategoria" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;width:100%;background:var(--bg-tertiary);color:var(--text-primary);outline:0;">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                            <div style="display:flex;align-items:end;">
+                                <button class="btn btn-primary" onclick="buscaAnalisar()" style="flex:1;height:42px;"><i class="fas fa-calculator"></i> Analisar Viabilidade</button>
                             </div>
                         </div>
                     </div>
 
-                    <div id="buscaBairroEmpty" style="text-align:center;padding:48px 16px;">
-                        <i class="fas fa-building" style="font-size:48px;opacity:0.2;margin-bottom:16px;display:block;color:var(--text-muted);"></i>
-                        <h3 style="margin:0 0 8px;font-size:18px;color:var(--text-primary);">Consulta Urbanística de Bairro</h3>
-                        <p style="margin:0;color:var(--text-muted);font-size:14px;max-width:480px;margin-inline:auto;">Digite o nome de um bairro acima para visualizar todos os índices construtivos, zoneamento, dados ambientais e usos permitidos conforme o PDDUA de Campo Grande.</p>
-                        <div style="display:flex;gap:8px;justify-content:center;margin-top:20px;flex-wrap:wrap;">
-                            <span class="badge" style="background:#365dff20;color:#365dff;font-size:12px;padding:6px 14px;">Z1 · Preservação</span>
-                            <span class="badge" style="background:#00a07820;color:#00a078;font-size:12px;padding:6px 14px;">Z2 · Baixa densidade</span>
-                            <span class="badge" style="background:#a6d80020;color:#a6d800;font-size:12px;padding:6px 14px;">Z3 · Média densidade</span>
-                            <span class="badge" style="background:#f4a12620;color:#f4a126;font-size:12px;padding:6px 14px;">Z4 · Alta densidade</span>
-                            <span class="badge" style="background:#d9585220;color:#d95852;font-size:12px;padding:6px 14px;">Z5 · Corredor urbano</span>
-                        </div>
-                    </div>
-
-                    <div id="buscaBairroResult" style="display:none;"></div>
+                    <div id="buscaResultArea" style="display:none;margin-top:24px;"></div>
                 </div>
 
                 <!-- ==================== TAB 2: CADASTRO ==================== -->
@@ -290,13 +313,14 @@
             return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
         }
 
-        // ─── Tab Switching ───
+        // ─── Terrain Analysis ───
         function initBusca() {
             if (typeof URB1 === 'undefined' || !URB1.bairros) return;
 
             const bairros = URB1.bairros;
             const input = document.getElementById('buscaBairroInput');
             const suggest = document.getElementById('buscaBairroSuggestions');
+            const selectCat = document.getElementById('buscaCategoria');
             const zoneColors = { Z1: '#365dff', Z2: '#00a078', Z3: '#a6d800', Z4: '#f4a126', Z5: '#d95852' };
 
             input.addEventListener('input', function() {
@@ -322,11 +346,27 @@
                 e.preventDefault();
                 suggest.classList.remove('open');
                 input.value = btn.dataset.nome;
-                buscaShowResult(btn.dataset.nome);
             });
 
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); buscaConsultarBairro(); }
+                if (e.key === 'Enter') { e.preventDefault(); buscaAnalisar(); }
+            });
+
+            // Populate categories dropdown
+            const groups = URB1.listCategoriesByGroup();
+            const gruposOrdem = ['Residencial', 'Comércio varejista', 'Comércio atacadista', 'Serviços', 'Industrial', 'Especial'];
+            gruposOrdem.forEach(g => {
+                const items = groups[g] || [];
+                if (!items.length) return;
+                const opt = document.createElement('optgroup');
+                opt.label = g;
+                items.forEach(c => {
+                    const o = document.createElement('option');
+                    o.value = c.code;
+                    o.textContent = c.code + ' - ' + c.porte;
+                    opt.appendChild(o);
+                });
+                selectCat.appendChild(opt);
             });
 
             // Tab switching
@@ -343,142 +383,197 @@
             });
 
             const lastBairro = localStorage.getItem('urb1_last_bairro');
-            if (lastBairro) { input.value = lastBairro; buscaShowResult(lastBairro); }
+            if (lastBairro) { input.value = lastBairro; }
         }
 
-        function buscaConsultarBairro() {
-            const val = document.getElementById('buscaBairroInput').value;
-            if (!val) return;
-            buscaShowResult(val);
-        }
+        function buscaAnalisar() {
+            const nome = document.getElementById('buscaBairroInput').value.trim();
+            const area = parseFloat(document.getElementById('buscaArea').value);
+            if (!nome) { showAlert('Digite o nome do bairro', 'warning'); return; }
+            if (!area || area <= 0) { showAlert('Digite a área do terreno', 'warning'); return; }
 
-        function buscaShowResult(nome) {
             const bairro = URB1.bairros.find(b => normalize(b.nome) === normalize(nome));
-            if (!bairro) { showAlert('Bairro não encontrado', 'warning'); return; }
+            if (!bairro) { showAlert('Bairro não encontrado. Verifique o nome.', 'warning'); return; }
+
+            const via = parseFloat(document.getElementById('buscaVia').value) || null;
+            const testada = parseFloat(document.getElementById('buscaTestada').value) || null;
+            const prof = parseFloat(document.getElementById('buscaProf').value) || null;
+            const pav = parseInt(document.getElementById('buscaPav').value) || 2;
+            const catCode = document.getElementById('buscaCategoria').value || 'R1';
+
+            // Call URB1 calculation engine
+            const result = URB1.calcularPotencial(bairro, {
+                area, frente: testada, profundidade: prof, via,
+                built: area * (parseFloat(URB1.urbano[bairro.z]?.cabas.replace(',','.')) || 1),
+                units: catCode.startsWith('R') || catCode.startsWith('E') ? 1 : 0,
+                rooms: 0, seats: 0, floors: pav, height: pav * 3, useOutorga: false, catCode
+            });
+
+            if (!result) { showAlert('Erro ao calcular potencial', 'danger'); return; }
 
             const urban = URB1.urbano[bairro.z];
-            const result = document.getElementById('buscaBairroResult');
-            const empty = document.getElementById('buscaBairroEmpty');
-            empty.style.display = 'none';
+            const usos = URB1.getUsosPorGrupo(bairro.z, bairro.nome);
             localStorage.setItem('urb1_last_bairro', bairro.nome);
 
+            buscaRenderResult({ bairro, urban, result, usos, area, pav, catCode, via });
+        }
+
+        function buscaRenderResult(d) {
+            const { bairro, urban, result, usos, area, pav, catCode } = d;
             const zoneColors = { Z1: '#365dff', Z2: '#00a078', Z3: '#a6d800', Z4: '#f4a126', Z5: '#d95852' };
             const zaColors = { ZA1: '#1a73e8', ZA2: '#34a853', ZA3: '#fbbc04', ZA4: '#ea4335', ZA5: '#8e24aa' };
             const zoneDesc = { Z1: 'Preservação · Maior potencial construtivo', Z2: 'Baixa densidade · Uso misto controlado', Z3: 'Média densidade · Expansão urbana', Z4: 'Alta densidade · Adensamento consolidado', Z5: 'Corredor urbano · Atividades econômicas' };
-
-            // Build zone comparison mini-table
-            const compRows = ['ocupacao','cabas','camax','outorga','ie','area'].map(f => {
-                const vals = ['Z1','Z2','Z3','Z4','Z5'].map(z => URB1.urbano[z]?.[f] || '—');
-                const labels = { ocupacao: 'Taxa ocup.', cabas: 'CA básico', camax: 'CA máximo', outorga: 'Outorga', ie: 'IE', area: 'Área min.' };
-                return `<tr><td style="font-size:12px;font-weight:600;padding:4px 8px;">${labels[f]}</td>
-                    ${vals.map((v,i) => `<td style="text-align:center;font-size:12px;padding:4px 6px;${['Z1','Z2','Z3','Z4','Z5'][i] === bairro.z ? 'background:rgba(255,255,255,.06);font-weight:700;' : ''}">${v}</td>`).join('')}</tr>`;
-            }).join('');
-
-            const cabas = urban ? parseFloat(urban.cabas.replace(',','.')) : 0;
-            const camax = urban ? parseFloat(urban.camax.replace(',','.')) : 0;
-            const to = bairro.z === 'Z1' ? 0.7 : 0.5;
-
-            // Allowed uses summary
-            const usos = URB1.getUsosPorGrupo(bairro.z, bairro.nome);
+            const cat = URB1.getCategory(catCode);
             const gruposOrdem = ['Residencial', 'Comércio varejista', 'Comércio atacadista', 'Serviços', 'Industrial', 'Especial'];
+
             const usosHtml = gruposOrdem.map(g => {
                 const items = usos[g] || [];
                 return items.length ? `<span class="badge" style="background:var(--bg-tertiary);color:var(--text-primary);font-size:11px;padding:4px 10px;">${g} <strong style="color:var(--neon-blue);">${items.length}</strong></span>` : '';
             }).filter(Boolean).join(' ');
 
-            result.innerHTML = `
+            const compRows = ['ocupacao','cabas','camax','outorga','ie','area','meio','esquina'].map(f => {
+                const vals = ['Z1','Z2','Z3','Z4','Z5'].map(z => URB1.urbano[z]?.[f] || '—');
+                const labels = { ocupacao: 'Taxa ocup.', cabas: 'CA básico', camax: 'CA máximo', outorga: 'Outorga', ie: 'IE', area: 'Área min.', meio: 'Test. meio', esquina: 'Test. esquina' };
+                return `<tr><td style="font-size:12px;font-weight:600;padding:4px 8px;">${labels[f]}</td>
+                    ${vals.map((v,i) => `<td style="text-align:center;font-size:12px;padding:4px 6px;${['Z1','Z2','Z3','Z4','Z5'][i] === bairro.z ? 'background:rgba(255,255,255,.06);font-weight:700;' : ''}">${v}</td>`).join('')}</tr>`;
+            }).join('');
+
+            const verdictColor = { ok: 'var(--neon-green)', warn: 'var(--neon-yellow)', no: 'var(--neon-red)' };
+            const verdictBg = { ok: 'rgba(0,255,136,.1)', warn: 'rgba(255,200,0,.1)', no: 'rgba(255,0,0,.1)' };
+
+            const el = document.getElementById('buscaResultArea');
+            el.style.display = 'block';
+            el.innerHTML = `
                 <div style="background:var(--bg-tertiary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
                     <!-- Header -->
                     <div style="padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border);">
                         <div>
-                            <div style="font-size:24px;font-weight:700;">${bairro.nome}</div>
-                            <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+                            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                                <span style="font-size:24px;font-weight:700;">${bairro.nome}</span>
                                 <span class="badge" style="background:${zoneColors[bairro.z]};color:#fff;font-size:12px;padding:4px 14px;">${bairro.z}</span>
                                 <span class="badge" style="background:${zaColors[bairro.za] || 'var(--neon-green-dim)'};color:#fff;font-size:12px;padding:4px 14px;">${bairro.za}</span>
-                                <span style="font-size:13px;color:var(--text-muted);padding-top:4px;">${zoneDesc[bairro.z] || ''}</span>
                             </div>
+                            <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${zoneDesc[bairro.z] || ''}</div>
+                            <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">${area} m² · ${pav} pavimentos · ${cat ? cat.code + ' - ' + cat.porte : 'R1 - 1 unidade'}</div>
                         </div>
                         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                            <a href="analise.html?bairro=${encodeURIComponent(bairro.nome)}" class="btn btn-sm btn-primary"><i class="fas fa-chart-bar"></i> Análise completa</a>
+                            <a href="analise.html?bairro=${encodeURIComponent(bairro.nome)}" class="btn btn-sm btn-primary"><i class="fas fa-chart-bar"></i> Análise detalhada</a>
                             <a href="mapa.html?bairro=${encodeURIComponent(bairro.nome)}" class="btn btn-sm btn-ghost"><i class="fas fa-map-marked-alt"></i> Ver no mapa</a>
                         </div>
                     </div>
 
                     <div style="padding:18px 20px;">
+                        <!-- Verdict -->
+                        <div style="margin-bottom:18px;padding:14px 18px;border-radius:10px;background:${verdictBg[result.verdict.type]};border:1px solid ${verdictColor[result.verdict.type]};">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <span style="font-size:20px;color:${verdictColor[result.verdict.type]};">
+                                    <i class="fas ${result.verdict.type === 'ok' ? 'fa-check-circle' : result.verdict.type === 'warn' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
+                                </span>
+                                <div>
+                                    <div style="font-weight:700;font-size:15px;color:${verdictColor[result.verdict.type]};">${result.verdict.title}</div>
+                                    <div style="font-size:13px;color:var(--text-muted);">${result.verdict.text}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calculation Results Grid -->
+                        <div style="margin-bottom:18px;">
+                            <div style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--neon-blue);"><i class="fas fa-calculator"></i> Resultados dos Cálculos</div>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">
+                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Área de ocupação</div>
+                                    <div style="font-size:18px;font-weight:700;">${result.footprint.toFixed(0)} m²</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${result.footprintSub}</div>
+                                </div>
+                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">CA básico</div>
+                                    <div style="font-size:18px;font-weight:700;">${result.basic.toFixed(0)} m²</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${result.basicSub}</div>
+                                </div>
+                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">CA máximo</div>
+                                    <div style="font-size:18px;font-weight:700;color:var(--neon-beige);">${result.maximo.toFixed(0)} m²</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${result.maximoSub}</div>
+                                </div>
+                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Área permeável</div>
+                                    <div style="font-size:18px;font-weight:700;">${result.permeable.toFixed(0)} m²</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${result.permeableSub}</div>
+                                </div>
+                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Índice de Elevação</div>
+                                    <div style="font-size:18px;font-weight:700;color:${result.ieCompatible ? 'var(--neon-green)' : 'var(--neon-red)'};">${result.ieLabel}</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${result.ieSub}</div>
+                                </div>
+                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Estacionamento</div>
+                                    <div style="font-size:18px;font-weight:700;">${result.parking} vagas</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${result.parkingSub}</div>
+                                </div>
+                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Porte</div>
+                                    <div style="font-size:18px;font-weight:700;">${result.porteStatus}</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${result.porteSub}</div>
+                                </div>
+                                <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Recuo frontal</div>
+                                    <div style="font-size:18px;font-weight:700;">${result.setbacks.frontalText}</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${result.setbacks.lateralText}</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Index Grid -->
-                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:18px;">
-                            ${urban ? [
-                                { label: 'Taxa de ocupação', value: urban.ocupacao || '—' },
-                                { label: 'CA mínimo', value: urban.camin || '—' },
-                                { label: 'CA básico', value: urban.cabas || '—' },
-                                { label: 'CA máximo', value: urban.camax || '—' },
-                                { label: 'Outorga / TDC', value: urban.outorga || '—' },
-                                { label: 'Índice de Elevação', value: urban.ie || '—' },
-                                { label: 'Área mín. lote', value: urban.area || '—' },
-                                { label: 'Testada meio', value: urban.meio || '—' },
-                                { label: 'Testada esquina', value: urban.esquina || '—' },
-                                { label: 'Recuo frontal', value: urban.frente || '—' },
-                                { label: 'Recuos lat./fundos', value: urban.lateral || '—' },
-                                { label: 'Recuo c/ outorga', value: urban.outorgaRec || '—' },
-                            ].map(i => `<div style="background:var(--bg-secondary);border-radius:8px;padding:10px 12px;border:1px solid var(--border);">
-                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${i.label}</div>
-                                <div style="font-size:15px;font-weight:700;">${i.value}</div>
-                            </div>`).join('') : ''}
+                        <div style="margin-bottom:18px;">
+                            <div style="font-size:14px;font-weight:700;margin-bottom:10px;">Índices Urbanísticos — ${bairro.z}</div>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;">
+                                ${urban ? [
+                                    { label: 'Taxa de ocupação', value: urban.ocupacao || '—' },
+                                    { label: 'CA mínimo', value: urban.camin || '—' },
+                                    { label: 'CA básico', value: urban.cabas || '—' },
+                                    { label: 'CA máximo', value: urban.camax || '—' },
+                                    { label: 'Outorga / TDC', value: urban.outorga || '—' },
+                                    { label: 'IE máximo', value: urban.ie || '—' },
+                                    { label: 'Área mín. lote', value: urban.area || '—' },
+                                    { label: 'Testada meio', value: urban.meio || '—' },
+                                    { label: 'Testada esquina', value: urban.esquina || '—' },
+                                    { label: 'Recuo frontal', value: urban.frente || '—' },
+                                    { label: 'Recuos lat./fundos', value: urban.lateral || '—' },
+                                    { label: 'Recuo c/ outorga', value: urban.outorgaRec || '—' },
+                                ].map(i => `<div style="background:var(--bg-secondary);border-radius:8px;padding:10px 12px;border:1px solid var(--border);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${i.label}</div>
+                                    <div style="font-size:15px;font-weight:700;">${i.value}</div>
+                                </div>`).join('') : ''}
+                            </div>
                         </div>
 
                         <!-- Environmental Data -->
-                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:18px;">
-                            <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
-                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Zona Ambiental</div>
-                                <div style="font-size:15px;font-weight:700;">${bairro.za}</div>
-                            </div>
-                            <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
-                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">TRA mínima</div>
-                                <div style="font-size:15px;font-weight:700;">${bairro.tra}</div>
-                                <div style="font-size:10px;color:var(--text-muted);">TRA = V<sup>${bairro.alfa}</sup> x D<sup>${bairro.beta}</sup></div>
-                            </div>
-                            <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
-                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Permeabilidade</div>
-                                <div style="font-size:15px;font-weight:700;">${bairro.perm}</div>
-                                <div style="font-size:10px;color:var(--text-muted);">do lote</div>
-                            </div>
-                            <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
-                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Fator α (vegetação)</div>
-                                <div style="font-size:15px;font-weight:700;">${bairro.alfa}</div>
-                            </div>
-                            <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
-                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Fator β (drenagem)</div>
-                                <div style="font-size:15px;font-weight:700;">${bairro.beta}</div>
+                        <div style="margin-bottom:18px;">
+                            <div style="font-size:14px;font-weight:700;margin-bottom:10px;">Dados Ambientais</div>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;">
+                                <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Zona Ambiental</div>
+                                    <div style="font-size:15px;font-weight:700;">${bairro.za}</div>
+                                </div>
+                                <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">TRA mínima</div>
+                                    <div style="font-size:15px;font-weight:700;">${bairro.tra}</div>
+                                    <div style="font-size:10px;color:var(--text-muted);">TRA = V<sup>${bairro.alfa}</sup> x D<sup>${bairro.beta}</sup></div>
+                                </div>
+                                <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Permeabilidade</div>
+                                    <div style="font-size:15px;font-weight:700;">${bairro.perm}</div>
+                                </div>
+                                <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Fator α (vegetação)</div>
+                                    <div style="font-size:15px;font-weight:700;">${bairro.alfa}</div>
+                                </div>
+                                <div style="background:var(--neon-green-dim);border-radius:8px;padding:10px 12px;border:1px solid rgba(0,255,136,.15);">
+                                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Fator β (drenagem)</div>
+                                    <div style="font-size:15px;font-weight:700;">${bairro.beta}</div>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Construction Potential -->
-                        ${urban ? `
-                        <div style="margin-bottom:18px;padding:16px;background:var(--bg-secondary);border-radius:10px;border:1px solid var(--neon-blue-dim);">
-                            <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--neon-blue);"><i class="fas fa-lightbulb"></i> Potencial Construtivo</div>
-                            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
-                                <div>
-                                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Terreno de 360 m²</div>
-                                    <div style="font-size:22px;font-weight:700;">${(360 * cabas).toLocaleString('pt-BR')} m² <span style="font-size:12px;font-weight:400;color:var(--text-muted);">CA básico</span></div>
-                                    <div style="font-size:22px;font-weight:700;color:var(--neon-beige);">${(360 * camax).toLocaleString('pt-BR')} m² <span style="font-size:12px;font-weight:400;color:var(--text-muted);">CA máximo</span></div>
-                                </div>
-                                <div>
-                                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Terreno de 500 m²</div>
-                                    <div style="font-size:22px;font-weight:700;">${(500 * cabas).toLocaleString('pt-BR')} m² <span style="font-size:12px;font-weight:400;color:var(--text-muted);">CA básico</span></div>
-                                    <div style="font-size:22px;font-weight:700;color:var(--neon-beige);">${(500 * camax).toLocaleString('pt-BR')} m² <span style="font-size:12px;font-weight:400;color:var(--text-muted);">CA máximo</span></div>
-                                </div>
-                                <div>
-                                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Ocupação máxima</div>
-                                    <div style="font-size:22px;font-weight:700;">${to * 100}%</div>
-                                    <div style="font-size:11px;color:var(--text-muted);">do terreno</div>
-                                </div>
-                                <div>
-                                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Área permeável mín.</div>
-                                    <div style="font-size:22px;font-weight:700;">${bairro.perm}</div>
-                                    <div style="font-size:11px;color:var(--text-muted);">do lote</div>
-                                </div>
-                            </div>
-                        </div>` : ''}
 
                         <!-- Allowed Uses -->
                         <div style="margin-bottom:18px;">
@@ -486,9 +581,9 @@
                             <div style="display:flex;flex-wrap:wrap;gap:6px;">${usosHtml || '<span style="color:var(--text-muted);font-size:13px;">Nenhum uso cadastrado</span>'}</div>
                         </div>
 
-                        <!-- Zone Comparison Mini -->
+                        <!-- Zone Comparison -->
                         <div>
-                            <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Comparativo Rápido entre Zonas</div>
+                            <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Comparativo entre Zonas</div>
                             <div style="overflow-x:auto;">
                                 <table class="table" style="font-size:13px;">
                                     <thead>
@@ -508,7 +603,7 @@
                     </div>
                 </div>
             `;
-            result.style.display = 'block';
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         // ─── Cadastral Search ───
