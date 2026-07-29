@@ -51,12 +51,13 @@
         .map-uses-code { display:inline-block; padding:3px 8px; border-radius:6px; background:var(--bg-tertiary); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--text-primary); cursor:pointer; transition:background .15s,border-color .15s; position:relative; }
         .map-uses-code:hover { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
         .map-uses-code.selected { background:var(--neon-blue-dim); border-color:var(--neon-blue); color:var(--neon-blue); }
-        .map-uses-code[data-porte]:not([data-porte=""]):hover::after {
-            content:"Porte: " attr(data-porte);
+        .map-uses-code[data-tooltip]:not([data-tooltip=""]):hover::after {
+            content:attr(data-tooltip);
             position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
             background:#1a1f2e; color:var(--text-primary); border:1px solid var(--neon-blue);
-            border-radius:6px; padding:4px 10px; font-size:10px; font-weight:600;
-            white-space:nowrap; z-index:10; pointer-events:none; box-shadow:0 4px 12px rgba(0,0,0,.4);
+            border-radius:6px; padding:6px 10px; font-size:10px; font-weight:400; line-height:1.5;
+            max-width:350px; white-space:pre-wrap; z-index:10; pointer-events:none; box-shadow:0 4px 12px rgba(0,0,0,.4);
+            text-align:left;
         }
 
         .map-desc-panel { display:none; margin-top:12px; background:var(--bg-tertiary); border:1px solid var(--neon-blue); border-radius:10px; padding:14px 16px; animation:slideUp .2s ease both; }
@@ -237,6 +238,19 @@
             return String(v).replace('.',',');
         }
 
+        function wrapText(text, maxLen) {
+            if (!text) return '';
+            if (text.length <= maxLen) return text;
+            const words = text.split(' ');
+            let lines = [], line = '';
+            words.forEach(w => {
+                if ((line + w).length >= maxLen) { lines.push(line.trim()); line = w + ' '; }
+                else { line += w + ' '; }
+            });
+            if (line.trim()) lines.push(line.trim());
+            return lines.join('\n');
+        }
+
         function mostrarDescPainel(el) {
             document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
@@ -382,6 +396,7 @@
                         span.dataset.code = c.code;
                         span.dataset.desc = c.description;
                         span.dataset.porte = c.porte;
+                        span.dataset.tooltip = wrapText(c.description, 70) + '\n\nPorte: ' + c.porte;
                         span.textContent = c.code;
                         anexarEventosBadge(span);
                         codesDiv.appendChild(span);
@@ -416,6 +431,7 @@
                     span.dataset.code = item.code + ' ' + item.value;
                     span.dataset.desc = item.desc;
                     span.dataset.porte = '';
+                    span.dataset.tooltip = wrapText(item.desc, 70);
                     span.textContent = item.code + ' ' + item.value;
                     anexarEventosBadge(span);
                     envCodesDiv.appendChild(span);
