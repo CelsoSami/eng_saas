@@ -223,24 +223,37 @@
 
         let _tooltipPinned = false;
 
-        function mostrarTooltip(e, el) {
+        let _mouseX = 0, _mouseY = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            _mouseX = e.clientX;
+            _mouseY = e.clientY;
+            const tp = document.getElementById('usesTooltip');
+            if (tp.style.display === 'block' && !_tooltipPinned) {
+                reposicionarTooltip(tp);
+            }
+        });
+
+        function reposicionarTooltip(tp) {
+            const tpRect = tp.getBoundingClientRect();
+            let left = _mouseX + 10;
+            let top = _mouseY - tpRect.height - 10;
+            if (top < 4) top = _mouseY + 14;
+            if (left + tpRect.width > window.innerWidth - 4) left = _mouseX - tpRect.width - 10;
+            if (left < 4) left = 4;
+            tp.style.left = left + 'px';
+            tp.style.top = top + 'px';
+        }
+
+        function mostrarTooltip(el) {
             const tp = document.getElementById('usesTooltip');
             document.getElementById('ttCode').textContent = el.dataset.code;
             document.getElementById('ttDesc').textContent = el.dataset.desc;
             document.getElementById('ttPorte').textContent = 'Porte: ' + el.dataset.porte;
-            const cx = e.clientX || e.touches?.[0]?.clientX || 0;
-            const cy = e.clientY || e.touches?.[0]?.clientY || 0;
             tp.style.visibility = 'hidden';
             tp.style.display = 'block';
             void tp.offsetHeight;
-            const tpRect = tp.getBoundingClientRect();
-            let left = cx + 12;
-            let top = cy - tpRect.height - 12;
-            if (top < 4) top = cy + 12;
-            if (left + tpRect.width > window.innerWidth - 4) left = cx - tpRect.width - 12;
-            if (left < 4) left = 4;
-            tp.style.left = left + 'px';
-            tp.style.top = top + 'px';
+            reposicionarTooltip(tp);
             tp.style.visibility = 'visible';
         }
 
@@ -260,7 +273,7 @@
 
             container.addEventListener('mouseover', function(e) {
                 const el = e.target.closest('.map-uses-code');
-                if (el) { mostrarTooltip(e, el); }
+                if (el) { mostrarTooltip(el); }
             });
 
             container.addEventListener('mouseout', function(e) {
@@ -273,7 +286,7 @@
                 if (el) {
                     _tooltipPinned = !_tooltipPinned;
                     document.querySelectorAll('.map-uses-code').forEach(c => c.classList.remove('pinned'));
-                    if (_tooltipPinned) { el.classList.add('pinned'); mostrarTooltip(e, el); }
+                    if (_tooltipPinned) { el.classList.add('pinned'); mostrarTooltip(el); }
                     else { fecharTooltip(); }
                 }
             });
